@@ -1,0 +1,503 @@
+{
+  "worldObjects": [
+    {
+      "id": "tree1",
+      "name": "Oak Tree",
+      "position": {
+        "x": 25,
+        "y": 0,
+        "z": 25
+      },
+      "tags": [
+        "nature",
+        "tree"
+      ]
+    },
+    {
+      "id": "bench1",
+      "name": "Park Bench",
+      "position": {
+        "x": 30,
+        "y": 0,
+        "z": 30
+      },
+      "tags": [
+        "furniture",
+        "rest"
+      ]
+    },
+    {
+      "id": "fountain1",
+      "name": "Central Fountain",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "water",
+        "decoration"
+      ]
+    },
+    {
+      "id": "well1",
+      "name": "Water Well",
+      "position": {
+        "x": -3,
+        "y": 0,
+        "z": 3
+      },
+      "tags": [
+        "water",
+        "resource"
+      ]
+    },
+    {
+      "id": "store1",
+      "name": "Grocery Store",
+      "position": {
+        "x": 75,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "commerce",
+        "food"
+      ]
+    },
+    {
+      "id": "mine1",
+      "name": "Iron Mine",
+      "position": {
+        "x": 5,
+        "y": 0,
+        "z": 5
+      },
+      "tags": [
+        "resource",
+        "mining"
+      ]
+    },
+    {
+      "id": "house1",
+      "name": "Alice's House",
+      "position": {
+        "x": -5,
+        "y": 0,
+        "z": -5
+      },
+      "tags": [
+        "building",
+        "home",
+        "rest"
+      ]
+    },
+    {
+      "id": "hammer1",
+      "name": "Crafting Hammer",
+      "position": {
+        "x": 10,
+        "y": 0,
+        "z": 10
+      },
+      "tags": [
+        "tool",
+        "crafting",
+        "construction"
+      ]
+    },
+    {
+      "id": "axe1",
+      "name": "Wood Axe",
+      "position": {
+        "x": 12,
+        "y": 0,
+        "z": 8
+      },
+      "tags": [
+        "tool",
+        "woodcutting",
+        "weapon"
+      ]
+    },
+    {
+      "id": "pickaxe1",
+      "name": "Mining Pickaxe",
+      "position": {
+        "x": 8,
+        "y": 0,
+        "z": 12
+      },
+      "tags": [
+        "tool",
+        "mining",
+        "weapon"
+      ]
+    },
+    {
+      "id": "fishing_rod1",
+      "name": "Fishing Rod",
+      "position": {
+        "x": 40,
+        "y": 0,
+        "z": 40
+      },
+      "tags": [
+        "tool",
+        "fishing",
+        "food"
+      ]
+    },
+    {
+      "id": "shovel1",
+      "name": "Garden Shovel",
+      "position": {
+        "x": 15,
+        "y": 0,
+        "z": 15
+      },
+      "tags": [
+        "tool",
+        "gardening",
+        "digging"
+      ]
+    },
+    {
+      "id": "campfire1",
+      "name": "Campfire",
+      "position": {
+        "x": 20,
+        "y": 0,
+        "z": 20
+      },
+      "tags": [
+        "fire",
+        "cooking",
+        "warmth",
+        "light"
+      ]
+    },
+    {
+      "id": "chest1",
+      "name": "Storage Chest",
+      "position": {
+        "x": 18,
+        "y": 0,
+        "z": 18
+      },
+      "tags": [
+        "storage",
+        "container",
+        "security"
+      ]
+    },
+    {
+      "id": "workbench1",
+      "name": "Crafting Table",
+      "position": {
+        "x": 22,
+        "y": 0,
+        "z": 22
+      },
+      "tags": [
+        "crafting",
+        "furniture",
+        "work"
+      ]
+    },
+    {
+      "id": "anvil1",
+      "name": "Blacksmith Anvil",
+      "position": {
+        "x": 24,
+        "y": 0,
+        "z": 24
+      },
+      "tags": [
+        "crafting",
+        "metalwork",
+        "tool"
+      ]
+    },
+    {
+      "id": "loom1",
+      "name": "Weaving Loom",
+      "position": {
+        "x": 26,
+        "y": 0,
+        "z": 26
+      },
+      "tags": [
+        "crafting",
+        "textile",
+        "tool"
+      ]
+    },
+    {
+      "id": "bush1",
+      "name": "Berry Bush",
+      "position": {
+        "x": 2,
+        "y": 0,
+        "z": -2
+      },
+      "tags": [
+        "nature",
+        "food"
+      ]
+    },
+    {
+      "id": "apple_tree1",
+      "name": "Apple Tree",
+      "position": {
+        "x": 35,
+        "y": 0,
+        "z": 35
+      },
+      "tags": [
+        "nature",
+        "tree",
+        "food"
+      ]
+    },
+    {
+      "id": "mushroom_patch1",
+      "name": "Mushroom Patch",
+      "position": {
+        "x": 38,
+        "y": 0,
+        "z": 38
+      },
+      "tags": [
+        "nature",
+        "food",
+        "foraging"
+      ]
+    },
+    {
+      "id": "herb_garden1",
+      "name": "Herb Garden",
+      "position": {
+        "x": 42,
+        "y": 0,
+        "z": 42
+      },
+      "tags": [
+        "nature",
+        "food",
+        "medicine",
+        "gardening"
+      ]
+    },
+    {
+      "id": "bridge1",
+      "name": "Wooden Bridge",
+      "position": {
+        "x": 50,
+        "y": 0,
+        "z": 50
+      },
+      "tags": [
+        "infrastructure",
+        "construction",
+        "crossing"
+      ]
+    },
+    {
+      "id": "lamp_post1",
+      "name": "Street Lamp",
+      "position": {
+        "x": 55,
+        "y": 0,
+        "z": 55
+      },
+      "tags": [
+        "infrastructure",
+        "light",
+        "safety"
+      ]
+    },
+    {
+      "id": "sign_post1",
+      "name": "Direction Sign",
+      "position": {
+        "x": 60,
+        "y": 0,
+        "z": 60
+      },
+      "tags": [
+        "infrastructure",
+        "information",
+        "navigation"
+      ]
+    },
+    {
+      "id": "water_tower1",
+      "name": "Water Tower",
+      "position": {
+        "x": 65,
+        "y": 0,
+        "z": 65
+      },
+      "tags": [
+        "infrastructure",
+        "water",
+        "storage"
+      ]
+    },
+    {
+      "id": "library1",
+      "name": "Town Library",
+      "position": {
+        "x": -20,
+        "y": 0,
+        "z": -20
+      },
+      "tags": [
+        "building",
+        "knowledge",
+        "quiet"
+      ]
+    },
+    {
+      "id": "blacksmith1",
+      "name": "Blacksmith Shop",
+      "position": {
+        "x": -25,
+        "y": 0,
+        "z": -25
+      },
+      "tags": [
+        "building",
+        "crafting",
+        "metalwork"
+      ]
+    },
+    {
+      "id": "market_stall1",
+      "name": "Farmers Market",
+      "position": {
+        "x": -30,
+        "y": 0,
+        "z": -30
+      },
+      "tags": [
+        "commerce",
+        "food",
+        "trade"
+      ]
+    },
+    {
+      "id": "stable1",
+      "name": "Horse Stable",
+      "position": {
+        "x": -35,
+        "y": 0,
+        "z": -35
+      },
+      "tags": [
+        "building",
+        "animals",
+        "transport"
+      ]
+    },
+    {
+      "id": "rock_formation1",
+      "name": "Rock Formation",
+      "position": {
+        "x": 45,
+        "y": 0,
+        "z": 45
+      },
+      "tags": [
+        "nature",
+        "stone",
+        "resource"
+      ]
+    },
+    {
+      "id": "flower_field1",
+      "name": "Wildflower Field",
+      "position": {
+        "x": 48,
+        "y": 0,
+        "z": 48
+      },
+      "tags": [
+        "nature",
+        "beauty",
+        "foraging"
+      ]
+    },
+    {
+      "id": "cave_entrance1",
+      "name": "Cave Entrance",
+      "position": {
+        "x": 70,
+        "y": 0,
+        "z": 70
+      },
+      "tags": [
+        "nature",
+        "exploration",
+        "shelter"
+      ]
+    },
+    {
+      "id": "compass1",
+      "name": "Navigation Compass",
+      "position": {
+        "x": 32,
+        "y": 0,
+        "z": 32
+      },
+      "tags": [
+        "tool",
+        "navigation",
+        "exploration"
+      ]
+    },
+    {
+      "id": "lantern1",
+      "name": "Oil Lantern",
+      "position": {
+        "x": 34,
+        "y": 0,
+        "z": 34
+      },
+      "tags": [
+        "tool",
+        "light",
+        "portable"
+      ]
+    },
+    {
+      "id": "rope1",
+      "name": "Climbing Rope",
+      "position": {
+        "x": 36,
+        "y": 0,
+        "z": 36
+      },
+      "tags": [
+        "tool",
+        "climbing",
+        "utility"
+      ]
+    },
+    {
+      "id": "map1",
+      "name": "World Map",
+      "position": {
+        "x": 28,
+        "y": 0,
+        "z": 28
+      },
+      "tags": [
+        "tool",
+        "navigation",
+        "information"
+      ]
+    }
+  ]
+}

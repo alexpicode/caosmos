@@ -1,0 +1,76 @@
+package com.caosmos.citizens.application;
+
+import com.caosmos.citizens.domain.Citizen;
+import com.caosmos.citizens.domain.model.CitizenState;
+import com.caosmos.citizens.domain.model.perception.ActiveTask;
+import com.caosmos.citizens.domain.model.perception.LastAction;
+import com.caosmos.citizens.domain.model.task.Task;
+import com.caosmos.common.domain.contracts.WorldRegistry;
+import com.caosmos.common.domain.model.world.Vector3;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+/**
+ * Manages active tasks for citizens during their cognitive cycle. Handles task execution, completion, and
+ * cancellation.
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class CitizenTaskManager {
+
+  private final CitizenSettings citizenSettings;
+  private final TaskRegistry taskRegistry;
+  private final WorldRegistry spatialRegistry;
+
+  public void executeActiveTask(Citizen citizen) {
+    Optional<Task> task = taskRegistry.get(citizen.getUuid());
+
+    if (task.isPresent()) {
+      String citizenName = citizen.getCitizenProfile().identity().name();
+
+      // Set state to moving during task execution
+      citizen.transitionTo(CitizenState.MOVING, "Executing active task: " + task.get().getClass().getSimpleName());
+
+      Vector3 initialPosition = citizen.getPosition();
+
+      // Execute the task
+      ActiveTask activeTask = task.get().executeOnTick(
+          citizen, citizenSettings.getPulseFrequency(),
+          citizenSettings.getWalkingSpeed()
+      );
+
+      Vector3 newPosition = citizen.getPosition();
+      if (!initialPosition.equals(newPosition)) {
+        spatialRegistry.updatePosition(citizen, newPosition);
+      }
+
+      citizen.updateTask(activeTask);
+
+      if (activeTask.completed()) {
+        log.info("[CITIZEN:{}] Task completed: {}", citizenName, activeTask.goal());
+        LastAction completionAction = citizen.getLastAction().withStatus("SUCCESS");
+        cancelActiveTask(citizen, CitizenState.IDLE, completionAction);
+      } else {
+        log.debug("[CITIZEN:{}] Continuing task: {}", citizenName, activeTask);
+      }
+    }
+  }
+
+  /**
+   * Cancels the active task for a citizen and sets their state.
+   */
+  public void cancelActiveTask(Citizen citizen, CitizenState newState, String reason) {
+    taskRegistry.remove(citizen.getUuid());
+    citizen.clearTask(newState, reason);
+  }
+
+  public void cancelActiveTask(Citizen citizen, CitizenState newState, LastAction action) {
+    taskRegistry.remove(citizen.getUuid());
+    citizen.clearTask(newState, action);
+  }
+
+
+}

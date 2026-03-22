@@ -1,0 +1,76 @@
+{
+  "zones": [
+    {
+      "id": "town",
+      "name": "Town",
+      "type": "EXTERIOR",
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "width": 200,
+      "length": 200
+    },
+    {
+      "id": "mining_zone",
+      "name": "Mining Zone",
+      "type": "EXTERIOR",
+      "center": {
+        "x": 12,
+        "y": 0,
+        "z": 12
+      },
+      "width": 16,
+      "length": 16
+    },
+    {
+      "id": "residential_zone",
+      "name": "Residential Zone",
+      "type": "EXTERIOR",
+      "center": {
+        "x": -75,
+        "y": 0,
+        "z": 0
+      },
+      "width": 150,
+      "length": 300
+    },
+    {
+      "id": "park",
+      "name": "Park",
+      "type": "EXTERIOR",
+      "center": {
+        "x": 25,
+        "y": 0,
+        "z": 75
+      },
+      "width": 50,
+      "length": 150
+    },
+    {
+      "id": "industrial_zone",
+      "name": "Industrial Zone",
+      "type": "EXTERIOR",
+      "center": {
+        "x": 25,
+        "y": 0,
+        "z": -75
+      },
+      "width": 50,
+      "length": 150
+    },
+    {
+      "id": "market",
+      "name": "Market",
+      "type": "EXTERIOR",
+      "center": {
+        "x": 100,
+        "y": 0,
+        "z": 0
+      },
+      "width": 100,
+      "length": 300
+    }
+  ]
+}
