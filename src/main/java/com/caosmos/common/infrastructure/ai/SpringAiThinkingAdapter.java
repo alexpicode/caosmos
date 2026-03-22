@@ -51,8 +51,7 @@ public class SpringAiThinkingAdapter implements ThinkingProvider {
         entityId,
         tick,
         action.reasoning(),
-        actionTarget,
-        userMessage
+        actionTarget
     ));
 
     return action;

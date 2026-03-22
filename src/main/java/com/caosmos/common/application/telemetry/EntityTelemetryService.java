@@ -42,23 +42,21 @@ public class EntityTelemetryService {
     }
   }
 
-  public Collection<CognitionEntry> getCognitionHistory(UUID entityId, boolean clearAfter) {
+  public Collection<CognitionEntry> getCognitionDelta(UUID entityId, Long sinceTick) {
     Queue<CognitionEntry> queue = cognitionBuffer.get(entityId);
     if (queue == null) {
       return Collections.emptyList();
     }
 
-    List<CognitionEntry> snapshot = List.copyOf(queue);
-
-    if (clearAfter) {
-      // Clear is thread-safe on ConcurrentLinkedDeque but we might lose concurrent insertions between copyOf and clear.
-      // Given it's a volatile telemetry endpoint, this is acceptable. Alternately, use poll().
-      for (int i = 0; i < snapshot.size(); i++) {
-        queue.poll();
-      }
+    // If no specific tick is requested, return the entire window (the last N)
+    if (sinceTick == null) {
+      return List.copyOf(queue);
     }
 
-    return snapshot;
+    // Return only new entries since the last tick seen by the client
+    return queue.stream()
+                .filter(entry -> entry.tick() > sinceTick)
+                .toList();
   }
 
   public Collection<BiometricsEntry> getBiometricsHistory(UUID entityId, boolean clearAfter) {

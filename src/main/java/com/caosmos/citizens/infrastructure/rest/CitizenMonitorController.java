@@ -108,9 +108,12 @@ public class CitizenMonitorController {
               schema = @Schema(type = "integer")
           )})
   })
-  public ResponseEntity<Collection<CognitionEntry>> getCognition(@PathVariable UUID uuid) {
+  public ResponseEntity<Collection<CognitionEntry>> getCognition(
+      @PathVariable UUID uuid,
+      @RequestParam(required = false) Long sinceTick
+  ) {
     return ResponseEntity.ok()
                          .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-                         .body(getCitizenCognitionUseCase.execute(uuid));
+                         .body(getCitizenCognitionUseCase.execute(uuid, sinceTick));
   }
 }

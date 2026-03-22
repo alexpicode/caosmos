@@ -6,8 +6,7 @@ public record CognitionEntry(
     UUID entityId,
     long tick,
     String thoughtProcess,
-    String actionTarget,
-    String perceptionSnapshot
+    String actionTarget
 ) {
 
 }

@@ -13,7 +13,7 @@ public class GetCitizenCognitionUseCase {
 
   private final EntityTelemetryService telemetryService;
 
-  public Collection<CognitionEntry> execute(UUID uuid) {
-    return telemetryService.getCognitionHistory(uuid, true);
+  public Collection<CognitionEntry> execute(UUID uuid, Long sinceTick) {
+    return telemetryService.getCognitionDelta(uuid, sinceTick);
   }
 }
