@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: caosmos
+  ai:
+    ollama:
+        base-url: http://localhost:11434
+        chat:
+            model: llama3.2
+            options:
+                temperature: 0.2
+                num-ctx: 8192                     # Context window size
