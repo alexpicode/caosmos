@@ -8,6 +8,7 @@ import com.caosmos.citizens.domain.model.task.MoveToTargetTask;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.world.Vector3;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class CitizenAdapter implements CitizenPort {
 
   @Override
   public boolean addToInventory(
-      UUID citizenId, String itemId, String itemName, java.util.List<String> tags,
+      UUID citizenId, String itemId, String itemName, List<String> tags,
       int quantity
   ) {
     AtomicBoolean result = new AtomicBoolean(false);

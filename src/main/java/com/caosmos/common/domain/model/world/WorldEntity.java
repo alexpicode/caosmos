@@ -1,5 +1,8 @@
 package com.caosmos.common.domain.model.world;
 
+import java.util.Collections;
+import java.util.Map;
+
 public interface WorldEntity {
 
   String getId();
@@ -10,7 +13,7 @@ public interface WorldEntity {
 
   String getDisplayName();
 
-  default java.util.Map<String, Object> getProperties() {
-    return java.util.Collections.emptyMap();
+  default Map<String, Object> getProperties() {
+    return Collections.emptyMap();
   }
 }

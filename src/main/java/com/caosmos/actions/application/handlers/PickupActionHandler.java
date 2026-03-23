@@ -32,7 +32,7 @@ public class PickupActionHandler implements ActionHandler {
 
     // Mock object retrieval mapping since WorldPort doesn't return object details yet
     // In a real system we'd get the actual item from World
-    boolean success = citizenService.addToInventory(citizenId, targetId, "Item " + targetId, List.of("item"), 1);
+    boolean success = citizenService.addToInventory(citizenId, targetId, targetId, List.of("item"), 1);
 
     if (success) {
       worldService.removeObject(targetId);
