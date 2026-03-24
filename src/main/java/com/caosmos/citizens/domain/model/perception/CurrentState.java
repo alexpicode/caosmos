@@ -11,6 +11,7 @@ public class CurrentState {
 
   private Vector3 position;
   private String currentZone;
+  private String currentZoneId;
   private CitizenState state;
   private ActiveTask activeTask;
   private LastAction lastAction;

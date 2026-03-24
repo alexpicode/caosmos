@@ -32,8 +32,10 @@ public class CitizenPerceptionHandler {
 
     // Get current position and world perception with filter to exclude self
     Vector3 currentPosition = citizen.getCurrentState().getPosition();
+    String currentZoneId = citizen.getCurrentState().getCurrentZoneId();
     WorldPerception worldPerception = worldPerceptionProvider.getPerceptionAt(
         currentPosition,
+        currentZoneId,
         worldEntity -> !worldEntity.getId().equals(citizen.getId())
     );
     log.debug("[CITIZEN:{}] WorldPerception at position {}: {}", citizenName, currentPosition, worldPerception);

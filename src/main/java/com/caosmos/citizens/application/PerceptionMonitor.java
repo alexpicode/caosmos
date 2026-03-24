@@ -21,15 +21,18 @@ public class PerceptionMonitor {
     List<String> informativeEvents = new ArrayList<>();
 
     // 1. Check for zone change reflexes
-    String previousZone = currentState.getCurrentZone();
-    String newZone = perception.location().zone();
+    String previousZoneId = currentState.getCurrentZoneId();
+    String newZoneId = perception.location().zoneId();
+    String newZoneName = perception.location().zone();
 
-    if (previousZone == null) {
-      currentState.setCurrentZone(newZone);
-    } else if (!previousZone.equals(newZone)) {
-      currentState.setCurrentZone(newZone);
-      informativeEvents.add("Has entrado a la zona: " + newZone);
-      return new ReflexResult(true, "Llegada/Entrada a zona: " + newZone, informativeEvents);
+    if (previousZoneId == null) {
+      currentState.setCurrentZoneId(newZoneId);
+      currentState.setCurrentZone(newZoneName);
+    } else if (!previousZoneId.equals(newZoneId)) {
+      currentState.setCurrentZoneId(newZoneId);
+      currentState.setCurrentZone(newZoneName);
+      informativeEvents.add("Has entrado a la zona: " + newZoneName);
+      return new ReflexResult(true, "Llegada/Entrada a zona: " + newZoneName, informativeEvents);
     }
 
     // 2. Check for critical threats or immediate social interactions

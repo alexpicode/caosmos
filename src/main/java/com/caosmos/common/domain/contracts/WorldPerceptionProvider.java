@@ -7,5 +7,5 @@ import java.util.function.Predicate;
 
 public interface WorldPerceptionProvider {
 
-  WorldPerception getPerceptionAt(Vector3 position, Predicate<WorldEntity> filter);
+  WorldPerception getPerceptionAt(Vector3 position, String currentZoneId, Predicate<WorldEntity> filter);
 }

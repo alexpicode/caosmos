@@ -17,6 +17,7 @@ import com.caosmos.world.domain.service.TimeService;
 import com.caosmos.world.domain.service.ZoneManager;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -45,10 +46,17 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   }
 
   @Override
-  public WorldPerception getPerceptionAt(Vector3 position, Predicate<WorldEntity> filter) {
-    Optional<Zone> zoneOpt = zoneManager.findZoneAt(position);
+  public WorldPerception getPerceptionAt(Vector3 position, String currentZoneId, Predicate<WorldEntity> filter) {
+    Optional<Zone> zoneOpt = zoneManager.findZoneAt(position, currentZoneId);
     String zoneName = zoneOpt.map(Zone::getName).orElse("Unknown Territory");
     String zoneType = zoneOpt.map(Zone::getType).orElse("EXTERIOR");
+
+    Map<String, Zone> allZones = zoneManager.getZoneMap();
+    Set<String> tags = zoneOpt.map(z -> z.getEffectiveTags(allZones)).orElse(Set.of());
+    String parentZoneName = zoneOpt.flatMap(z -> Optional.ofNullable(z.getParentId()))
+                                   .flatMap(zoneManager::getZone)
+                                   .map(Zone::getName)
+                                   .orElse(null);
 
     WorldDate worldDate = timeService.getCurrentWorldDate();
     var environment = environmentService.getCurrentEnvironment();
@@ -59,7 +67,10 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     Location location = new Location(
         zoneName,
         zoneType,
-        currentLocation
+        currentLocation,
+        tags,
+        parentZoneName,
+        zoneOpt.map(Zone::getId).orElse(null)
     );
 
     return new WorldPerception(worldDate, location, environment, nearbyEntities);

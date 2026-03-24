@@ -13,6 +13,8 @@ import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.model.perception.Status;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldEntity;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,7 +52,7 @@ public class Citizen implements WorldEntity {
       initialPosition = new Vector3(base.x(), base.y(), base.z());
     }
 
-    this.currentState = new CurrentState(initialPosition, null, CitizenState.IDLE, null, null);
+    this.currentState = new CurrentState(initialPosition, null, null, CitizenState.IDLE, null, null);
   }
 
   // --- Convenience Methods ---
@@ -89,13 +91,13 @@ public class Citizen implements WorldEntity {
   }
 
   @Override
-  public java.util.Map<String, Object> getProperties() {
-    java.util.Map<String, Object> props = new java.util.HashMap<>();
+  public Map<String, Object> getProperties() {
+    Map<String, Object> props = new HashMap<>();
     props.put("tags", citizenProfile.identity().traits());
     if (currentState.getActiveTask() != null) {
       props.put(
           "activeTask",
-          java.util.Map.of("type", currentState.getActiveTask().type(), "goal", currentState.getActiveTask().goal())
+          Map.of("type", currentState.getActiveTask().type(), "goal", currentState.getActiveTask().goal())
       );
     }
     return props;

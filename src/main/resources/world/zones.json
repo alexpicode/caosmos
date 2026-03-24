@@ -2,8 +2,14 @@
   "zones": [
     {
       "id": "town",
-      "name": "Town",
+      "name": "Town Center",
       "type": "EXTERIOR",
+      "parentId": null,
+      "isEntryRestricted": false,
+      "tags": [
+        "TOWN",
+        "SAFE"
+      ],
       "center": {
         "x": 0,
         "y": 0,
@@ -13,9 +19,51 @@
       "length": 200
     },
     {
+      "id": "blacksmith",
+      "name": "Blacksmith Workshop",
+      "parentId": "town",
+      "type": "INTERIOR",
+      "isEntryRestricted": false,
+      "tags": [
+        "FORGE",
+        "NOISY"
+      ],
+      "center": {
+        "x": 5,
+        "y": 0,
+        "z": 5
+      },
+      "width": 8,
+      "length": 8
+    },
+    {
+      "id": "blacksmith_vault",
+      "name": "Blacksmith Vault",
+      "parentId": "blacksmith",
+      "type": "INTERIOR",
+      "isEntryRestricted": true,
+      "tags": [
+        "TREASURE",
+        "RESTRICTED"
+      ],
+      "center": {
+        "x": 5,
+        "y": 0,
+        "z": 5
+      },
+      "width": 2,
+      "length": 2
+    },
+    {
       "id": "mining_zone",
       "name": "Mining Zone",
       "type": "EXTERIOR",
+      "parentId": null,
+      "isEntryRestricted": false,
+      "tags": [
+        "MINING",
+        "DANGEROUS"
+      ],
       "center": {
         "x": 12,
         "y": 0,
@@ -28,6 +76,11 @@
       "id": "residential_zone",
       "name": "Residential Zone",
       "type": "EXTERIOR",
+      "parentId": null,
+      "isEntryRestricted": false,
+      "tags": [
+        "RESIDENTIAL"
+      ],
       "center": {
         "x": -75,
         "y": 0,
@@ -40,6 +93,12 @@
       "id": "park",
       "name": "Park",
       "type": "EXTERIOR",
+      "parentId": "town",
+      "isEntryRestricted": false,
+      "tags": [
+        "RECREATION",
+        "NATURE"
+      ],
       "center": {
         "x": 25,
         "y": 0,
@@ -52,6 +111,11 @@
       "id": "industrial_zone",
       "name": "Industrial Zone",
       "type": "EXTERIOR",
+      "parentId": null,
+      "isEntryRestricted": false,
+      "tags": [
+        "INDUSTRIAL"
+      ],
       "center": {
         "x": 25,
         "y": 0,
@@ -64,6 +128,11 @@
       "id": "market",
       "name": "Market",
       "type": "EXTERIOR",
+      "parentId": "town",
+      "isEntryRestricted": false,
+      "tags": [
+        "COMMERCE"
+      ],
       "center": {
         "x": 100,
         "y": 0,

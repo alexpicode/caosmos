@@ -35,7 +35,7 @@ public class NearbyEntityService {
           obj.getDisplayName(),
           Math.round(distance * 100.0) / 100.0,
           direction,
-          (obj instanceof WorldObject wo) ? wo.getTags() : List.of()
+          (obj instanceof WorldObject wo) ? wo.getTags() : Set.of()
       );
       nearbyEntities.add(entity);
     }
