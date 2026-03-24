@@ -1,7 +1,6 @@
 package com.caosmos.world.application.usecases;
 
 import com.caosmos.common.domain.model.world.WorldEntity;
-import com.caosmos.world.application.dto.WorldEntityInMapDto;
 import com.caosmos.world.application.dto.WorldEntitySummaryDTO;
 import com.caosmos.world.domain.service.SpatialHash;
 import java.util.Collection;
@@ -29,29 +28,10 @@ public class GetWorldEntitiesUseCase {
                    .map(e -> new WorldEntitySummaryDTO(
                        e.getId(),
                        e.getType(),
+                       e.getDisplayName(),
                        e.getPosition().x(),
                        e.getPosition().y(),
-                       e.getPosition().z(),
-                       e.getDisplayName(),
-                       e.getProperties()
-                   ))
-                   .collect(Collectors.toList());
-  }
-
-  public List<WorldEntityInMapDto> executeInMap(
-      Double minX,
-      Double minZ,
-      Double maxX,
-      Double maxZ,
-      String type
-  ) {
-    Collection<WorldEntity> entities = getFilteredEntities(minX, minZ, maxX, maxZ, type);
-
-    return entities.stream()
-                   .map(e -> new WorldEntityInMapDto(
-                       e.getId(),
-                       e.getType(),
-                       e.getPosition()
+                       e.getPosition().z()
                    ))
                    .collect(Collectors.toList());
   }

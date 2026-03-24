@@ -1,7 +1,6 @@
 package com.caosmos.world.infrastructure.rest;
 
 import com.caosmos.common.domain.contracts.SimulationClock;
-import com.caosmos.world.application.dto.WorldEntityInMapDto;
 import com.caosmos.world.application.dto.WorldEntitySummaryDTO;
 import com.caosmos.world.application.dto.WorldEnvironmentResponse;
 import com.caosmos.world.application.usecases.GetWorldChunksUseCase;
@@ -70,28 +69,6 @@ public class WorldMonitorController {
     return ResponseEntity.ok()
                          .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
                          .body(getWorldEntitiesUseCase.executeSummary(minX, minZ, maxX, maxZ, type));
-  }
-
-  @GetMapping("/entities/map")
-  @Operation(summary = "Get world entities for map display")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Successfully retrieved entities for map",
-          headers = {@Header(
-              name = "X-Sim-Tick",
-              description = "Current simulation tick",
-              schema = @Schema(type = "integer")
-          )})
-  })
-  public ResponseEntity<List<WorldEntityInMapDto>> getEntityInMap(
-      @RequestParam(required = false) Double minX,
-      @RequestParam(required = false) Double minZ,
-      @RequestParam(required = false) Double maxX,
-      @RequestParam(required = false) Double maxZ,
-      @RequestParam(required = false) String type
-  ) {
-    return ResponseEntity.ok()
-                         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-                         .body(getWorldEntitiesUseCase.executeInMap(minX, minZ, maxX, maxZ, type));
   }
 
   @GetMapping("/chunks")
