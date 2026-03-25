@@ -10,7 +10,7 @@ public interface CitizenPort {
 
   void updatePosition(UUID citizenId, Vector3 newPos);
 
-  void consumeEnergy(UUID citizenId, int amount);
+  void consumeEnergy(UUID citizenId, double amount);
 
   boolean addToInventory(UUID citizenId, String itemId, String itemName, List<String> tags, int quantity);
 
@@ -20,11 +20,27 @@ public interface CitizenPort {
 
   boolean unequipItem(UUID citizenId, String hand);
 
-  void eat(UUID citizenId, int nutrition);
+  void eat(UUID citizenId, double nutrition);
 
-  void drink(UUID citizenId, int hydration);
+  void drink(UUID citizenId, double hydration);
 
   void sleep(UUID citizenId);
+
+  void applyStress(UUID citizenId, double amount);
+
+  void reduceStress(UUID citizenId, double amount);
+
+  void increaseHunger(UUID citizenId, double amount);
+
+  boolean isInSafeZone(UUID citizenId);
+
+  void assignSleepTask(UUID citizenId);
+
+  void assignWorkTask(UUID citizenId, String workplaceType);
+
+  void assignWaitTask(UUID citizenId, boolean inSafeZone);
+
+  void assignRestTask(UUID citizenId);
 
   void assignNavigationTask(UUID citizenId, Vector3 target, String targetId);
 }

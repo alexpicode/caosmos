@@ -10,18 +10,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SleepActionHandler implements ActionHandler {
+public class WorkActionHandler implements ActionHandler {
 
   private final CitizenPort citizenService;
 
   @Override
   public String getActionType() {
-    return "SLEEP";
+    return "WORK";
   }
 
   @Override
   public ActionResult execute(UUID citizenId, ActionRequest request) {
-    citizenService.assignSleepTask(citizenId);
-    return ActionResult.success("Sleeping...", getActionType());
+    String workplaceType = (String) request.parameters().getOrDefault("workplaceType", "shop");
+
+    citizenService.assignWorkTask(citizenId, workplaceType);
+
+    return ActionResult.success("Started working at " + workplaceType, getActionType());
   }
 }

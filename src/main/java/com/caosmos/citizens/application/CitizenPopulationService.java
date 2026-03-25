@@ -29,6 +29,12 @@ public class CitizenPopulationService implements PopulationService {
   @Value("classpath:/prompts/citizen-user.md")
   private Resource userPromptResource;
 
+  @Value("${caosmos.citizen.pulse-frequency}")
+  private int pulseFrequencyRealSeconds;
+
+  @Value("${caosmos.world.time.speed:10.0}")
+  private double simulationSpeed;
+
   private final ManifestRepository manifestRepository;
   private final LifeManager lifeManager;
   private final CitizenRegistry citizenRegistry;
@@ -36,6 +42,7 @@ public class CitizenPopulationService implements PopulationService {
   private final CitizenTaskManager taskManager;
   private final CitizenDecisionMaker decisionMaker;
   private final CitizenPerceptionHandler perceptionHandler;
+  private final PhysiologicalMotor physiologicalMotor;
   private final EntityTelemetryService telemetryService;
 
   public void spawnAll() {
@@ -72,8 +79,10 @@ public class CitizenPopulationService implements PopulationService {
     citizenRegistry.register(UUID.fromString(citizenId), citizen);
 
     // Orchestrator that handles the cognitive cycle
+    int pulseFrequencySimulatedSeconds = (int) (pulseFrequencyRealSeconds * simulationSpeed);
+
     PulseConfiguration configuration = new PulseConfiguration(
-        1, // vitalityDecayAmount
+        pulseFrequencySimulatedSeconds,
         systemPromptResource,
         userPromptResource
     );
@@ -83,6 +92,7 @@ public class CitizenPopulationService implements PopulationService {
         taskManager,
         decisionMaker,
         perceptionHandler,
+        physiologicalMotor,
         configuration,
         telemetryService
     );

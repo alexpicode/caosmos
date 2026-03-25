@@ -1,6 +1,7 @@
 package com.caosmos.citizens.domain.model.task;
 
 import com.caosmos.citizens.domain.Citizen;
+import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.common.domain.model.world.Vector3;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,19 @@ public class MoveToTargetTask implements Task {
       return new ActiveTask("MoveToTarget", "Reached target", targetId, true);
     }
 
+    // --- Physiological Costs ---
+    // Energy decay
+    citizen.consumeEnergy(PhysiologicalThresholds.MOVE_ENERGY_COST_RATE * (dt / 3600.0));
+    // Hunger increase
+    citizen.increaseHunger(PhysiologicalThresholds.MOVE_HUNGER_COST_RATE * (dt / 3600.0));
+
     // Calculate movement distance for this tick
-    double moveDistance = walkingSpeed * dt;
+    double currentWalkingSpeed = walkingSpeed;
+    if (citizen.getPerception().status().energy() < PhysiologicalThresholds.ENERGY_EXTREME_FATIGUE) {
+      currentWalkingSpeed *= PhysiologicalThresholds.EXTREME_FATIGUE_SPEED_FACTOR;
+    }
+
+    double moveDistance = currentWalkingSpeed * dt;
 
     // Prevent overshooting
     if (moveDistance > distance) {

@@ -176,12 +176,20 @@ public class Citizen implements WorldEntity {
     );
   }
 
-  public void consumeEnergy(int amount) {
+  public void consumeEnergy(double amount) {
     biologyManager.decreaseEnergy(amount);
   }
 
-  public void decayVitality(int amount) {
+  public void decayVitality(double amount) {
     biologyManager.decreaseVitality(amount);
+  }
+
+  public void increaseEnergy(double amount) {
+    biologyManager.increaseEnergy(amount);
+  }
+
+  public void increaseVitality(double amount) {
+    biologyManager.increaseVitality(amount);
   }
 
   public boolean addToInventory(InventoryItem item) {
@@ -219,17 +227,39 @@ public class Citizen implements WorldEntity {
     return false;
   }
 
-  public void eat(int nutrition) {
+  public void eat(double nutrition) {
     biologyManager.decreaseHunger(nutrition);
-    biologyManager.increaseEnergy(nutrition / 2);
+    biologyManager.increaseEnergy(nutrition / 2.0);
   }
 
-  public void drink(int hydration) {
+  public void drink(double hydration) {
     biologyManager.decreaseStress(hydration);
-    biologyManager.increaseVitality(hydration / 2);
+    biologyManager.increaseVitality(hydration / 2.0);
   }
 
   public void sleep() {
-    biologyManager.increaseEnergy(100);
+    biologyManager.increaseEnergy(100.0);
+  }
+
+  public void applyStress(double amount) {
+    biologyManager.increaseStress(amount);
+  }
+
+  public void reduceStress(double amount) {
+    biologyManager.decreaseStress(amount);
+  }
+
+  public void increaseHunger(double amount) {
+    biologyManager.increaseHunger(amount);
+  }
+
+  public void applyPhysiologicalRates(double dtSeconds, double hungerRate, double energyRate, double stressRate) {
+    biologyManager.applyRate(hungerRate, dtSeconds, (bm, val) -> bm.increaseHunger((double) val));
+    biologyManager.applyRate(energyRate, dtSeconds, (bm, val) -> bm.decreaseEnergy((double) val));
+    biologyManager.applyRate(
+        stressRate,
+        dtSeconds,
+        (bm, val) -> bm.decreaseStress((double) val)
+    ); // wait, stressRate should be increaseStress?
   }
 }

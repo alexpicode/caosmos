@@ -11,7 +11,7 @@ public record PulseContext(
     String citizenName,
     long tick,
     FullPerception fullPerception,
-    List<String> informativeEvents,
+    List<String> unprocessedEvents,
     LastAction lastAction
 ) {
 

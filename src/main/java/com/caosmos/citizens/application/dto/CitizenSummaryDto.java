@@ -10,7 +10,7 @@ public record CitizenSummaryDto(
     double z,
     String state,
     String currentGoal,
-    int vitality
+    double vitality
 ) {
 
 }

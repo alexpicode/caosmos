@@ -14,4 +14,12 @@ public record LastAction(
     return new LastAction(type, newStatus, reasoningWas, resultMessage, parameters);
   }
 
+  public LastAction withType(String newType) {
+    return new LastAction(newType, status, reasoningWas, resultMessage, parameters);
+  }
+
+  public LastAction withResultMessage(String newResultMessage) {
+    return new LastAction(type, status, reasoningWas, newResultMessage, parameters);
+  }
+
 }

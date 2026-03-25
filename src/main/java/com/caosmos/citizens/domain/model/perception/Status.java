@@ -1,10 +1,10 @@
 package com.caosmos.citizens.domain.model.perception;
 
 public record Status(
-    int vitality,
-    int hunger,
-    int energy,
-    int stress
+    double vitality,
+    double hunger,
+    double energy,
+    double stress
 ) {
 
 }

@@ -2,6 +2,7 @@ package com.caosmos.citizens.application;
 
 import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
+import com.caosmos.citizens.domain.model.perception.Status;
 import com.caosmos.common.domain.model.world.NearbyEntity;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class PerceptionMonitor {
   /**
    * Evaluates perception to determine if there's a critical reason to stop the current task.
    */
-  public ReflexResult evaluate(CurrentState currentState, WorldPerception perception) {
+  public ReflexResult evaluate(CurrentState currentState, Status status, WorldPerception perception) {
     List<String> informativeEvents = new ArrayList<>();
 
     // 1. Check for zone change reflexes
@@ -36,15 +37,25 @@ public class PerceptionMonitor {
     }
 
     // 2. Check for critical threats or immediate social interactions
-
     for (NearbyEntity entity : perception.nearbyEntities()) {
-      // Simulated logic: if entity is very close, it's a potential social or danger event
       if (entity.distance() < 1.5) {
         return new ReflexResult(true, "Entity too close: " + entity.name(), informativeEvents);
       }
-
-      // Log informative events
       informativeEvents.add("Seen " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
+    }
+
+    // 3. Physiological Alerts (Narrative)
+    if (status.vitality() < 30) {
+      informativeEvents.add("Your body is severely injured.");
+    }
+    if (status.hunger() > 80) {
+      informativeEvents.add("You are starving, you must eat now.");
+    }
+    if (status.energy() < 15) {
+      informativeEvents.add("You are on the verge of collapse due to exhaustion.");
+    }
+    if (status.stress() > 80) {
+      informativeEvents.add("You are at the limit of your mental endurance.");
     }
 
     return new ReflexResult(false, null, informativeEvents);

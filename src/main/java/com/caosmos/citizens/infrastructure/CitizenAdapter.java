@@ -5,6 +5,10 @@ import com.caosmos.citizens.application.TaskRegistry;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.perception.InventoryItem;
 import com.caosmos.citizens.domain.model.task.MoveToTargetTask;
+import com.caosmos.citizens.domain.model.task.RestTask;
+import com.caosmos.citizens.domain.model.task.SleepTask;
+import com.caosmos.citizens.domain.model.task.WaitTask;
+import com.caosmos.citizens.domain.model.task.WorkTask;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.world.Vector3;
@@ -41,7 +45,7 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
-  public void consumeEnergy(UUID citizenId, int amount) {
+  public void consumeEnergy(UUID citizenId, double amount) {
     log.info("Consuming {} energy for citizen {}", amount, citizenId);
     citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.consumeEnergy(amount));
   }
@@ -87,18 +91,65 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
-  public void eat(UUID citizenId, int nutrition) {
+  public void eat(UUID citizenId, double nutrition) {
     citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.eat(nutrition));
   }
 
   @Override
-  public void drink(UUID citizenId, int hydration) {
+  public void drink(UUID citizenId, double hydration) {
     citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.drink(hydration));
   }
 
   @Override
   public void sleep(UUID citizenId) {
     citizenRegistry.get(citizenId).ifPresent(Citizen::sleep);
+  }
+
+  @Override
+  public void applyStress(UUID citizenId, double amount) {
+    citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.applyStress(amount));
+  }
+
+  @Override
+  public void reduceStress(UUID citizenId, double amount) {
+    citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.reduceStress(amount));
+  }
+
+  @Override
+  public void increaseHunger(UUID citizenId, double amount) {
+    citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.increaseHunger(amount));
+  }
+
+  @Override
+  public boolean isInSafeZone(UUID citizenId) {
+    return citizenRegistry.get(citizenId)
+                          .map(citizen -> citizen.getCurrentState().getCurrentZone())
+                          .map(zoneName -> zoneName != null && zoneName.contains("[seguro]"))
+                          .orElse(false);
+  }
+
+  @Override
+  public void assignSleepTask(UUID citizenId) {
+    log.debug("Assigning SleepTask for citizen {}", citizenId);
+    taskRegistry.register(citizenId, new SleepTask());
+  }
+
+  @Override
+  public void assignWorkTask(UUID citizenId, String workplaceType) {
+    log.debug("Assigning WorkTask ({}) for citizen {}", workplaceType, citizenId);
+    taskRegistry.register(citizenId, new WorkTask(workplaceType));
+  }
+
+  @Override
+  public void assignWaitTask(UUID citizenId, boolean inSafeZone) {
+    log.debug("Assigning WaitTask (safe={}) for citizen {}", inSafeZone, citizenId);
+    taskRegistry.register(citizenId, new WaitTask(inSafeZone));
+  }
+
+  @Override
+  public void assignRestTask(UUID citizenId) {
+    log.debug("Assigning RestTask for citizen {}", citizenId);
+    taskRegistry.register(citizenId, new RestTask());
   }
 
   @Override

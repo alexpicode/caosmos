@@ -21,7 +21,8 @@ public class WaitActionHandler implements ActionHandler {
 
   @Override
   public ActionResult execute(UUID citizenId, ActionRequest request) {
-    citizenService.consumeEnergy(citizenId, 1);
-    return ActionResult.success("Waited", getActionType());
+    boolean inSafeZone = citizenService.isInSafeZone(citizenId);
+    citizenService.assignWaitTask(citizenId, inSafeZone);
+    return ActionResult.success("Waiting...", getActionType());
   }
 }

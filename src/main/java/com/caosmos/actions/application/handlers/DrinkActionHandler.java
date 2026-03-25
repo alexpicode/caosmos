@@ -30,7 +30,8 @@ public class DrinkActionHandler implements ActionHandler {
     boolean hasItem = citizenService.removeFromInventory(citizenId, targetId);
 
     if (hasItem) {
-      citizenService.drink(citizenId, 20); // Mock hydration value
+      citizenService.drink(citizenId, 20.0);
+      citizenService.reduceStress(citizenId, 2.0);
       return ActionResult.success("Drank " + targetId, getActionType());
     } else {
       return ActionResult.failure("Item " + targetId + " not found in inventory to drink", getActionType());

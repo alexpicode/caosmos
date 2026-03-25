@@ -107,7 +107,7 @@ public class CitizenDecisionMaker {
     contextualMap.put("active_task", citizenPerception.activeTask());
 
     contextualMap.put("last_action", citizenPerception.lastAction());
-    contextualMap.put("events", context.informativeEvents());
+    contextualMap.put("events", context.unprocessedEvents());
 
     String contextualJson = jsonSerializer.toJson(contextualMap);
 

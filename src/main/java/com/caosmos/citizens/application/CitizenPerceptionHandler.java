@@ -27,7 +27,7 @@ public class CitizenPerceptionHandler {
   /**
    * Handles the perception process for a citizen. Gathers world perception and evaluates reflexes.
    */
-  public FullPerception handlePerception(Citizen citizen, List<String> informativeEvents) {
+  public FullPerception handlePerception(Citizen citizen, List<String> unprocessedEvents) {
     String citizenName = citizen.getCitizenProfile().identity().name();
 
     // Get current position and world perception with filter to exclude self
@@ -41,10 +41,18 @@ public class CitizenPerceptionHandler {
     log.debug("[CITIZEN:{}] WorldPerception at position {}: {}", citizenName, currentPosition, worldPerception);
 
     // Evaluate reflexes
-    ReflexResult reflex = perceptionMonitor.evaluate(citizen.getCurrentState(), worldPerception);
+    ReflexResult reflex = perceptionMonitor.evaluate(
+        citizen.getCurrentState(),
+        citizen.getPerception().status(),
+        worldPerception
+    );
 
-    // Add informative events to the provided list
-    informativeEvents.addAll(reflex.informativeEvents());
+    // Add informative events to the provided list without duplicates
+    reflex.informativeEvents().forEach(e -> {
+      if (!unprocessedEvents.contains(e)) {
+        unprocessedEvents.add(e);
+      }
+    });
 
     // Get citizen's current perception
     CitizenPerception citizenPerception = citizen.getPerception();
