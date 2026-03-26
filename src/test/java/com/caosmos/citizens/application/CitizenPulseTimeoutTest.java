@@ -13,6 +13,7 @@ import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
+import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,15 +43,17 @@ class CitizenPulseTimeoutTest {
 
     when(citizen.getCitizenProfile().identity().name()).thenReturn("TestCitizen");
     when(citizen.getUuid()).thenReturn(UUID.randomUUID());
-    when(citizen.getPerception().status().vitality()).thenReturn(100.0);
-    when(citizen.getPerception().status().energy()).thenReturn(100.0);
-    when(citizen.getPerception().status().stress()).thenReturn(0.0);
+
+    var perception = citizen.getPerception();
+    when(perception.status().vitality()).thenReturn(100.0);
+    when(perception.status().energy()).thenReturn(100.0);
+    when(perception.status().stress()).thenReturn(0.0);
     when(citizen.getCurrentState()).thenReturn(new CurrentState(null, null, null, CitizenState.BUSY, null, null));
 
     FullPerception fullPerception = mock(FullPerception.class, RETURNS_DEEP_STUBS);
     when(perceptionHandler.handlePerception(any(), any())).thenReturn(fullPerception);
     when(fullPerception.reflex().critical()).thenReturn(false);
-    when(fullPerception.citizen()).thenReturn(citizen.getPerception());
+    when(fullPerception.citizen()).thenReturn(perception);
 
     citizenPulse = new CitizenPulse(
         citizen,
@@ -85,5 +88,17 @@ class CitizenPulseTimeoutTest {
 
     // It should call it once because it's IDLE, but the internal lastDecisionTick will be updated
     verify(decisionMaker, times(1)).makeDecision(any(), any(), any());
+  }
+
+  @Test
+  void shouldTriggerDecisionButNotCancelTaskOnTimeout() {
+    citizenPulse.pulse(20);
+
+    // Verify decision was triggered
+    verify(decisionMaker, times(1)).makeDecision(any(), any(), any());
+
+    // Verify task was NOT cancelled
+    verify(taskManager, never()).cancelActiveTask(any(Citizen.class), any(CitizenState.class), any(String.class));
+    verify(taskManager, never()).cancelActiveTask(any(Citizen.class), any(CitizenState.class), any(LastAction.class));
   }
 }

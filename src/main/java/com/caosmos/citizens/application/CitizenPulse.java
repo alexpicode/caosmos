@@ -85,7 +85,8 @@ public class CitizenPulse implements AgentPulse {
           physReflex.get().forcedActionType(),
           physReflex.get().reason(),
           physReflex.get().events(),
-          context
+          context,
+          true
       );
       return;
     }
@@ -96,7 +97,8 @@ public class CitizenPulse implements AgentPulse {
           citizen.getLastAction().type(),
           fullPerception.reflex().reason(),
           new ArrayList<>(),
-          context
+          context,
+          true
       );
       return;
     }
@@ -117,7 +119,8 @@ public class CitizenPulse implements AgentPulse {
             null,
             "Routine check: You have been performing this task for a while. Do you want to continue or do something else?",
             new ArrayList<>(),
-            context
+            context,
+            false // DO NOT cancel task on routine check
         );
       }
     }
@@ -126,9 +129,12 @@ public class CitizenPulse implements AgentPulse {
   /**
    * Unifies task cancellation and immediate decision handling for all critical events.
    */
-  private void handleInterruption(String actionType, String reason, List<String> events, PulseContext context) {
+  private void handleInterruption(
+      String actionType, String reason, List<String> events, PulseContext context,
+      boolean cancelTask
+  ) {
     String citizenName = citizen.getCitizenProfile().identity().name();
-    log.info("[CITIZEN:{}] CRITICAL INTERRUPTION: {} (Action: {})", citizenName, reason, actionType);
+    log.info("[CITIZEN:{}] INTERRUPTION: {} (Action: {}, CancelTask: {})", citizenName, reason, actionType, cancelTask);
 
     // Ensure events are added to the list for the perception context
     events.forEach(e -> {
@@ -157,8 +163,13 @@ public class CitizenPulse implements AgentPulse {
       interruptedAction = interruptedAction.withType(actionType);
     }
 
-    // Cancel current task and set state to thinking/interrupted
-    taskManager.cancelActiveTask(citizen, CitizenState.INTERRUPTED, interruptedAction);
+    // Cancel current task and set state to thinking/interrupted if requested
+    if (cancelTask) {
+      taskManager.cancelActiveTask(citizen, CitizenState.INTERRUPTED, interruptedAction);
+    } else {
+      // Just transition to state to signal thinking, but keep the task
+      citizen.transitionTo(CitizenState.INTERRUPTED, interruptedAction);
+    }
 
     // Force direct decision
     performDecision(context);

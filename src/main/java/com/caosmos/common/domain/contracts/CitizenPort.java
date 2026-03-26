@@ -43,4 +43,6 @@ public interface CitizenPort {
   void assignRestTask(UUID citizenId);
 
   void assignNavigationTask(UUID citizenId, Vector3 target, String targetId);
+
+  void continueTask(UUID citizenId);
 }

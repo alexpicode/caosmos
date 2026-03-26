@@ -157,4 +157,9 @@ public class CitizenAdapter implements CitizenPort {
     log.debug("Setting navigation task for citizen {} to {}", citizenId, target);
     taskRegistry.register(citizenId, new MoveToTargetTask(target, targetId));
   }
+
+  @Override
+  public void continueTask(UUID citizenId) {
+    log.debug("Citizen {} requested to continue current task. No action needed.", citizenId);
+  }
 }
