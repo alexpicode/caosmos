@@ -88,8 +88,8 @@ public class NavigateActionHandler implements ActionHandler {
         x -= distance;
         z -= distance;
       }
-      case "UP" -> y += distance;
-      case "DOWN" -> y -= distance;
+      //case "UP" -> y += distance;
+      //case "DOWN" -> y -= distance;
       default -> {
       }
     }

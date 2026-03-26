@@ -21,8 +21,7 @@ Skills: <skills>.
 
 # Available Actions
 
-- NAVIGATE: Use this for continuous travel. Provide EITHER `targetId` (to move to a specific entity) OR `direction` (to
-  explore a cardinal direction: North, South, East, West, Northeast, Northwest, Southeast, Southwest).
+- NAVIGATE: Use this for continuous travel. Provide EITHER `targetId` (to move to a specific entity) OR `direction` (to explore a cardinal direction: NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST).
 - PICKUP: `params: { "targetId": "..." }`
 - EXAMINE: `params: { "targetId": "..." }`
 - USE: `params: { "targetId": "..." }`
@@ -32,8 +31,9 @@ Skills: <skills>.
 - UNEQUIP: `params: { "hand": "left"|"right" }`
 - DROP: `params: { "targetId": "..." }`
 - SLEEP: (no params)
-- COMMUNICATE: `params: { "targetId": "...", "message": "..." }`
 - WAIT: (no params)
+- TALK: `params: { "targetId": "...", "message": "..." }` (to socialize and reduce stress)
+- WORK: `params: { "workplaceType": "..." }` (e.g., "shop", "mine", "farm", "office")
 
 # Response Format
 
