@@ -19,75 +19,21 @@
       "length": 200
     },
     {
-      "id": "blacksmith",
-      "name": "Blacksmith Workshop",
+      "id": "market",
+      "name": "Market",
+      "type": "EXTERIOR",
       "parentId": "town",
-      "type": "INTERIOR",
       "isEntryRestricted": false,
       "tags": [
-        "FORGE",
-        "NOISY"
+        "COMMERCE"
       ],
       "center": {
-        "x": 5,
-        "y": 0,
-        "z": 5
-      },
-      "width": 8,
-      "length": 8
-    },
-    {
-      "id": "blacksmith_vault",
-      "name": "Blacksmith Vault",
-      "parentId": "blacksmith",
-      "type": "INTERIOR",
-      "isEntryRestricted": true,
-      "tags": [
-        "TREASURE",
-        "RESTRICTED"
-      ],
-      "center": {
-        "x": 5,
-        "y": 0,
-        "z": 5
-      },
-      "width": 2,
-      "length": 2
-    },
-    {
-      "id": "mining_zone",
-      "name": "Mining Zone",
-      "type": "EXTERIOR",
-      "parentId": null,
-      "isEntryRestricted": false,
-      "tags": [
-        "MINING",
-        "DANGEROUS"
-      ],
-      "center": {
-        "x": 12,
-        "y": 0,
-        "z": 12
-      },
-      "width": 16,
-      "length": 16
-    },
-    {
-      "id": "residential_zone",
-      "name": "Residential Zone",
-      "type": "EXTERIOR",
-      "parentId": null,
-      "isEntryRestricted": false,
-      "tags": [
-        "RESIDENTIAL"
-      ],
-      "center": {
-        "x": -75,
+        "x": 60,
         "y": 0,
         "z": 0
       },
-      "width": 150,
-      "length": 300
+      "width": 60,
+      "length": 160
     },
     {
       "id": "park",
@@ -100,12 +46,65 @@
         "NATURE"
       ],
       "center": {
-        "x": 25,
+        "x": -60,
         "y": 0,
-        "z": 75
+        "z": 0
       },
-      "width": 50,
-      "length": 150
+      "width": 60,
+      "length": 160
+    },
+    {
+      "id": "blacksmith",
+      "name": "Blacksmith Workshop",
+      "parentId": "town",
+      "type": "INTERIOR",
+      "isEntryRestricted": false,
+      "tags": [
+        "FORGE",
+        "NOISY"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 70
+      },
+      "width": 40,
+      "length": 40
+    },
+    {
+      "id": "blacksmith_vault",
+      "name": "Blacksmith Vault",
+      "parentId": "blacksmith",
+      "type": "INTERIOR",
+      "isEntryRestricted": true,
+      "tags": [
+        "TREASURE",
+        "RESTRICTED"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 85
+      },
+      "width": 10,
+      "length": 10
+    },
+    {
+      "id": "residential_zone",
+      "name": "Residential Zone",
+      "type": "EXTERIOR",
+      "parentId": null,
+      "isEntryRestricted": false,
+      "tags": [
+        "RESIDENTIAL"
+      ],
+      "center": {
+        "x": -250,
+        "y": 0,
+        "z": 0
+      },
+      "width": 300,
+      "length": 400
     },
     {
       "id": "industrial_zone",
@@ -117,29 +116,48 @@
         "INDUSTRIAL"
       ],
       "center": {
-        "x": 25,
-        "y": 0,
-        "z": -75
-      },
-      "width": 50,
-      "length": 150
-    },
-    {
-      "id": "market",
-      "name": "Market",
-      "type": "EXTERIOR",
-      "parentId": "town",
-      "isEntryRestricted": false,
-      "tags": [
-        "COMMERCE"
-      ],
-      "center": {
-        "x": 100,
+        "x": 250,
         "y": 0,
         "z": 0
       },
-      "width": 100,
-      "length": 300
+      "width": 300,
+      "length": 400
+    },
+    {
+      "id": "mining_zone",
+      "name": "Mining Zone",
+      "type": "EXTERIOR",
+      "parentId": null,
+      "isEntryRestricted": false,
+      "tags": [
+        "MINING",
+        "DANGEROUS"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 300
+      },
+      "width": 200,
+      "length": 200
+    },
+    {
+      "id": "forest_zone",
+      "name": "Forest Zone",
+      "type": "EXTERIOR",
+      "parentId": null,
+      "isEntryRestricted": false,
+      "tags": [
+        "NATURE",
+        "FOREST"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": -300
+      },
+      "width": 400,
+      "length": 200
     }
   ]
 }

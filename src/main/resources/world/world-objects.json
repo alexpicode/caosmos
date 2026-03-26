@@ -4,9 +4,9 @@
       "id": "tree1",
       "name": "Oak Tree",
       "position": {
-        "x": 25,
+        "x": -60,
         "y": 0,
-        "z": 25
+        "z": 40
       },
       "tags": [
         "nature",
@@ -17,9 +17,9 @@
       "id": "bench1",
       "name": "Park Bench",
       "position": {
-        "x": 30,
+        "x": -60,
         "y": 0,
-        "z": 30
+        "z": 20
       },
       "tags": [
         "furniture",
@@ -43,9 +43,9 @@
       "id": "well1",
       "name": "Water Well",
       "position": {
-        "x": -3,
+        "x": -20,
         "y": 0,
-        "z": 3
+        "z": 30
       },
       "tags": [
         "water",
@@ -56,9 +56,9 @@
       "id": "store1",
       "name": "Grocery Store",
       "position": {
-        "x": 75,
+        "x": 60,
         "y": 0,
-        "z": 0
+        "z": 20
       },
       "tags": [
         "commerce",
@@ -69,9 +69,9 @@
       "id": "mine1",
       "name": "Iron Mine",
       "position": {
-        "x": 5,
+        "x": 0,
         "y": 0,
-        "z": 5
+        "z": 300
       },
       "tags": [
         "resource",
@@ -82,9 +82,9 @@
       "id": "house1",
       "name": "Alice's House",
       "position": {
-        "x": -5,
+        "x": -250,
         "y": 0,
-        "z": -5
+        "z": 50
       },
       "tags": [
         "building",
@@ -96,9 +96,9 @@
       "id": "hammer1",
       "name": "Crafting Hammer",
       "position": {
-        "x": 10,
+        "x": 2,
         "y": 0,
-        "z": 10
+        "z": 72
       },
       "tags": [
         "tool",
@@ -110,9 +110,9 @@
       "id": "axe1",
       "name": "Wood Axe",
       "position": {
-        "x": 12,
+        "x": -2,
         "y": 0,
-        "z": 8
+        "z": 72
       },
       "tags": [
         "tool",
@@ -124,9 +124,9 @@
       "id": "pickaxe1",
       "name": "Mining Pickaxe",
       "position": {
-        "x": 8,
+        "x": 5,
         "y": 0,
-        "z": 12
+        "z": 305
       },
       "tags": [
         "tool",
@@ -138,9 +138,9 @@
       "id": "fishing_rod1",
       "name": "Fishing Rod",
       "position": {
-        "x": 40,
+        "x": 0,
         "y": 0,
-        "z": 40
+        "z": -350
       },
       "tags": [
         "tool",
@@ -152,9 +152,9 @@
       "id": "shovel1",
       "name": "Garden Shovel",
       "position": {
-        "x": 15,
+        "x": -240,
         "y": 0,
-        "z": 15
+        "z": 55
       },
       "tags": [
         "tool",
@@ -166,9 +166,9 @@
       "id": "campfire1",
       "name": "Campfire",
       "position": {
-        "x": 20,
+        "x": 0,
         "y": 0,
-        "z": 20
+        "z": -300
       },
       "tags": [
         "fire",
@@ -181,9 +181,9 @@
       "id": "chest1",
       "name": "Storage Chest",
       "position": {
-        "x": 18,
+        "x": -5,
         "y": 0,
-        "z": 18
+        "z": 75
       },
       "tags": [
         "storage",
@@ -195,9 +195,9 @@
       "id": "workbench1",
       "name": "Crafting Table",
       "position": {
-        "x": 22,
+        "x": 0,
         "y": 0,
-        "z": 22
+        "z": 80
       },
       "tags": [
         "crafting",
@@ -209,9 +209,9 @@
       "id": "anvil1",
       "name": "Blacksmith Anvil",
       "position": {
-        "x": 24,
+        "x": 5,
         "y": 0,
-        "z": 24
+        "z": 75
       },
       "tags": [
         "crafting",
@@ -223,9 +223,9 @@
       "id": "loom1",
       "name": "Weaving Loom",
       "position": {
-        "x": 26,
+        "x": 250,
         "y": 0,
-        "z": 26
+        "z": 0
       },
       "tags": [
         "crafting",
@@ -237,9 +237,9 @@
       "id": "bush1",
       "name": "Berry Bush",
       "position": {
-        "x": 2,
+        "x": 10,
         "y": 0,
-        "z": -2
+        "z": -310
       },
       "tags": [
         "nature",
@@ -250,9 +250,9 @@
       "id": "apple_tree1",
       "name": "Apple Tree",
       "position": {
-        "x": 35,
+        "x": -60,
         "y": 0,
-        "z": 35
+        "z": -20
       },
       "tags": [
         "nature",
@@ -264,9 +264,9 @@
       "id": "mushroom_patch1",
       "name": "Mushroom Patch",
       "position": {
-        "x": 38,
+        "x": -10,
         "y": 0,
-        "z": 38
+        "z": -290
       },
       "tags": [
         "nature",
@@ -278,9 +278,9 @@
       "id": "herb_garden1",
       "name": "Herb Garden",
       "position": {
-        "x": 42,
+        "x": -40,
         "y": 0,
-        "z": 42
+        "z": 0
       },
       "tags": [
         "nature",
@@ -293,9 +293,9 @@
       "id": "bridge1",
       "name": "Wooden Bridge",
       "position": {
-        "x": 50,
+        "x": 0,
         "y": 0,
-        "z": 50
+        "z": -200
       },
       "tags": [
         "infrastructure",
@@ -307,9 +307,9 @@
       "id": "lamp_post1",
       "name": "Street Lamp",
       "position": {
-        "x": 55,
+        "x": 20,
         "y": 0,
-        "z": 55
+        "z": 20
       },
       "tags": [
         "infrastructure",
@@ -321,9 +321,9 @@
       "id": "sign_post1",
       "name": "Direction Sign",
       "position": {
-        "x": 60,
+        "x": 10,
         "y": 0,
-        "z": 60
+        "z": -10
       },
       "tags": [
         "infrastructure",
@@ -335,9 +335,9 @@
       "id": "water_tower1",
       "name": "Water Tower",
       "position": {
-        "x": 65,
+        "x": 250,
         "y": 0,
-        "z": 65
+        "z": 100
       },
       "tags": [
         "infrastructure",
@@ -349,9 +349,9 @@
       "id": "library1",
       "name": "Town Library",
       "position": {
-        "x": -20,
+        "x": -250,
         "y": 0,
-        "z": -20
+        "z": 0
       },
       "tags": [
         "building",
@@ -363,9 +363,9 @@
       "id": "blacksmith1",
       "name": "Blacksmith Shop",
       "position": {
-        "x": -25,
+        "x": 0,
         "y": 0,
-        "z": -25
+        "z": 70
       },
       "tags": [
         "building",
@@ -377,9 +377,9 @@
       "id": "market_stall1",
       "name": "Farmers Market",
       "position": {
-        "x": -30,
+        "x": 60,
         "y": 0,
-        "z": -30
+        "z": -20
       },
       "tags": [
         "commerce",
@@ -391,9 +391,9 @@
       "id": "stable1",
       "name": "Horse Stable",
       "position": {
-        "x": -35,
+        "x": -250,
         "y": 0,
-        "z": -35
+        "z": -50
       },
       "tags": [
         "building",
@@ -405,9 +405,9 @@
       "id": "rock_formation1",
       "name": "Rock Formation",
       "position": {
-        "x": 45,
+        "x": 20,
         "y": 0,
-        "z": 45
+        "z": 320
       },
       "tags": [
         "nature",
@@ -419,9 +419,9 @@
       "id": "flower_field1",
       "name": "Wildflower Field",
       "position": {
-        "x": 48,
+        "x": -60,
         "y": 0,
-        "z": 48
+        "z": -40
       },
       "tags": [
         "nature",
@@ -433,9 +433,9 @@
       "id": "cave_entrance1",
       "name": "Cave Entrance",
       "position": {
-        "x": 70,
+        "x": -30,
         "y": 0,
-        "z": 70
+        "z": 280
       },
       "tags": [
         "nature",
@@ -447,9 +447,9 @@
       "id": "compass1",
       "name": "Navigation Compass",
       "position": {
-        "x": 32,
+        "x": 260,
         "y": 0,
-        "z": 32
+        "z": 10
       },
       "tags": [
         "tool",
@@ -461,9 +461,9 @@
       "id": "lantern1",
       "name": "Oil Lantern",
       "position": {
-        "x": 34,
+        "x": -2,
         "y": 0,
-        "z": 34
+        "z": 305
       },
       "tags": [
         "tool",
@@ -475,9 +475,9 @@
       "id": "rope1",
       "name": "Climbing Rope",
       "position": {
-        "x": 36,
+        "x": 8,
         "y": 0,
-        "z": 36
+        "z": 310
       },
       "tags": [
         "tool",
@@ -489,9 +489,9 @@
       "id": "map1",
       "name": "World Map",
       "position": {
-        "x": 28,
+        "x": -250,
         "y": 0,
-        "z": 28
+        "z": 5
       },
       "tags": [
         "tool",
