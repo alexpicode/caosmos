@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WorkTask implements Task {
 
   private final String workplaceType;
+  private double elapsedSeconds = 0;
 
   public WorkTask(String workplaceType) {
     this.workplaceType = workplaceType;
@@ -20,6 +21,7 @@ public class WorkTask implements Task {
 
   @Override
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
+    elapsedSeconds += dt;
     double energyRate;
     double hungerRate;
     double stressRate;
@@ -41,7 +43,8 @@ public class WorkTask implements Task {
 
     Status status = citizen.getPerception().status();
     boolean forcedStop = status.energy() < PhysiologicalThresholds.ENERGY_COLLAPSE;
+    boolean shiftComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WORK_DURATION_HOURS;
 
-    return new ActiveTask("WORK", "Working in " + workplaceType, workplaceType, forcedStop);
+    return new ActiveTask("WORK", "Working in " + workplaceType, workplaceType, forcedStop || shiftComplete);
   }
 }

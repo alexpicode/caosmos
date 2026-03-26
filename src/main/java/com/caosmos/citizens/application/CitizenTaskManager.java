@@ -31,8 +31,11 @@ public class CitizenTaskManager {
     if (task.isPresent()) {
       String citizenName = citizen.getCitizenProfile().identity().name();
 
-      // Set state to moving during task execution
-      citizen.transitionTo(CitizenState.MOVING, "Executing active task: " + task.get().getClass().getSimpleName());
+      // Set state according to task definition (only if different)
+      CitizenState newState = task.get().getCitizenState();
+      if (!newState.equals(citizen.getState())) {
+        citizen.transitionTo(newState, "Executing active task: " + task.get().getClass().getSimpleName());
+      }
 
       Vector3 initialPosition = citizen.getPosition();
 

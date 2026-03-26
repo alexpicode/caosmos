@@ -8,7 +8,8 @@ import org.springframework.core.io.Resource;
 public record PulseConfiguration(
     int pulseFrequencySeconds,
     Resource systemPromptResource,
-    Resource userPromptResource
+    Resource userPromptResource,
+    int maxTicksWithoutDecision
 ) {
 
 }

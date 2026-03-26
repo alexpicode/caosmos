@@ -48,4 +48,8 @@ public final class PhysiologicalThresholds {
   public static final double SHOP_ENERGY_DRAIN_RATE = 1.2;
   public static final double SHOP_HUNGER_INCREASE_RATE = 0.6;
   public static final double SHOP_STRESS_INCREASE_RATE = 0.3;
+
+  // Task Durations (hours)
+  public static final double DEFAULT_WAIT_DURATION_HOURS = 1.0;
+  public static final double DEFAULT_WORK_DURATION_HOURS = 8.0;
 }

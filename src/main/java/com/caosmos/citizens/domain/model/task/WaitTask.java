@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WaitTask implements Task {
 
   private final boolean inSafeZone;
+  private double elapsedSeconds = 0;
 
   public WaitTask(boolean inSafeZone) {
     this.inSafeZone = inSafeZone;
@@ -19,6 +20,8 @@ public class WaitTask implements Task {
 
   @Override
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
+    elapsedSeconds += dt;
+
     // 1. Minimum energy decay (active repose)
     citizen.consumeEnergy(Math.abs(PhysiologicalThresholds.WAIT_ENERGY_DECAY_RATE) * (dt / 3600.0));
 
@@ -27,8 +30,7 @@ public class WaitTask implements Task {
       citizen.reduceStress(Math.abs(PhysiologicalThresholds.SAFE_ZONE_STRESS_REDUCTION_RATE) * (dt / 3600.0));
     }
 
-    // Wait tasks are typically short-lived or manual-interruption based.
-    // For simulation, we return incomplete so it persists until the next decision if not interrupted.
-    return new ActiveTask("WAIT", "Waiting in repose", null, false);
+    boolean isComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WAIT_DURATION_HOURS;
+    return new ActiveTask("WAIT", "Waiting in repose", null, isComplete);
   }
 }

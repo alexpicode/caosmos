@@ -2,6 +2,7 @@ package com.caosmos.citizens.domain.model.task;
 
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
+import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.common.domain.model.world.Vector3;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,11 @@ public class MoveToTargetTask implements Task {
   public MoveToTargetTask(Vector3 target, String targetId) {
     this.target = target;
     this.targetId = targetId;
+  }
+
+  @Override
+  public CitizenState getCitizenState() {
+    return CitizenState.MOVING;
   }
 
   @Override

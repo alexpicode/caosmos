@@ -44,6 +44,7 @@ public class CitizenPopulationService implements PopulationService {
   private final CitizenPerceptionHandler perceptionHandler;
   private final PhysiologicalMotor physiologicalMotor;
   private final EntityTelemetryService telemetryService;
+  private final CitizenSettings citizenSettings;
 
   public void spawnAll() {
     log.info("[POPULATION] Initializing global spawn sequence...");
@@ -84,7 +85,8 @@ public class CitizenPopulationService implements PopulationService {
     PulseConfiguration configuration = new PulseConfiguration(
         pulseFrequencySimulatedSeconds,
         systemPromptResource,
-        userPromptResource
+        userPromptResource,
+        citizenSettings.getMaxTicksWithoutDecision()
     );
 
     CitizenPulse citizenPulse = new CitizenPulse(

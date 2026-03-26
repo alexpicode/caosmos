@@ -32,6 +32,7 @@ public class CitizenPulse implements AgentPulse {
   private final PulseConfiguration pulseConfiguration;
   private final EntityTelemetryService telemetryService;
 
+  private long lastDecisionTick = 0;
   private final List<String> unprocessedEvents = new ArrayList<>();
 
   private static final String CRITICAL_INTERRUPTION_STATUS = "INTERRUPTED";
@@ -100,10 +101,25 @@ public class CitizenPulse implements AgentPulse {
       return;
     }
 
-    // 5. Decision Phase (Ask LLM for a new goal if idle)
+    // 5. Decision Phase
     if (CitizenState.IDLE.equals(citizen.getState())) {
-      log.info("[CITIZEN:{}] Entering Decision Phase...", citizenName);
+      log.info("[CITIZEN:{}] Entering Decision Phase (IDLE)...", citizenName);
       performDecision(context);
+    } else {
+      // Task Timeout Check
+      if (tick - lastDecisionTick >= pulseConfiguration.maxTicksWithoutDecision()) {
+        log.info(
+            "[CITIZEN:{}] Task timeout reached ({} ticks). Forcing decision check...",
+            citizenName,
+            tick - lastDecisionTick
+        );
+        handleInterruption(
+            null,
+            "Routine check: You have been performing this task for a while. Do you want to continue or do something else?",
+            new ArrayList<>(),
+            context
+        );
+      }
     }
   }
 
@@ -151,6 +167,9 @@ public class CitizenPulse implements AgentPulse {
   private void performDecision(PulseContext context) {
     // Delegate to decision maker
     var lastAction = decisionMaker.makeDecision(citizen, context, pulseConfiguration);
+
+    // Update last decision tick
+    this.lastDecisionTick = context.tick();
 
     // Update state with decision results
     citizen.transitionTo(CitizenState.IDLE, lastAction);
