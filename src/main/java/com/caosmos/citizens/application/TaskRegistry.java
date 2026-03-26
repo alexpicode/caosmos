@@ -1,6 +1,6 @@
 package com.caosmos.citizens.application;
 
-import com.caosmos.citizens.domain.model.task.Task;
+import com.caosmos.citizens.domain.task.Task;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

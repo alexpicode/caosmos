@@ -4,7 +4,7 @@ import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.LastAction;
-import com.caosmos.citizens.domain.model.task.Task;
+import com.caosmos.citizens.domain.task.Task;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.Optional;

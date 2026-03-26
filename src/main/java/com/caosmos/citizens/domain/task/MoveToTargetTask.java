@@ -1,4 +1,4 @@
-package com.caosmos.citizens.domain.model.task;
+package com.caosmos.citizens.domain.task;
 
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;

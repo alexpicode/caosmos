@@ -7,6 +7,7 @@ import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
 import com.caosmos.citizens.domain.model.perception.Status;
+import com.caosmos.citizens.domain.task.SleepTask;
 import java.util.Collections;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;

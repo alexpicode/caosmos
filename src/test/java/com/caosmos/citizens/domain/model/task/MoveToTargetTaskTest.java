@@ -6,6 +6,7 @@ import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
 import com.caosmos.citizens.domain.model.perception.Status;
+import com.caosmos.citizens.domain.task.MoveToTargetTask;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.Collections;
 import java.util.UUID;
