@@ -5,6 +5,7 @@ import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
+import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +31,13 @@ public class DropActionHandler implements ActionHandler {
       return ActionResult.failure("Target ID is required for DROP", getActionType());
     }
 
-    boolean success = citizenService.removeFromInventory(citizenId, targetId);
+    ItemData item = citizenService.removeFromInventory(citizenId, targetId);
 
-    if (success) {
+    if (item != null) {
       Vector3 citizenPos = citizenService.getPosition(citizenId);
-      worldService.spawnObject(citizenPos, targetId); // Mock spawn using ID as template
+      worldService.spawnObject(citizenPos, item);
       citizenService.consumeEnergy(citizenId, 1);
-      return ActionResult.success("Dropped " + targetId, getActionType());
+      return ActionResult.success("Dropped " + item.name(), getActionType());
     } else {
       return ActionResult.failure("Item " + targetId + " not found in inventory", getActionType());
     }

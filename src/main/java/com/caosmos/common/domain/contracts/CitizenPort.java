@@ -1,5 +1,6 @@
 package com.caosmos.common.domain.contracts;
 
+import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.List;
 import java.util.UUID;
@@ -12,9 +13,9 @@ public interface CitizenPort {
 
   void consumeEnergy(UUID citizenId, double amount);
 
-  boolean addToInventory(UUID citizenId, String itemId, String itemName, List<String> tags, int quantity);
+  boolean addToInventory(UUID citizenId, String itemId, String itemName, List<String> tags);
 
-  boolean removeFromInventory(UUID citizenId, String itemId);
+  ItemData removeFromInventory(UUID citizenId, String itemId);
 
   boolean equipItem(UUID citizenId, String itemId, String hand);
 

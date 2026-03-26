@@ -4,9 +4,10 @@ import com.caosmos.citizens.domain.model.perception.Equipment;
 import com.caosmos.citizens.domain.model.perception.EquippedItem;
 import com.caosmos.citizens.domain.model.perception.Inventory;
 import com.caosmos.citizens.domain.model.perception.InventoryCapacity;
-import com.caosmos.citizens.domain.model.perception.InventoryItem;
+import com.caosmos.common.domain.model.items.ItemData;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.Data;
 
 /**
@@ -16,25 +17,29 @@ import lombok.Data;
 public class InventoryManager {
 
   private final int maxSlots;
-  private final List<InventoryItem> items;
+  private final Map<String, ItemData> items;
   private EquippedItem leftHand;
   private EquippedItem rightHand;
 
   public InventoryManager(int maxSlots) {
     this.maxSlots = maxSlots;
-    this.items = new ArrayList<>();
+    this.items = new LinkedHashMap<>();
   }
 
-  public boolean addItem(InventoryItem item) {
+  public boolean addItem(ItemData item) {
     if (items.size() >= maxSlots) {
       return false;
     }
-    items.add(item);
+    items.put(item.id(), item);
     return true;
   }
 
-  public boolean removeItem(String itemId) {
-    return items.removeIf(item -> item.id().equals(itemId));
+  public ItemData removeItem(String itemId) {
+    return items.remove(itemId);
+  }
+
+  public ItemData getItem(String itemId) {
+    return items.get(itemId);
   }
 
   public boolean equipLeftHand(EquippedItem item) {
@@ -65,7 +70,7 @@ public class InventoryManager {
 
   public Inventory getInventory() {
     InventoryCapacity capacity = getInventoryCapacity();
-    return new Inventory(capacity, new ArrayList<>(items));
+    return new Inventory(capacity, new ArrayList<>(items.values()));
   }
 
   private InventoryCapacity getInventoryCapacity() {

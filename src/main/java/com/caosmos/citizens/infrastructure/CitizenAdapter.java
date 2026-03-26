@@ -3,7 +3,6 @@ package com.caosmos.citizens.infrastructure;
 import com.caosmos.citizens.application.CitizenRegistry;
 import com.caosmos.citizens.application.TaskRegistry;
 import com.caosmos.citizens.domain.Citizen;
-import com.caosmos.citizens.domain.model.perception.InventoryItem;
 import com.caosmos.citizens.domain.task.MoveToTargetTask;
 import com.caosmos.citizens.domain.task.RestTask;
 import com.caosmos.citizens.domain.task.SleepTask;
@@ -11,6 +10,7 @@ import com.caosmos.citizens.domain.task.WaitTask;
 import com.caosmos.citizens.domain.task.WorkTask;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldRegistry;
+import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.List;
 import java.util.UUID;
@@ -52,24 +52,21 @@ public class CitizenAdapter implements CitizenPort {
 
   @Override
   public boolean addToInventory(
-      UUID citizenId, String itemId, String itemName, List<String> tags,
-      int quantity
+      UUID citizenId, String itemId, String itemName, List<String> tags
   ) {
     AtomicBoolean result = new AtomicBoolean(false);
     citizenRegistry.get(citizenId).ifPresent(citizen -> {
-      InventoryItem item = new InventoryItem(itemId, itemName, tags, quantity);
+      ItemData item = new ItemData(itemId, itemName, tags);
       result.set(citizen.addToInventory(item));
     });
     return result.get();
   }
 
   @Override
-  public boolean removeFromInventory(UUID citizenId, String itemId) {
-    AtomicBoolean result = new AtomicBoolean(false);
-    citizenRegistry.get(citizenId).ifPresent(citizen ->
-        result.set(citizen.removeFromInventory(itemId))
-    );
-    return result.get();
+  public ItemData removeFromInventory(UUID citizenId, String itemId) {
+    return citizenRegistry.get(citizenId)
+                          .map(citizen -> citizen.removeFromInventory(itemId))
+                          .orElse(null);
   }
 
   @Override

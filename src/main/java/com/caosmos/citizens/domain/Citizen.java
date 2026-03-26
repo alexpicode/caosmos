@@ -8,9 +8,9 @@ import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.Equipment;
 import com.caosmos.citizens.domain.model.perception.EquippedItem;
 import com.caosmos.citizens.domain.model.perception.Inventory;
-import com.caosmos.citizens.domain.model.perception.InventoryItem;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.model.perception.Status;
+import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldEntity;
 import java.util.HashMap;
@@ -192,17 +192,16 @@ public class Citizen implements WorldEntity {
     biologyManager.increaseVitality(amount);
   }
 
-  public boolean addToInventory(InventoryItem item) {
+  public boolean addToInventory(ItemData item) {
     return inventoryManager.addItem(item);
   }
 
-  public boolean removeFromInventory(String itemId) {
+  public ItemData removeFromInventory(String itemId) {
     return inventoryManager.removeItem(itemId);
   }
 
   public boolean equipItem(String itemId, String hand) {
-    InventoryItem itemToEquip = inventoryManager.getItems().stream().filter(i -> i.id().equals(itemId)).findFirst()
-                                                .orElse(null);
+    ItemData itemToEquip = inventoryManager.getItem(itemId);
 
     if (itemToEquip == null) {
       return false;

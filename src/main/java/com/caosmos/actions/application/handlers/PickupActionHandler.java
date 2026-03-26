@@ -5,7 +5,7 @@ import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
-import java.util.List;
+import com.caosmos.common.domain.model.items.ItemData;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -30,16 +30,21 @@ public class PickupActionHandler implements ActionHandler {
       return ActionResult.failure("Target ID is required for PICKUP", getActionType());
     }
 
-    // Mock object retrieval mapping since WorldPort doesn't return object details yet
-    // In a real system we'd get the actual item from World
-    boolean success = citizenService.addToInventory(citizenId, targetId, targetId, List.of("item"), 1);
+    // First remove from world to get item details
+    ItemData item = worldService.removeObject(targetId);
 
-    if (success) {
-      worldService.removeObject(targetId);
-      citizenService.consumeEnergy(citizenId, 2);
-      return ActionResult.success("Picked up " + targetId, getActionType());
+    if (item != null) {
+      boolean success = citizenService.addToInventory(citizenId, item.id(), item.name(), item.tags());
+      if (success) {
+        citizenService.consumeEnergy(citizenId, 2);
+        return ActionResult.success("Picked up " + item.name(), getActionType());
+      } else {
+        // Return to world if inventory full
+        worldService.spawnObject(citizenService.getPosition(citizenId), item);
+        return ActionResult.failure("Inventory is full or could not pick up " + item.name(), getActionType());
+      }
     } else {
-      return ActionResult.failure("Inventory is full or could not pick up " + targetId, getActionType());
+      return ActionResult.failure("Item " + targetId + " not found in the world", getActionType());
     }
   }
 }
