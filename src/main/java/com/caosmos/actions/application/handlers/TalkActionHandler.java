@@ -23,6 +23,15 @@ public class TalkActionHandler implements ActionHandler {
   public ActionResult execute(UUID citizenId, ActionRequest request) {
     String targetId = (String) request.parameters().get("targetId");
 
+    if (targetId == null || targetId.isBlank()) {
+      return ActionResult.failure("Target ID is required for TALK", getActionType());
+    }
+
+    // Check proximity
+    if (!citizenService.isNear(citizenId, targetId, 3.0)) {
+      return ActionResult.failure("You are too far from " + targetId + " to talk.", getActionType());
+    }
+
     // Socializing reduces stress
     citizenService.reduceStress(citizenId, 5.0);
     citizenService.consumeEnergy(citizenId, 0.2);

@@ -9,6 +9,7 @@ import com.caosmos.citizens.domain.task.SleepTask;
 import com.caosmos.citizens.domain.task.WaitTask;
 import com.caosmos.citizens.domain.task.WorkTask;
 import com.caosmos.common.domain.contracts.CitizenPort;
+import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
@@ -27,6 +28,19 @@ public class CitizenAdapter implements CitizenPort {
   private final CitizenRegistry citizenRegistry;
   private final TaskRegistry taskRegistry;
   private final WorldRegistry spatialRegistry;
+  private final WorldPort worldPort;
+
+  @Override
+  public boolean isNear(UUID citizenId, String targetId, double maxDistance) {
+    Vector3 pos = getPosition(citizenId);
+    return worldPort.isNearObject(pos, targetId, maxDistance);
+  }
+
+  @Override
+  public boolean isInZoneWithTag(UUID citizenId, String tag) {
+    Vector3 pos = getPosition(citizenId);
+    return worldPort.getZoneTagsAt(pos).contains(tag);
+  }
 
   @Override
   public Vector3 getPosition(UUID citizenId) {

@@ -30,6 +30,11 @@ public class PickupActionHandler implements ActionHandler {
       return ActionResult.failure("Target ID is required for PICKUP", getActionType());
     }
 
+    // Check proximity
+    if (!citizenService.isNear(citizenId, targetId, 2.0)) {
+      return ActionResult.failure("You are too far from " + targetId + " to pick it up.", getActionType());
+    }
+
     // First remove from world to get item details
     ItemData item = worldService.removeObject(targetId);
 

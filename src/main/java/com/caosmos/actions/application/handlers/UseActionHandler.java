@@ -29,6 +29,11 @@ public class UseActionHandler implements ActionHandler {
       return ActionResult.failure("Target ID is required for USE", getActionType());
     }
 
+    // Check proximity
+    if (!citizenService.isNear(citizenId, targetId, 2.5)) {
+      return ActionResult.failure("You are too far from " + targetId + " to use it.", getActionType());
+    }
+
     worldService.interactWithObject(targetId);
     citizenService.consumeEnergy(citizenId, 4);
 

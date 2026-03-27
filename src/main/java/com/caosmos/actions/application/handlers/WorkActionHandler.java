@@ -23,6 +23,20 @@ public class WorkActionHandler implements ActionHandler {
   public ActionResult execute(UUID citizenId, ActionRequest request) {
     String workplaceType = (String) request.parameters().getOrDefault("workplaceType", "shop");
 
+    // Check if in correct zone
+    String requiredTag = "mine".equalsIgnoreCase(workplaceType) ? "MINING" : "COMMERCE";
+    // Also allow FORGE for blacksmith
+    if ("blacksmith".equalsIgnoreCase(workplaceType)) {
+      requiredTag = "FORGE";
+    }
+
+    if (!citizenService.isInZoneWithTag(citizenId, requiredTag)) {
+      return ActionResult.failure(
+          "You are not at an appropriate " + workplaceType + " workplace to start working.",
+          getActionType()
+      );
+    }
+
     citizenService.assignWorkTask(citizenId, workplaceType);
 
     return ActionResult.success("Started working at " + workplaceType, getActionType());

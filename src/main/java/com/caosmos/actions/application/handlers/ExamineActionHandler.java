@@ -29,6 +29,11 @@ public class ExamineActionHandler implements ActionHandler {
       return ActionResult.failure("Target ID is required for EXAMINE", getActionType());
     }
 
+    // Check proximity
+    if (!citizenService.isNear(citizenId, targetId, 4.0)) {
+      return ActionResult.failure("You are too far from " + targetId + " to examine it closely.", getActionType());
+    }
+
     String details = worldService.examineObject(targetId);
     citizenService.consumeEnergy(citizenId, 1);
 

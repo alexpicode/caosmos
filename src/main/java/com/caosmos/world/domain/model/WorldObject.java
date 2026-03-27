@@ -18,6 +18,11 @@ public class WorldObject implements WorldEntity {
   private Set<String> tags;
   private String parentZoneId;
 
+  // Collision properties
+  private Double radius; // Circular collision
+  private Double width;  // Rectangular collision (AABB)
+  private Double length;
+
   @Override
   public String getType() {
     return "OBJECT";
@@ -26,5 +31,27 @@ public class WorldObject implements WorldEntity {
   @Override
   public String getDisplayName() {
     return name;
+  }
+
+  public boolean intersects(Vector3 point) {
+    if (point == null) {
+      return false;
+    }
+
+    // 1. Circular collision check
+    if (radius != null && radius > 0) {
+      return position.distanceTo2D(point) <= radius;
+    }
+
+    // 2. Rectangular collision check (AABB)
+    if (width != null && length != null && width > 0 && length > 0) {
+      double halfWidth = width / 2.0;
+      double halfLength = length / 2.0;
+      return point.x() >= position.x() - halfWidth && point.x() <= position.x() + halfWidth &&
+          point.z() >= position.z() - halfLength && point.z() <= position.z() + halfLength;
+    }
+
+    // Default: Point-based (no collision volume)
+    return position.distanceTo2D(point) < 0.1;
   }
 }

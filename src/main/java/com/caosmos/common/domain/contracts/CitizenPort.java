@@ -46,4 +46,8 @@ public interface CitizenPort {
   void assignNavigationTask(UUID citizenId, Vector3 target, String targetId);
 
   void continueTask(UUID citizenId);
+
+  boolean isNear(UUID citizenId, String targetId, double maxDistance);
+
+  boolean isInZoneWithTag(UUID citizenId, String tag);
 }
