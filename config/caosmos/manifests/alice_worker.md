@@ -2,6 +2,8 @@
 type: "MICRO_AGENT"
 identity:
   name: "Alice"
+  job: "miner"
+  workplace_tag: "MINING"
   traits: [ "pragmatic", "expert_miner", "reserved", "tenacious" ]
   skills:
     mining: 92

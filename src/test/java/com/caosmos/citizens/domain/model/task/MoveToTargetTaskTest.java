@@ -22,7 +22,7 @@ class MoveToTargetTaskTest {
   void setUp() {
     UUID uuid = UUID.randomUUID();
     Status initialStatus = new Status(100.0, 0.0, 100.0, 0.0);
-    Identity identity = new Identity("Test Citizen", Collections.emptyList(), Collections.emptyMap());
+    Identity identity = new Identity("Test Citizen", null, null, Collections.emptyList(), Collections.emptyMap());
     // Provide a non-null base location to ensure citizen has a position
     CitizenProfile.BaseLocation base = new CitizenProfile.BaseLocation(0, 0, 0);
     CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Normal", "manifest-1");

@@ -52,4 +52,8 @@ public interface CitizenPort {
   boolean isItemEquippedWithTag(UUID citizenId, String tag);
 
   boolean isInZoneWithTag(UUID citizenId, String tag);
+
+  String getJob(UUID citizenId);
+
+  String getWorkplaceTag(UUID citizenId);
 }

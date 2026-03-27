@@ -178,4 +178,18 @@ public class CitizenAdapter implements CitizenPort {
   public void continueTask(UUID citizenId) {
     log.debug("Citizen {} requested to continue current task. No action needed.", citizenId);
   }
+
+  @Override
+  public String getJob(UUID citizenId) {
+    return citizenRegistry.get(citizenId)
+                          .map(citizen -> citizen.getCitizenProfile().identity().job())
+                          .orElse(null);
+  }
+
+  @Override
+  public String getWorkplaceTag(UUID citizenId) {
+    return citizenRegistry.get(citizenId)
+                          .map(citizen -> citizen.getCitizenProfile().identity().workplaceTag())
+                          .orElse(null);
+  }
 }
