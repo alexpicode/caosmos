@@ -39,6 +39,21 @@ public class WorkActionHandler implements ActionHandler {
       );
     }
 
+    // Check for required tool
+    String requiredToolTag = null;
+    if ("mine".equalsIgnoreCase(workplaceType)) {
+      requiredToolTag = ActionThresholds.ITEM_TAG_MINING;
+    } else if ("blacksmith".equalsIgnoreCase(workplaceType)) {
+      requiredToolTag = ActionThresholds.ITEM_TAG_CRAFTING;
+    }
+
+    if (requiredToolTag != null && !citizenService.isItemEquippedWithTag(citizenId, requiredToolTag)) {
+      return ActionResult.failure(
+          "You need a " + requiredToolTag + " tool equipped to work here.",
+          getActionType()
+      );
+    }
+
     citizenService.assignWorkTask(citizenId, workplaceType);
 
     return ActionResult.success("Started working at " + workplaceType, getActionType());

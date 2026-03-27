@@ -45,14 +45,41 @@ class WorkActionHandlerTest {
   }
 
   @Test
-  void testWorkSucceedsInZone() {
+  void testWorkSucceedsInZoneWithTool() {
     ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "mine"));
 
     when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_MINING)).thenReturn(true);
+    when(citizenPort.isItemEquippedWithTag(citizenId, ActionThresholds.ITEM_TAG_MINING)).thenReturn(true);
 
     ActionResult result = handler.execute(citizenId, request);
 
     assertTrue(result.success());
     verify(citizenPort).assignWorkTask(citizenId, "mine");
+  }
+
+  @Test
+  void testWorkFailsInZoneWithoutTool() {
+    ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "mine"));
+
+    when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_MINING)).thenReturn(true);
+    when(citizenPort.isItemEquippedWithTag(citizenId, ActionThresholds.ITEM_TAG_MINING)).thenReturn(false);
+
+    ActionResult result = handler.execute(citizenId, request);
+
+    assertFalse(result.success());
+    assertTrue(result.message().contains("need a mining tool equipped"));
+    verify(citizenPort, never()).assignWorkTask(any(), anyString());
+  }
+
+  @Test
+  void testWorkSucceedsInZoneNoToolRequired() {
+    ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "shop"));
+
+    when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_COMMERCE)).thenReturn(true);
+
+    ActionResult result = handler.execute(citizenId, request);
+
+    assertTrue(result.success());
+    verify(citizenPort).assignWorkTask(citizenId, "shop");
   }
 }

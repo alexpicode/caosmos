@@ -68,6 +68,13 @@ public class InventoryManager {
     return new Equipment(leftHand, rightHand);
   }
 
+  public boolean hasEquippedItemWithTag(String tag) {
+    if (leftHand != null && leftHand.tags() != null && leftHand.tags().contains(tag)) {
+      return true;
+    }
+    return rightHand != null && rightHand.tags() != null && rightHand.tags().contains(tag);
+  }
+
   public Inventory getInventory() {
     InventoryCapacity capacity = getInventoryCapacity();
     return new Inventory(capacity, new ArrayList<>(items.values()));

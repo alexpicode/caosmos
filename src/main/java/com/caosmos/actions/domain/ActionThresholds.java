@@ -37,4 +37,10 @@ public final class ActionThresholds {
   public static final String TAG_MINING = "MINING";
   public static final String TAG_COMMERCE = "COMMERCE";
   public static final String TAG_FORGE = "FORGE";
+
+  // Item Tags
+  public static final String ITEM_TAG_TOOL = "tool";
+  public static final String ITEM_TAG_MINING = "mining";
+  public static final String ITEM_TAG_CRAFTING = "crafting";
+  public static final String ITEM_TAG_WOODCUTTING = "woodcutting";
 }

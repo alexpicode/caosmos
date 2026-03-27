@@ -226,6 +226,10 @@ public class Citizen implements WorldEntity {
     return false;
   }
 
+  public boolean hasEquippedItemWithTag(String tag) {
+    return inventoryManager.hasEquippedItemWithTag(tag);
+  }
+
   public void eat(double nutrition) {
     biologyManager.decreaseHunger(nutrition);
     biologyManager.increaseEnergy(nutrition / 2.0);

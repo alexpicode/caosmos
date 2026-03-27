@@ -43,6 +43,11 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
+  public boolean isItemEquippedWithTag(UUID citizenId, String tag) {
+    return citizenRegistry.get(citizenId).map(citizen -> citizen.hasEquippedItemWithTag(tag)).orElse(false);
+  }
+
+  @Override
   public Vector3 getPosition(UUID citizenId) {
     return citizenRegistry.get(citizenId)
                           .map(citizen -> citizen.getCurrentState().getPosition())
