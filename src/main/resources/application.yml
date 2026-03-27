@@ -26,8 +26,9 @@ caosmos:
     external-path: config/caosmos/manifests
     internal-path: #src/main/resources/manifests
   citizen:
-    pulse-frequency: 5                # Frequency in seconds for citizen life cycle pulses
+    pulse-frequency: 5                # Frequency in seconds for citizen life cycle pulses (num ticks)
     walking-speed: 1.4                # Standard walking speed in m/s
+    max-ticks-without-decision: 60    # Maximum number of marks without the LLM having made a decision
   world:
     max-vision-distance: 20.0         # Maximum distance for searching nearby objects
     time:

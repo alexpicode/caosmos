@@ -43,7 +43,7 @@ public class CitizenPulse implements AgentPulse {
     log.info("[CITIZEN:{}] Pulsing at tick: {}", citizenName, tick);
 
     // 1. Update passive domain state (decay metabolism)
-    double dt = (double) pulseConfiguration.pulseFrequencySeconds();
+    double dt = pulseConfiguration.pulseFrequencySeconds();
     physiologicalMotor.applyPassiveMetabolism(citizen, dt);
 
     // 1.5 Register Biometrics
