@@ -11,7 +11,8 @@
       "tags": [
         "nature",
         "tree"
-      ]
+      ],
+      "radius": 1.0
     },
     {
       "id": "bench1",
@@ -24,7 +25,9 @@
       "tags": [
         "furniture",
         "rest"
-      ]
+      ],
+      "width": 2.0,
+      "length": 0.8
     },
     {
       "id": "fountain1",
@@ -37,7 +40,8 @@
       "tags": [
         "water",
         "decoration"
-      ]
+      ],
+      "radius": 3.0
     },
     {
       "id": "well1",
@@ -50,7 +54,8 @@
       "tags": [
         "water",
         "resource"
-      ]
+      ],
+      "radius": 1.5
     },
     {
       "id": "store1",
@@ -63,7 +68,9 @@
       "tags": [
         "commerce",
         "food"
-      ]
+      ],
+      "width": 10.0,
+      "length": 15.0
     },
     {
       "id": "mine1",
@@ -76,7 +83,8 @@
       "tags": [
         "resource",
         "mining"
-      ]
+      ],
+      "radius": 8.0
     },
     {
       "id": "house1",
@@ -90,7 +98,9 @@
         "building",
         "home",
         "rest"
-      ]
+      ],
+      "width": 8.0,
+      "length": 12.0
     },
     {
       "id": "hammer1",
@@ -104,7 +114,8 @@
         "tool",
         "crafting",
         "construction"
-      ]
+      ],
+      "radius": 0.2
     },
     {
       "id": "axe1",
@@ -118,7 +129,8 @@
         "tool",
         "woodcutting",
         "weapon"
-      ]
+      ],
+      "radius": 0.2
     },
     {
       "id": "pickaxe1",
@@ -132,7 +144,8 @@
         "tool",
         "mining",
         "weapon"
-      ]
+      ],
+      "radius": 0.2
     },
     {
       "id": "fishing_rod1",
@@ -146,7 +159,8 @@
         "tool",
         "fishing",
         "food"
-      ]
+      ],
+      "radius": 0.2
     },
     {
       "id": "shovel1",
@@ -160,7 +174,8 @@
         "tool",
         "gardening",
         "digging"
-      ]
+      ],
+      "radius": 0.2
     },
     {
       "id": "campfire1",
@@ -175,7 +190,8 @@
         "cooking",
         "warmth",
         "light"
-      ]
+      ],
+      "radius": 1.0
     },
     {
       "id": "chest1",
@@ -189,7 +205,9 @@
         "storage",
         "container",
         "security"
-      ]
+      ],
+      "width": 1.0,
+      "length": 0.6
     },
     {
       "id": "workbench1",
@@ -203,7 +221,9 @@
         "crafting",
         "furniture",
         "work"
-      ]
+      ],
+      "width": 2.0,
+      "length": 1.0
     },
     {
       "id": "anvil1",
@@ -217,7 +237,8 @@
         "crafting",
         "metalwork",
         "tool"
-      ]
+      ],
+      "radius": 0.5
     },
     {
       "id": "loom1",
@@ -231,7 +252,9 @@
         "crafting",
         "textile",
         "tool"
-      ]
+      ],
+      "width": 1.8,
+      "length": 1.2
     },
     {
       "id": "bush1",
@@ -244,7 +267,8 @@
       "tags": [
         "nature",
         "food"
-      ]
+      ],
+      "radius": 0.8
     },
     {
       "id": "apple_tree1",
@@ -258,7 +282,8 @@
         "nature",
         "tree",
         "food"
-      ]
+      ],
+      "radius": 1.0
     },
     {
       "id": "mushroom_patch1",
@@ -272,7 +297,8 @@
         "nature",
         "food",
         "foraging"
-      ]
+      ],
+      "radius": 1.2
     },
     {
       "id": "herb_garden1",
@@ -287,7 +313,9 @@
         "food",
         "medicine",
         "gardening"
-      ]
+      ],
+      "width": 3.0,
+      "length": 3.0
     },
     {
       "id": "bridge1",
@@ -301,7 +329,9 @@
         "infrastructure",
         "construction",
         "crossing"
-      ]
+      ],
+      "width": 4.0,
+      "length": 10.0
     },
     {
       "id": "lamp_post1",
@@ -315,7 +345,8 @@
         "infrastructure",
         "light",
         "safety"
-      ]
+      ],
+      "radius": 0.3
     },
     {
       "id": "sign_post1",
@@ -329,7 +360,8 @@
         "infrastructure",
         "information",
         "navigation"
-      ]
+      ],
+      "radius": 0.3
     },
     {
       "id": "water_tower1",
@@ -343,7 +375,8 @@
         "infrastructure",
         "water",
         "storage"
-      ]
+      ],
+      "radius": 4.0
     },
     {
       "id": "library1",
@@ -357,7 +390,9 @@
         "building",
         "knowledge",
         "quiet"
-      ]
+      ],
+      "width": 15.0,
+      "length": 20.0
     },
     {
       "id": "blacksmith1",
@@ -371,7 +406,9 @@
         "building",
         "crafting",
         "metalwork"
-      ]
+      ],
+      "width": 12.0,
+      "length": 12.0
     },
     {
       "id": "market_stall1",
@@ -385,7 +422,9 @@
         "commerce",
         "food",
         "trade"
-      ]
+      ],
+      "width": 4.0,
+      "length": 3.0
     },
     {
       "id": "stable1",
@@ -399,7 +438,9 @@
         "building",
         "animals",
         "transport"
-      ]
+      ],
+      "width": 10.0,
+      "length": 15.0
     },
     {
       "id": "rock_formation1",
@@ -413,7 +454,8 @@
         "nature",
         "stone",
         "resource"
-      ]
+      ],
+      "radius": 3.5
     },
     {
       "id": "flower_field1",
@@ -427,7 +469,8 @@
         "nature",
         "beauty",
         "foraging"
-      ]
+      ],
+      "radius": 4.0
     },
     {
       "id": "cave_entrance1",
@@ -441,7 +484,8 @@
         "nature",
         "exploration",
         "shelter"
-      ]
+      ],
+      "radius": 2.5
     },
     {
       "id": "compass1",
@@ -455,7 +499,8 @@
         "tool",
         "navigation",
         "exploration"
-      ]
+      ],
+      "radius": 0.1
     },
     {
       "id": "lantern1",
@@ -469,7 +514,8 @@
         "tool",
         "light",
         "portable"
-      ]
+      ],
+      "radius": 0.2
     },
     {
       "id": "rope1",
@@ -483,7 +529,8 @@
         "tool",
         "climbing",
         "utility"
-      ]
+      ],
+      "radius": 0.2
     },
     {
       "id": "map1",
@@ -497,7 +544,8 @@
         "tool",
         "navigation",
         "information"
-      ]
+      ],
+      "radius": 0.1
     }
   ]
 }
