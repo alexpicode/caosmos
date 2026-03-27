@@ -150,24 +150,24 @@ public class Citizen implements WorldEntity {
     transitionTo(nextState, action);
   }
 
-
   public void updateTask(ActiveTask activeTask) {
     currentState.setActiveTask(activeTask);
   }
-
 
   public CitizenPerception getPerception() {
 
     // Get status from biology manager (no longer needs inventory capacity)
     Status status = biologyManager.getStatus();
 
-    // Get equipment and inventory from inventory manager (inventory now includes capacity)
+    // Get equipment and inventory from inventory manager (inventory now includes
+    // capacity)
     Equipment equipment = inventoryManager.getEquipment();
     Inventory inventory = inventoryManager.getInventory();
 
     return new CitizenPerception(
         citizenProfile.identity(),
         status,
+        currentState.getState(),
         equipment,
         inventory,
         currentState.getLastAction(),
