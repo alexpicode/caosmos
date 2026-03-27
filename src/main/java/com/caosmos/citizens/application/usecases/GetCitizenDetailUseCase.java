@@ -1,7 +1,7 @@
 package com.caosmos.citizens.application.usecases;
 
-import com.caosmos.citizens.application.CitizenRegistry;
 import com.caosmos.citizens.application.dto.CitizenDetailDto;
+import com.caosmos.citizens.application.registry.CitizenRegistry;
 import com.caosmos.common.application.telemetry.BiometricsEntry;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
 import java.util.Collection;

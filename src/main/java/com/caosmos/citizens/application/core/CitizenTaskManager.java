@@ -1,5 +1,6 @@
-package com.caosmos.citizens.application;
+package com.caosmos.citizens.application.core;
 
+import com.caosmos.citizens.application.registry.TaskRegistry;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;

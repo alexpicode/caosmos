@@ -1,4 +1,4 @@
-package com.caosmos.citizens.application;
+package com.caosmos.citizens.application.registry;
 
 import com.caosmos.citizens.domain.task.Task;
 import java.util.List;

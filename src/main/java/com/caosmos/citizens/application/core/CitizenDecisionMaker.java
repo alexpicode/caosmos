@@ -1,4 +1,4 @@
-package com.caosmos.citizens.application;
+package com.caosmos.citizens.application.core;
 
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.application.model.PulseContext;

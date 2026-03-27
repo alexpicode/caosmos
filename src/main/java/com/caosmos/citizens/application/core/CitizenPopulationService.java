@@ -1,6 +1,8 @@
-package com.caosmos.citizens.application;
+package com.caosmos.citizens.application.core;
 
+import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.model.PulseConfiguration;
+import com.caosmos.citizens.application.registry.CitizenRegistry;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.common.application.agents.LifeManager;

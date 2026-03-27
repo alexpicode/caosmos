@@ -1,8 +1,8 @@
 package com.caosmos.citizens.application.usecases;
 
-import com.caosmos.citizens.application.CitizenRegistry;
 import com.caosmos.citizens.application.dto.CitizenInMapDto;
 import com.caosmos.citizens.application.dto.CitizenSummaryDto;
+import com.caosmos.citizens.application.registry.CitizenRegistry;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import java.util.Collection;

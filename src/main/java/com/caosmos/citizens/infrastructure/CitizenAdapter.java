@@ -1,7 +1,7 @@
 package com.caosmos.citizens.infrastructure;
 
-import com.caosmos.citizens.application.CitizenRegistry;
-import com.caosmos.citizens.application.TaskRegistry;
+import com.caosmos.citizens.application.registry.CitizenRegistry;
+import com.caosmos.citizens.application.registry.TaskRegistry;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.task.MoveToTargetTask;
 import com.caosmos.citizens.domain.task.RestTask;

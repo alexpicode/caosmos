@@ -1,4 +1,4 @@
-package com.caosmos.citizens.application;
+package com.caosmos.citizens.application.core;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

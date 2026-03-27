@@ -1,4 +1,4 @@
-package com.caosmos.citizens.application;
+package com.caosmos.citizens.application.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -1,4 +1,4 @@
-package com.caosmos.citizens.application;
+package com.caosmos.citizens.application.handler;
 
 import com.caosmos.citizens.application.model.FullPerception;
 import com.caosmos.citizens.domain.Citizen;

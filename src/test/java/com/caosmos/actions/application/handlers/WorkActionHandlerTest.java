@@ -67,7 +67,7 @@ class WorkActionHandlerTest {
     ActionResult result = handler.execute(citizenId, request);
 
     assertFalse(result.success());
-    assertTrue(result.message().contains("need a mining tool equipped"));
+    assertTrue(result.message().contains("You need a tool with the tag 'mining' to work here."));
     verify(citizenPort, never()).assignWorkTask(any(), anyString());
   }
 
