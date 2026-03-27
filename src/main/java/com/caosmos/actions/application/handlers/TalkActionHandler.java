@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -28,13 +29,13 @@ public class TalkActionHandler implements ActionHandler {
     }
 
     // Check proximity
-    if (!citizenService.isNear(citizenId, targetId, 3.0)) {
+    if (!citizenService.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_TALK)) {
       return ActionResult.failure("You are too far from " + targetId + " to talk.", getActionType());
     }
 
     // Socializing reduces stress
-    citizenService.reduceStress(citizenId, 5.0);
-    citizenService.consumeEnergy(citizenId, 0.2);
+    citizenService.reduceStress(citizenId, ActionThresholds.TALK_STRESS_REDUCTION);
+    citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_TALK);
 
     return ActionResult.success("Talking with " + (targetId != null ? targetId : "someone"), getActionType());
   }

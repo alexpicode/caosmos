@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -31,7 +32,7 @@ public class EquipActionHandler implements ActionHandler {
     boolean success = citizenService.equipItem(citizenId, targetId, hand);
 
     if (success) {
-      citizenService.consumeEnergy(citizenId, 1);
+      citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_EQUIP);
       return ActionResult.success("Equipped " + targetId + " in " + hand + " hand", getActionType());
     } else {
       return ActionResult.failure("Could not equip " + targetId + " in " + hand + " hand", getActionType());

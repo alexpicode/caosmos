@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
@@ -30,12 +31,12 @@ public class UseActionHandler implements ActionHandler {
     }
 
     // Check proximity
-    if (!citizenService.isNear(citizenId, targetId, 2.5)) {
+    if (!citizenService.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_USE)) {
       return ActionResult.failure("You are too far from " + targetId + " to use it.", getActionType());
     }
 
     worldService.interactWithObject(targetId);
-    citizenService.consumeEnergy(citizenId, 4);
+    citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_USE);
 
     return ActionResult.success("Used " + targetId, getActionType());
   }

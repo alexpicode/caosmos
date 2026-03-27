@@ -9,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -34,7 +35,7 @@ class WorkActionHandlerTest {
   void testWorkFailsWhenNotInZone() {
     ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "mine"));
 
-    when(citizenPort.isInZoneWithTag(citizenId, "MINING")).thenReturn(false);
+    when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_MINING)).thenReturn(false);
 
     ActionResult result = handler.execute(citizenId, request);
 
@@ -47,7 +48,7 @@ class WorkActionHandlerTest {
   void testWorkSucceedsInZone() {
     ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "mine"));
 
-    when(citizenPort.isInZoneWithTag(citizenId, "MINING")).thenReturn(true);
+    when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_MINING)).thenReturn(true);
 
     ActionResult result = handler.execute(citizenId, request);
 

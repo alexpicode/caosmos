@@ -9,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
@@ -40,7 +41,7 @@ class PickupActionHandlerTest {
     String targetId = "rock1";
     ActionRequest request = new ActionRequest("PICKUP", Map.of("targetId", targetId));
 
-    when(citizenPort.isNear(citizenId, targetId, 2.0)).thenReturn(false);
+    when(citizenPort.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)).thenReturn(false);
 
     ActionResult result = handler.execute(citizenId, request);
 
@@ -55,7 +56,7 @@ class PickupActionHandlerTest {
     ActionRequest request = new ActionRequest("PICKUP", Map.of("targetId", targetId));
     ItemData item = new ItemData(targetId, "Rock", Collections.emptyList());
 
-    when(citizenPort.isNear(citizenId, targetId, 2.0)).thenReturn(true);
+    when(citizenPort.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)).thenReturn(true);
     when(worldPort.removeObject(targetId)).thenReturn(item);
     when(citizenPort.addToInventory(citizenId, item.id(), item.name(), item.tags())).thenReturn(true);
 

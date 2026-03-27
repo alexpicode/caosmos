@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
@@ -62,7 +63,7 @@ public class NavigateActionHandler implements ActionHandler {
       return currentPos;
     }
 
-    double distance = 50.0; // Far enough to allow continuous travel
+    double distance = ActionThresholds.DISTANT_NAVIGATION_STEP; // Far enough to allow continuous travel
     double x = currentPos.x();
     double y = currentPos.y();
     double z = currentPos.z();

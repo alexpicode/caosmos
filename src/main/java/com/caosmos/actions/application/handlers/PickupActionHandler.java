@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
@@ -31,7 +32,7 @@ public class PickupActionHandler implements ActionHandler {
     }
 
     // Check proximity
-    if (!citizenService.isNear(citizenId, targetId, 2.0)) {
+    if (!citizenService.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)) {
       return ActionResult.failure("You are too far from " + targetId + " to pick it up.", getActionType());
     }
 
@@ -41,7 +42,7 @@ public class PickupActionHandler implements ActionHandler {
     if (item != null) {
       boolean success = citizenService.addToInventory(citizenId, item.id(), item.name(), item.tags());
       if (success) {
-        citizenService.consumeEnergy(citizenId, 2);
+        citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_PICKUP);
         return ActionResult.success("Picked up " + item.name(), getActionType());
       } else {
         // Return to world if inventory full

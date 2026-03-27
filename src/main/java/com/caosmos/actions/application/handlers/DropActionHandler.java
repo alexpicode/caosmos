@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
@@ -36,7 +37,7 @@ public class DropActionHandler implements ActionHandler {
     if (item != null) {
       Vector3 citizenPos = citizenService.getPosition(citizenId);
       worldService.spawnObject(citizenPos, item);
-      citizenService.consumeEnergy(citizenId, 1);
+      citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_DROP);
       return ActionResult.success("Dropped " + item.name(), getActionType());
     } else {
       return ActionResult.failure("Item " + targetId + " not found in inventory", getActionType());

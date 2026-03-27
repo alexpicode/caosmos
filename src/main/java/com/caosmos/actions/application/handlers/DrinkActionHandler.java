@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -31,8 +32,8 @@ public class DrinkActionHandler implements ActionHandler {
     ItemData item = citizenService.removeFromInventory(citizenId, targetId);
 
     if (item != null) {
-      citizenService.drink(citizenId, 20.0);
-      citizenService.reduceStress(citizenId, 2.0);
+      citizenService.drink(citizenId, ActionThresholds.DRINK_HYDRATION_RECOVERY);
+      citizenService.reduceStress(citizenId, ActionThresholds.DRINK_STRESS_REDUCTION);
       return ActionResult.success("Drank " + item.name(), getActionType());
     } else {
       return ActionResult.failure("Item " + targetId + " not found in inventory to drink", getActionType());

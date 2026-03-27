@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -31,8 +32,8 @@ public class EatActionHandler implements ActionHandler {
     ItemData item = citizenService.removeFromInventory(citizenId, targetId);
 
     if (item != null) {
-      citizenService.eat(citizenId, 25.0);
-      citizenService.consumeEnergy(citizenId, 0.5);
+      citizenService.eat(citizenId, ActionThresholds.EAT_NUTRITION_RECOVERY);
+      citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_EAT);
       return ActionResult.success("Ate " + item.name(), getActionType());
     } else {
       return ActionResult.failure("Item " + targetId + " not found in inventory to eat", getActionType());

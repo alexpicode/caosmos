@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -30,7 +31,7 @@ public class UnequipActionHandler implements ActionHandler {
     boolean success = citizenService.unequipItem(citizenId, hand);
 
     if (success) {
-      citizenService.consumeEnergy(citizenId, 1);
+      citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_UNEQUIP);
       return ActionResult.success("Unequipped item from " + hand + " hand", getActionType());
     } else {
       return ActionResult.failure("Could not unequip item from " + hand + " hand", getActionType());

@@ -1,6 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
+import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -24,10 +25,11 @@ public class WorkActionHandler implements ActionHandler {
     String workplaceType = (String) request.parameters().getOrDefault("workplaceType", "shop");
 
     // Check if in correct zone
-    String requiredTag = "mine".equalsIgnoreCase(workplaceType) ? "MINING" : "COMMERCE";
+    String requiredTag =
+        "mine".equalsIgnoreCase(workplaceType) ? ActionThresholds.TAG_MINING : ActionThresholds.TAG_COMMERCE;
     // Also allow FORGE for blacksmith
     if ("blacksmith".equalsIgnoreCase(workplaceType)) {
-      requiredTag = "FORGE";
+      requiredTag = ActionThresholds.TAG_FORGE;
     }
 
     if (!citizenService.isInZoneWithTag(citizenId, requiredTag)) {
