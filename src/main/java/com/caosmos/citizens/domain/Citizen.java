@@ -91,6 +91,11 @@ public class Citizen implements WorldEntity {
   }
 
   @Override
+  public String getZoneId() {
+    return currentState.getCurrentZoneId();
+  }
+
+  @Override
   public Map<String, Object> getProperties() {
     Map<String, Object> props = new HashMap<>();
     props.put("tags", citizenProfile.identity().traits());

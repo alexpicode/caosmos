@@ -24,23 +24,39 @@ public class NearbyZoneService {
     Map<String, Zone> allZones = zoneManager.getZoneMap();
     Zone currentZone = allZones.get(currentZoneId);
 
-    List<Zone> filteredZones = zoneManager.getAllZones().stream()
-                                          .filter(z -> !z.getId().equals(currentZoneId)) // Exclude current zone
-                                          .filter(z -> position.distanceTo2D(z.getCenter())
-                                              <= radius) // Distance filter
-                                          .filter(z -> isHierarchicallyRelevant(
-                                              z,
-                                              currentZone,
-                                              allZones
-                                          )) // Hierarchy filter
-                                          .filter(z -> isAllowedByInteriorRule(
-                                              z,
-                                              currentZone
-                                          )) // Interior/Exterior rule
-                                          .sorted(Comparator.comparingDouble(z -> position.distanceTo2D(z.getCenter())))
-                                          .toList();
+    List<Zone> filteredZones = zoneManager.getAllZones()
+        .stream()
+        .filter(z -> !z.getId().equals(currentZoneId)) // Exclude current zone
+        .filter(z -> position.distanceTo2D(z.getCenter()) <= radius) // Distance filter
+        .filter(z -> isZoneVisible(z, currentZone, allZones)) // Visibility filter
+        .sorted(Comparator.comparingDouble(z -> position.distanceTo2D(z.getCenter())))
+        .toList();
 
     return limitRedundancy(filteredZones, position);
+  }
+
+  public boolean isZoneVisible(String targetZoneId, String currentZoneId) {
+    if (targetZoneId == null) {
+      return currentZoneId == null;
+    }
+    if (targetZoneId.equals(currentZoneId)) {
+      return true;
+    }
+
+    Map<String, Zone> allZones = zoneManager.getZoneMap();
+    Zone targetZone = allZones.get(targetZoneId);
+    Zone currentZone = allZones.get(currentZoneId);
+
+    if (targetZone == null) {
+      return false;
+    }
+
+    return isZoneVisible(targetZone, currentZone, allZones);
+  }
+
+  private boolean isZoneVisible(Zone targetZone, Zone currentZone, Map<String, Zone> allZones) {
+    return isHierarchicallyRelevant(targetZone, currentZone, allZones)
+        && isAllowedByInteriorRule(targetZone, currentZone);
   }
 
   private boolean isHierarchicallyRelevant(Zone zone, Zone currentZone, Map<String, Zone> allZones) {
@@ -86,21 +102,17 @@ public class NearbyZoneService {
   private List<NearbyZone> limitRedundancy(List<Zone> zones, Vector3 position) {
     // Group by Type + Tags to identify repetitive zones
     Map<String, List<Zone>> grouped = zones.stream()
-                                           .collect(Collectors.groupingBy(z -> z.getType() + "_" + z.getTags().stream()
-                                                                                                    .sorted()
-                                                                                                    .collect(Collectors.joining(
-                                                                                                        ","))));
+        .collect(Collectors.groupingBy(z -> z.getType() + "_" + z.getTags()
+            .stream()
+            .sorted()
+            .collect(Collectors.joining(","))));
 
     List<NearbyZone> result = new ArrayList<>();
     for (List<Zone> group : grouped.values()) {
-      group.stream()
-           .limit(MAX_REPETITIVE_ZONES)
-           .forEach(z -> result.add(mapToNearbyZone(z, position)));
+      group.stream().limit(MAX_REPETITIVE_ZONES).forEach(z -> result.add(mapToNearbyZone(z, position)));
     }
 
-    return result.stream()
-                 .sorted(Comparator.comparingDouble(NearbyZone::distance))
-                 .toList();
+    return result.stream().sorted(Comparator.comparingDouble(NearbyZone::distance)).toList();
   }
 
   private NearbyZone mapToNearbyZone(Zone zone, Vector3 position) {

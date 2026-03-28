@@ -33,6 +33,11 @@ public class WorldObject implements WorldEntity {
     return name;
   }
 
+  @Override
+  public String getZoneId() {
+    return parentZoneId;
+  }
+
   public boolean intersects(Vector3 point) {
     if (point == null) {
       return false;

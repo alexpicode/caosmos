@@ -13,6 +13,8 @@ public interface WorldEntity {
 
   String getDisplayName();
 
+  String getZoneId();
+
   default Map<String, Object> getProperties() {
     return Collections.emptyMap();
   }

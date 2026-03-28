@@ -57,10 +57,8 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
 
     Map<String, Zone> allZones = zoneManager.getZoneMap();
     Set<String> tags = zoneOpt.map(z -> z.getEffectiveTags(allZones)).orElse(Set.of());
-    String parentZoneName = zoneOpt.flatMap(z -> Optional.ofNullable(z.getParentId()))
-                                   .flatMap(zoneManager::getZone)
-                                   .map(Zone::getName)
-                                   .orElse(null);
+    String parentZoneName = zoneOpt.flatMap(z -> Optional.ofNullable(z.getParentId())).flatMap(zoneManager::getZone)
+        .map(Zone::getName).orElse(null);
 
     WorldDate worldDate = timeService.getCurrentWorldDate();
     Environment globalEnv = environmentService.getCurrentEnvironment();
@@ -76,18 +74,19 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
       effectiveEnvTags = globalEnv.tags();
     }
 
-    Environment perceivedEnv = new Environment(
-        globalEnv.terrainType(),
-        effectiveEnvTags,
-        effectiveLightLevel
-    );
+    Environment perceivedEnv = new Environment(globalEnv.terrainType(), effectiveEnvTags, effectiveLightLevel);
 
     Set<String> finalTags = new HashSet<>(tags);
     if ("EXTERIOR".equals(zoneType)) {
       finalTags.addAll(effectiveEnvTags);
     }
 
-    var nearbyEntities = nearbyEntityService.getNearbyEntitiesOrdered(position, maxVisionDistance, filter);
+    var nearbyEntities = nearbyEntityService.getNearbyEntitiesOrdered(
+        position,
+        maxVisionDistance,
+        zoneOpt.map(Zone::getId).orElse(null),
+        filter
+    );
     var nearbyZones = nearbyZoneService.getNearbyZones(
         position,
         zoneOpt.map(Zone::getId).orElse(null),
