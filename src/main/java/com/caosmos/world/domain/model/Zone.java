@@ -17,15 +17,12 @@ public class Zone {
   private String name;
   private String parentId; // For nested zones
   private String type; // e.g. INTERIOR, EXTERIOR
-  private Set<String> tags = new HashSet<>();
+  private Set<String> physicalTags = new HashSet<>();
+  private Set<String> contextualTags = new HashSet<>();
   private boolean isEntryRestricted; // Need specific entry
   private Vector3 center;
   private double width;
   private double length;
-
-  private static final Set<String> PHYSICAL_TAGS = Set.of(
-      "NOISY", "FORGE", "NATURE", "FOREST", "RECREATION", "TREASURE"
-  );
 
   public boolean contains(Vector3 position) {
     double halfWidth = width / 2.0;
@@ -35,19 +32,37 @@ public class Zone {
   }
 
   public Set<String> getEffectiveTags(Map<String, Zone> allZones) {
-    Set<String> effectiveTags = new HashSet<>(this.tags != null ? this.tags : Set.of());
+    Set<String> effectiveTags = getTags();
     if (parentId != null && allZones.containsKey(parentId)) {
-      Set<String> parentTags = allZones.get(parentId).getEffectiveTags(allZones);
+      Zone parent = allZones.get(parentId);
       if ("INTERIOR".equals(this.type)) {
-        // Only inherit non-physical tags from parent
-        parentTags.stream()
-                  .filter(t -> !PHYSICAL_TAGS.contains(t))
-                  .forEach(effectiveTags::add);
+        // In interiors, we only inherit contextual tags that pass through walls
+        effectiveTags.addAll(parent.getEffectiveContextualTags(allZones));
       } else {
-        effectiveTags.addAll(parentTags);
+        // In exteriors, we inherit everything openly
+        effectiveTags.addAll(parent.getEffectiveTags(allZones));
       }
     }
     return effectiveTags;
+  }
+
+  public Set<String> getEffectiveContextualTags(Map<String, Zone> allZones) {
+    Set<String> effective = new HashSet<>(this.contextualTags != null ? this.contextualTags : Set.of());
+    if (parentId != null && allZones.containsKey(parentId)) {
+      effective.addAll(allZones.get(parentId).getEffectiveContextualTags(allZones));
+    }
+    return effective;
+  }
+
+  public Set<String> getTags() {
+    Set<String> all = new HashSet<>();
+    if (physicalTags != null) {
+      all.addAll(physicalTags);
+    }
+    if (contextualTags != null) {
+      all.addAll(contextualTags);
+    }
+    return all;
   }
 
   public int getHierarchyDepth(Map<String, Zone> allZones) {

@@ -6,7 +6,8 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [],
+      "contextualTags": [
         "TOWN",
         "SAFE"
       ],
@@ -24,7 +25,8 @@
       "type": "EXTERIOR",
       "parentId": "town",
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [],
+      "contextualTags": [
         "COMMERCE"
       ],
       "center": {
@@ -41,10 +43,11 @@
       "type": "EXTERIOR",
       "parentId": "town",
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [
         "RECREATION",
         "NATURE"
       ],
+      "contextualTags": [],
       "center": {
         "x": -60,
         "y": 0,
@@ -59,10 +62,11 @@
       "parentId": "town",
       "type": "INTERIOR",
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [
         "FORGE",
         "NOISY"
       ],
+      "contextualTags": [],
       "center": {
         "x": 0,
         "y": 0,
@@ -77,7 +81,8 @@
       "parentId": "blacksmith",
       "type": "INTERIOR",
       "isEntryRestricted": true,
-      "tags": [
+      "physicalTags": [],
+      "contextualTags": [
         "TREASURE",
         "RESTRICTED"
       ],
@@ -95,7 +100,8 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [],
+      "contextualTags": [
         "RESIDENTIAL"
       ],
       "center": {
@@ -112,7 +118,8 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [],
+      "contextualTags": [
         "INDUSTRIAL"
       ],
       "center": {
@@ -129,7 +136,8 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [],
+      "contextualTags": [
         "MINING",
         "DANGEROUS"
       ],
@@ -147,10 +155,11 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "tags": [
+      "physicalTags": [
         "NATURE",
         "FOREST"
       ],
+      "contextualTags": [],
       "center": {
         "x": 0,
         "y": 0,
