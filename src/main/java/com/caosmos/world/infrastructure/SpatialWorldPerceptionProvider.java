@@ -13,6 +13,7 @@ import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.model.Zone;
 import com.caosmos.world.domain.service.EnvironmentService;
 import com.caosmos.world.domain.service.NearbyEntityService;
+import com.caosmos.world.domain.service.NearbyZoneService;
 import com.caosmos.world.domain.service.SpatialHash;
 import com.caosmos.world.domain.service.TimeService;
 import com.caosmos.world.domain.service.ZoneManager;
@@ -37,6 +38,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   private final TimeService timeService;
   private final EnvironmentService environmentService;
   private final NearbyEntityService nearbyEntityService;
+  private final NearbyZoneService nearbyZoneService;
   private final WorldObjectInitializer worldObjectInitializer;
 
   @Value("${caosmos.world.max-vision-distance}")
@@ -86,6 +88,11 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     }
 
     var nearbyEntities = nearbyEntityService.getNearbyEntitiesOrdered(position, maxVisionDistance, filter);
+    var nearbyZones = nearbyZoneService.getNearbyZones(
+        position,
+        zoneOpt.map(Zone::getId).orElse(null),
+        maxVisionDistance
+    );
 
     String currentLocation = getCurrentLocation(nearbyEntities);
 
@@ -98,7 +105,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         zoneOpt.map(Zone::getId).orElse(null)
     );
 
-    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities);
+    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities, nearbyZones);
   }
 
   private static String getCurrentLocation(List<NearbyEntity> nearbyEntities) {

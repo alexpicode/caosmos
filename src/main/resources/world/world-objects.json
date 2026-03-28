@@ -349,21 +349,6 @@
       "radius": 0.3
     },
     {
-      "id": "sign_post1",
-      "name": "Direction Sign",
-      "position": {
-        "x": 10,
-        "y": 0,
-        "z": -10
-      },
-      "tags": [
-        "infrastructure",
-        "information",
-        "navigation"
-      ],
-      "radius": 0.3
-    },
-    {
       "id": "water_tower1",
       "name": "Water Tower",
       "position": {
