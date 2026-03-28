@@ -30,7 +30,7 @@ caosmos:
     walking-speed: 1.4                # Standard walking speed in m/s
     max-ticks-without-decision: 60    # Maximum number of marks without the LLM having made a decision
   world:
-    max-vision-distance: 20.0         # Maximum distance for searching nearby objects
+    max-vision-distance: 30.0         # Maximum distance for searching nearby objects
     time:
       speed: 60.0                     # 1 real second = 60 simulation seconds (1 minute)
       start-day: 1                    # Initial simulation day
