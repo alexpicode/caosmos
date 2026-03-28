@@ -1,6 +1,7 @@
 package com.caosmos.world.infrastructure;
 
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
+import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.Location;
 import com.caosmos.common.domain.model.world.NearbyEntity;
 import com.caosmos.common.domain.model.world.Vector3;
@@ -16,6 +17,7 @@ import com.caosmos.world.domain.service.SpatialHash;
 import com.caosmos.world.domain.service.TimeService;
 import com.caosmos.world.domain.service.ZoneManager;
 import jakarta.annotation.PostConstruct;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,7 +61,30 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
                                    .orElse(null);
 
     WorldDate worldDate = timeService.getCurrentWorldDate();
-    var environment = environmentService.getCurrentEnvironment();
+    Environment globalEnv = environmentService.getCurrentEnvironment();
+
+    String effectiveLightLevel;
+    List<String> effectiveEnvTags;
+
+    if ("INTERIOR".equals(zoneType)) {
+      effectiveLightLevel = "Artificial";
+      effectiveEnvTags = List.of();
+    } else {
+      effectiveLightLevel = globalEnv.lightLevel();
+      effectiveEnvTags = globalEnv.tags();
+    }
+
+    Environment perceivedEnv = new Environment(
+        globalEnv.terrainType(),
+        effectiveEnvTags,
+        effectiveLightLevel
+    );
+
+    Set<String> finalTags = new HashSet<>(tags);
+    if ("EXTERIOR".equals(zoneType)) {
+      finalTags.addAll(effectiveEnvTags);
+    }
+
     var nearbyEntities = nearbyEntityService.getNearbyEntitiesOrdered(position, maxVisionDistance, filter);
 
     String currentLocation = getCurrentLocation(nearbyEntities);
@@ -68,12 +93,12 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         zoneName,
         zoneType,
         currentLocation,
-        tags,
+        finalTags,
         parentZoneName,
         zoneOpt.map(Zone::getId).orElse(null)
     );
 
-    return new WorldPerception(worldDate, location, environment, nearbyEntities);
+    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities);
   }
 
   private static String getCurrentLocation(List<NearbyEntity> nearbyEntities) {

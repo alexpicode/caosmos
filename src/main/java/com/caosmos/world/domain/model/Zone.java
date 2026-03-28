@@ -23,6 +23,10 @@ public class Zone {
   private double width;
   private double length;
 
+  private static final Set<String> PHYSICAL_TAGS = Set.of(
+      "NOISY", "FORGE", "NATURE", "FOREST", "RECREATION", "TREASURE"
+  );
+
   public boolean contains(Vector3 position) {
     double halfWidth = width / 2.0;
     double halfLength = length / 2.0;
@@ -33,7 +37,15 @@ public class Zone {
   public Set<String> getEffectiveTags(Map<String, Zone> allZones) {
     Set<String> effectiveTags = new HashSet<>(this.tags != null ? this.tags : Set.of());
     if (parentId != null && allZones.containsKey(parentId)) {
-      effectiveTags.addAll(allZones.get(parentId).getEffectiveTags(allZones));
+      Set<String> parentTags = allZones.get(parentId).getEffectiveTags(allZones);
+      if ("INTERIOR".equals(this.type)) {
+        // Only inherit non-physical tags from parent
+        parentTags.stream()
+                  .filter(t -> !PHYSICAL_TAGS.contains(t))
+                  .forEach(effectiveTags::add);
+      } else {
+        effectiveTags.addAll(parentTags);
+      }
     }
     return effectiveTags;
   }
