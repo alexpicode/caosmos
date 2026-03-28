@@ -3,7 +3,6 @@ package com.caosmos.citizens.domain.task;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
-import com.caosmos.citizens.domain.model.perception.Status;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,10 +40,19 @@ public class WorkTask implements Task {
     citizen.increaseHunger(hungerRate * (dt / 3600.0));
     citizen.applyStress(stressRate * (dt / 3600.0));
 
-    Status status = citizen.getPerception().status();
-    boolean forcedStop = status.energy() < PhysiologicalThresholds.ENERGY_COLLAPSE;
     boolean shiftComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WORK_DURATION_HOURS;
 
-    return new ActiveTask("WORK", "Working in " + workplaceType, workplaceType, forcedStop || shiftComplete);
+    return new ActiveTask(
+        "WORK",
+        "Working in " + workplaceType,
+        workplaceType,
+        shiftComplete,
+        allowsRoutineInterruptions()
+    );
+  }
+
+  @Override
+  public void onInterrupt(String reason) {
+    log.info("Leaving work in {} because: {}", workplaceType, reason);
   }
 }

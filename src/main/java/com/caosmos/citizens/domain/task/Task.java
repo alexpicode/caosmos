@@ -25,4 +25,19 @@ public interface Task {
    * @return ActiveTask with current task status.
    */
   ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed);
+
+  /**
+   * Called when the task is forcibly interrupted by the system (e.g. physiological crisis or danger).
+   */
+  default void onInterrupt(String reason) {
+    // Optional cleanup
+  }
+
+  /**
+   * Indicates if the citizen's attention is low enough to be interrupted by routine events (e.g. noticing resources,
+   * crossing zones).
+   */
+  default boolean allowsRoutineInterruptions() {
+    return false;
+  }
 }

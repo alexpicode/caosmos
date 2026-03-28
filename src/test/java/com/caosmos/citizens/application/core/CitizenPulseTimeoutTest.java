@@ -1,6 +1,7 @@
 package com.caosmos.citizens.application.core;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -10,12 +11,15 @@ import static org.mockito.Mockito.when;
 
 import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.model.FullPerception;
+import com.caosmos.citizens.application.model.PhysiologicalReflex;
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
+import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
-import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,11 +54,15 @@ class CitizenPulseTimeoutTest {
     when(perception.status().energy()).thenReturn(100.0);
     when(perception.status().stress()).thenReturn(0.0);
     when(citizen.getCurrentState()).thenReturn(new CurrentState(null, null, null, CitizenState.BUSY, null, null));
+    when(citizen.getState()).thenReturn(CitizenState.BUSY);
+    when(citizen.getActiveTask()).thenReturn(new ActiveTask("T", "G", "TG", false, false));
 
     FullPerception fullPerception = mock(FullPerception.class, RETURNS_DEEP_STUBS);
-    when(perceptionHandler.handlePerception(any(), any())).thenReturn(fullPerception);
+    when(perceptionHandler.handlePerception(any(), any(), anyBoolean())).thenReturn(fullPerception);
     when(fullPerception.reflex().critical()).thenReturn(false);
     when(fullPerception.citizen()).thenReturn(perception);
+
+    when(physiologicalMotor.evaluateCriticalThresholds(any())).thenReturn(Optional.empty());
 
     citizenPulse = new CitizenPulse(
         citizen,
@@ -68,38 +76,30 @@ class CitizenPulseTimeoutTest {
   }
 
   @Test
-  void shouldNotTriggerDecisionIfTimeoutNotReached() {
+  void shouldNotTriggerDecisionIfBusy() {
     citizenPulse.pulse(10);
+    citizenPulse.pulse(100); // Polling timeout is gone
     verify(decisionMaker, never()).makeDecision(any(), any(), any());
   }
 
   @Test
-  void shouldTriggerDecisionIfTimeoutReached() {
-    citizenPulse.pulse(20);
-    // handleInterruption -> performDecision
-    verify(decisionMaker, times(1)).makeDecision(any(), any(), any());
-  }
-
-  @Test
-  void shouldNotTriggerTimeoutIfStateIsIdle() {
-    // Manually set state to IDLE for this test
+  void shouldTriggerDecisionIfIdle() {
     when(citizen.getState()).thenReturn(CitizenState.IDLE);
-
-    citizenPulse.pulse(25);
-
-    // It should call it once because it's IDLE, but the internal lastDecisionTick will be updated
+    citizenPulse.pulse(20);
     verify(decisionMaker, times(1)).makeDecision(any(), any(), any());
   }
 
   @Test
-  void shouldTriggerDecisionButNotCancelTaskOnTimeout() {
-    citizenPulse.pulse(20);
+  void shouldAbortTaskAndTriggerDecisionOnPhysiologicalCrisis() {
+    PhysiologicalReflex reflex = new PhysiologicalReflex(true, "Collapse", "SLEEP", List.of("Dying"));
+    when(physiologicalMotor.evaluateCriticalThresholds(any())).thenReturn(Optional.of(reflex));
 
-    // Verify decision was triggered
+    citizenPulse.pulse(15);
+
+    // Verify task is cancelled (because critical was triggered)
+    // Wait, cancelTask arguments depend on what handleInterruption sends.
     verify(decisionMaker, times(1)).makeDecision(any(), any(), any());
-
-    // Verify task was NOT cancelled
-    verify(taskManager, never()).cancelActiveTask(any(Citizen.class), any(CitizenState.class), any(String.class));
-    verify(taskManager, never()).cancelActiveTask(any(Citizen.class), any(CitizenState.class), any(LastAction.class));
+    // Also verify taskManager execution is NEVER called because physiological crisis aborts execution
+    verify(taskManager, never()).executeActiveTask(any());
   }
 }

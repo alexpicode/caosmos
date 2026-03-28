@@ -21,6 +21,16 @@ public class RestTask implements Task {
 
     boolean isComplete = citizen.getPerception().status().energy() >= 100.0;
 
-    return new ActiveTask("REST", "Resting and relaxing", null, isComplete);
+    return new ActiveTask("REST", "Resting and relaxing", null, isComplete, allowsRoutineInterruptions());
+  }
+
+  @Override
+  public boolean allowsRoutineInterruptions() {
+    return true; // Low focus state allows for routine interruptions
+  }
+
+  @Override
+  public void onInterrupt(String reason) {
+    log.info("Resting interrupted. Reason: {}", reason);
   }
 }

@@ -15,6 +15,13 @@ public final class PhysiologicalThresholds {
   public static final double ENERGY_COLLAPSE = 5.0;
   public static final double ENERGY_RECOVERY_WAKE = 20.0;
   public static final double STRESS_PANIC = 95.0;
+  public static final double STRESS_CRITICAL = 80.0;
+  public static final double VITALITY_CRITICAL = 30.0;
+  public static final double VITALITY_NONE = 5.0;
+  public static final double HUNGER_FATAL = 95.0;
+
+  // Perception Sensory thresholds
+  public static final double ENTITY_PROXIMITY_ALERT_DISTANCE = 1.5;
 
   // Passive metabolic rates (per hour - positive magnitudes)
   public static final double PASSIVE_HUNGER_RATE = 0.5;

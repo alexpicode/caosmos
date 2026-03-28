@@ -49,6 +49,18 @@ public class PhysiologicalMotor {
       return Optional.of(new PhysiologicalReflex(true, "Panic Attack", "FLEE", events));
     }
 
+    // 3. Fatal Hunger (Reflex)
+    if (status.hunger() > PhysiologicalThresholds.HUNGER_FATAL) {
+      events.add("Extreme starvation! You must find food immediately or you will die.");
+      return Optional.of(new PhysiologicalReflex(true, "Starvation", "EAT", events));
+    }
+
+    // 4. Physical Collapse (Reflex)
+    if (status.vitality() < PhysiologicalThresholds.VITALITY_NONE) {
+      events.add("Your body has given up. You collapsed.");
+      return Optional.of(new PhysiologicalReflex(true, "Physical Collapse", "WAIT", events));
+    }
+
     return Optional.empty();
   }
 }

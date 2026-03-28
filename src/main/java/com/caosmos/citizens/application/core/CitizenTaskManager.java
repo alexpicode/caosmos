@@ -67,11 +67,13 @@ public class CitizenTaskManager {
    * Cancels the active task for a citizen and sets their state.
    */
   public void cancelActiveTask(Citizen citizen, CitizenState newState, String reason) {
+    taskRegistry.get(citizen.getUuid()).ifPresent(task -> task.onInterrupt(reason));
     taskRegistry.remove(citizen.getUuid());
     citizen.clearTask(newState, reason);
   }
 
   public void cancelActiveTask(Citizen citizen, CitizenState newState, LastAction action) {
+    taskRegistry.get(citizen.getUuid()).ifPresent(task -> task.onInterrupt(action.resultMessage()));
     taskRegistry.remove(citizen.getUuid());
     citizen.clearTask(newState, action);
   }

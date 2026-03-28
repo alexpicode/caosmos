@@ -33,10 +33,8 @@ public class CitizenPulse implements AgentPulse {
   private final PulseConfiguration pulseConfiguration;
   private final EntityTelemetryService telemetryService;
 
-  private long lastDecisionTick = 0;
   private final List<String> unprocessedEvents = new ArrayList<>();
 
-  private static final String CRITICAL_INTERRUPTION_STATUS = "INTERRUPTED";
 
   @Override
   public void pulse(long tick) {
@@ -55,13 +53,7 @@ public class CitizenPulse implements AgentPulse {
         citizen.getPerception().status().energy()
     ));
 
-    // 2. Execute Active Task
-    taskManager.executeActiveTask(citizen);
-
-    // 3. Handle Perception & Create Context
-    var fullPerception = perceptionHandler.handlePerception(citizen, unprocessedEvents);
-
-    // 3.5 Check Physiological Reflexes
+    // 2. Check Physiological Reflexes (Higher Priority Safety Layer)
     Optional<PhysiologicalReflex> physReflex = physiologicalMotor.evaluateCriticalThresholds(citizen);
     physReflex.ifPresent(r -> {
       r.events().forEach(e -> {
@@ -71,6 +63,36 @@ public class CitizenPulse implements AgentPulse {
       });
     });
 
+    if (physReflex.isPresent() && physReflex.get().critical()) {
+      PulseContext context = new PulseContext(
+          citizenName,
+          tick,
+          null,
+          new ArrayList<>(unprocessedEvents),
+          citizen.getLastAction()
+      );
+      handleInterruption(
+          physReflex.get().forcedActionType(),
+          physReflex.get().reason(),
+          physReflex.get().events(),
+          context,
+          true,
+          "CRITICAL_INTERRUPT"
+      );
+      return;
+    }
+
+    // 3. Execute Active Task
+    taskManager.executeActiveTask(citizen);
+
+    // 4. Handle Perception & Create Context
+    boolean allowsRoutine = false;
+    if (citizen.getActiveTask() != null) {
+      allowsRoutine = citizen.getActiveTask().allowsRoutineInterruptions();
+    }
+
+    var fullPerception = perceptionHandler.handlePerception(citizen, unprocessedEvents, allowsRoutine);
+
     PulseContext context = new PulseContext(
         citizenName,
         tick,
@@ -79,60 +101,32 @@ public class CitizenPulse implements AgentPulse {
         citizen.getLastAction()
     );
 
-    // 4. Handle Critical Interruptions
-    // First, check physiological reflexes (higher priority)
-    if (physReflex.isPresent() && physReflex.get().critical()) {
-      handleInterruption(
-          physReflex.get().forcedActionType(),
-          physReflex.get().reason(),
-          physReflex.get().events(),
-          context,
-          true
-      );
-      return;
-    }
-
-    // Then, check perception-based interruptions
+    // 5. Check Perception-based interruptions
     if (fullPerception.reflex().critical() && citizen.getLastAction() != null) {
+      String interruptReason =
+          allowsRoutine && !fullPerception.reflex().reason().contains("Threat") ? "ROUTINE_INTERRUPT"
+              : "CRITICAL_INTERRUPT";
       handleInterruption(
           citizen.getLastAction().type(),
           fullPerception.reflex().reason(),
           new ArrayList<>(),
           context,
-          true
+          true,
+          interruptReason
       );
       return;
     }
 
-    // 5. Decision Phase
+    // 6. Decision Phase
     if (CitizenState.IDLE.equals(citizen.getState())) {
       log.info("[CITIZEN:{}] Entering Decision Phase (IDLE)...", citizenName);
       performDecision(context);
-    } else {
-      // Task Timeout Check
-      if (tick - lastDecisionTick >= pulseConfiguration.maxTicksWithoutDecision()) {
-        log.info(
-            "[CITIZEN:{}] Task timeout reached ({} ticks). Forcing decision check...",
-            citizenName,
-            tick - lastDecisionTick
-        );
-        handleInterruption(
-            null,
-            "Routine check: You have been performing this task for a while. Do you want to continue or do something else?",
-            new ArrayList<>(),
-            context,
-            false // DO NOT cancel task on routine check
-        );
-      }
     }
   }
 
-  /**
-   * Unifies task cancellation and immediate decision handling for all critical events.
-   */
   private void handleInterruption(
       String actionType, String reason, List<String> events, PulseContext context,
-      boolean cancelTask
+      boolean cancelTask, String interruptType
   ) {
     String citizenName = citizen.getCitizenProfile().identity().name();
     log.info("[CITIZEN:{}] INTERRUPTION: {} (Action: {}, CancelTask: {})", citizenName, reason, actionType, cancelTask);
@@ -149,7 +143,7 @@ public class CitizenPulse implements AgentPulse {
     if (original == null) {
       original = new LastAction(
           actionType != null ? actionType : "UNKNOWN",
-          CRITICAL_INTERRUPTION_STATUS,
+          interruptType,
           reason,
           reason,
           Map.of()
@@ -157,7 +151,7 @@ public class CitizenPulse implements AgentPulse {
     }
 
     LastAction interruptedAction = original
-        .withStatus(CRITICAL_INTERRUPTION_STATUS)
+        .withStatus(interruptType)
         .withResultMessage(reason + (events.isEmpty() ? "" : " | " + String.join(" | ", events)));
 
     if (actionType != null) {
@@ -179,9 +173,6 @@ public class CitizenPulse implements AgentPulse {
   private void performDecision(PulseContext context) {
     // Delegate to decision maker
     var lastAction = decisionMaker.makeDecision(citizen, context, pulseConfiguration);
-
-    // Update last decision tick
-    this.lastDecisionTick = context.tick();
 
     // Update state with decision results
     citizen.transitionTo(CitizenState.IDLE, lastAction);

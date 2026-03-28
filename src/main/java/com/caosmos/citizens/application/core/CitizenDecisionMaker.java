@@ -107,6 +107,15 @@ public class CitizenDecisionMaker {
     contextualMap.put("active_task", citizenPerception.activeTask());
 
     contextualMap.put("last_action", citizenPerception.lastAction());
+
+    if (citizenPerception.lastAction() != null) {
+      String status = citizenPerception.lastAction().status();
+      if ("SUCCESS".equals(status) || "FAILED".equals(status) ||
+          "CRITICAL_INTERRUPT".equals(status) || "ROUTINE_INTERRUPT".equals(status)) {
+        contextualMap.put("interrupt_reason", status);
+      }
+    }
+
     contextualMap.put("events", context.unprocessedEvents());
 
     String contextualJson = jsonSerializer.toJson(contextualMap);

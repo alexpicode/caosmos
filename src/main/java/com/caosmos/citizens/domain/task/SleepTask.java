@@ -35,6 +35,11 @@ public class SleepTask implements Task {
       log.info("Citizen {} is fully rested.", citizen.getUuid());
     }
 
-    return new ActiveTask("SLEEP", "Sleeping and recovering", null, isComplete);
+    return new ActiveTask("SLEEP", "Sleeping and recovering", null, isComplete, allowsRoutineInterruptions());
+  }
+
+  @Override
+  public void onInterrupt(String reason) {
+    log.info("Sleep interrupted. Waking up because: {}", reason);
   }
 }

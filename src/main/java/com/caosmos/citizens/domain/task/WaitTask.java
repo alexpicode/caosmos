@@ -31,6 +31,16 @@ public class WaitTask implements Task {
     }
 
     boolean isComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WAIT_DURATION_HOURS;
-    return new ActiveTask("WAIT", "Waiting in repose", null, isComplete);
+    return new ActiveTask("WAIT", "Waiting in repose", null, isComplete, allowsRoutineInterruptions());
+  }
+
+  @Override
+  public boolean allowsRoutineInterruptions() {
+    return true; // Low focus state allows for routine interruptions
+  }
+
+  @Override
+  public void onInterrupt(String reason) {
+    log.info("Wait interrupted. Reason: {}", reason);
   }
 }
