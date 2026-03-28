@@ -3,19 +3,49 @@ package com.caosmos.world.domain.model;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldEntity;
 import java.util.Set;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class WorldObject implements WorldEntity {
+
+  public WorldObject(
+      String id,
+      String name,
+      Vector3 position,
+      Set<String> tags,
+      String parentZoneId,
+      Double radius,
+      Double width,
+      Double length
+  ) {
+    this.id = id;
+    this.name = name;
+    this.position = position;
+    setTags(tags);
+    this.parentZoneId = parentZoneId;
+    this.radius = radius;
+    this.width = width;
+    this.length = length;
+  }
 
   private String id;
   private String name;
   private Vector3 position;
   private Set<String> tags;
+
+  public void setTags(Set<String> tags) {
+    if (tags == null) {
+      this.tags = java.util.Collections.emptySet();
+    } else {
+      this.tags = tags.stream()
+          .filter(t -> t != null)
+          .map(String::toLowerCase)
+          .collect(java.util.stream.Collectors.toSet());
+    }
+  }
+
   private String parentZoneId;
 
   // Collision properties

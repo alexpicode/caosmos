@@ -15,7 +15,7 @@ import com.caosmos.world.domain.service.EnvironmentService;
 import com.caosmos.world.domain.service.NearbyEntityService;
 import com.caosmos.world.domain.service.NearbyZoneService;
 import com.caosmos.world.domain.service.SpatialHash;
-import com.caosmos.world.domain.service.TimeService;
+import com.caosmos.world.domain.service.WorldTimeService;
 import com.caosmos.world.domain.service.ZoneManager;
 import jakarta.annotation.PostConstruct;
 import java.util.HashSet;
@@ -35,7 +35,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
 
   private final SpatialHash spatialHash;
   private final ZoneManager zoneManager;
-  private final TimeService timeService;
+  private final WorldTimeService worldTimeService;
   private final EnvironmentService environmentService;
   private final NearbyEntityService nearbyEntityService;
   private final NearbyZoneService nearbyZoneService;
@@ -60,7 +60,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     String parentZoneName = zoneOpt.flatMap(z -> Optional.ofNullable(z.getParentId())).flatMap(zoneManager::getZone)
         .map(Zone::getName).orElse(null);
 
-    WorldDate worldDate = timeService.getCurrentWorldDate();
+    WorldDate worldDate = worldTimeService.getWorldDate();
     Environment globalEnv = environmentService.getCurrentEnvironment();
 
     String effectiveLightLevel;

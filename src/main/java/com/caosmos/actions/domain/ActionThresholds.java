@@ -34,9 +34,9 @@ public final class ActionThresholds {
   public static final double TALK_STRESS_REDUCTION = 5.0;
 
   // Workplace Tag Mapping
-  public static final String TAG_MINING = "MINING";
-  public static final String TAG_COMMERCE = "COMMERCE";
-  public static final String TAG_FORGE = "FORGE";
+  public static final String TAG_MINING = "mining";
+  public static final String TAG_COMMERCE = "commerce";
+  public static final String TAG_FORGE = "forge";
 
   // Item Tags
   public static final String ITEM_TAG_TOOL = "tool";

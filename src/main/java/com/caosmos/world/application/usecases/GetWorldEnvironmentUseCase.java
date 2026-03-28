@@ -1,9 +1,8 @@
 package com.caosmos.world.application.usecases;
 
-import com.caosmos.common.domain.model.world.WorldDate;
 import com.caosmos.world.application.dto.WorldEnvironmentResponse;
 import com.caosmos.world.domain.service.EnvironmentService;
-import com.caosmos.world.domain.service.TimeService;
+import com.caosmos.world.domain.service.WorldTimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +10,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GetWorldEnvironmentUseCase {
 
-  private final TimeService timeService;
+  private final WorldTimeService worldTimeService;
   private final EnvironmentService environmentService;
 
   public WorldEnvironmentResponse execute() {
     return new WorldEnvironmentResponse(
-        new WorldDate(timeService.getCurrentDay(), timeService.getTime()),
+        worldTimeService.getWorldDate(),
         environmentService.getCurrentEnvironment()
     );
   }

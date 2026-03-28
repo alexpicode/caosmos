@@ -8,6 +8,7 @@ import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.task.Task;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.world.domain.service.WorldTimeService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class CitizenTaskManager {
   private final CitizenSettings citizenSettings;
   private final TaskRegistry taskRegistry;
   private final WorldRegistry spatialRegistry;
+  private final WorldTimeService worldTimeService;
 
   public void executeActiveTask(Citizen citizen) {
     Optional<Task> task = taskRegistry.get(citizen.getUuid());
@@ -41,10 +43,8 @@ public class CitizenTaskManager {
       Vector3 initialPosition = citizen.getPosition();
 
       // Execute the task
-      ActiveTask activeTask = task.get().executeOnTick(
-          citizen, citizenSettings.getPulseFrequency(),
-          citizenSettings.getWalkingSpeed()
-      );
+      ActiveTask activeTask = task.get()
+          .executeOnTick(citizen, worldTimeService.getDeltaTime(), citizenSettings.getWalkingSpeed());
 
       Vector3 newPosition = citizen.getPosition();
       if (!initialPosition.equals(newPosition)) {

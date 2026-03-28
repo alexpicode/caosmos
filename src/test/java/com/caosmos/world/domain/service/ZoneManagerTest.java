@@ -37,7 +37,7 @@ class ZoneManagerTest {
         null,
         "EXTERIOR",
         Set.of(),
-        Set.of("OUTER_TAG"),
+        Set.of("outer_tag"),
         false,
         new Vector3(0, 0, 0),
         20,
@@ -49,7 +49,7 @@ class ZoneManagerTest {
         "outer",
         "EXTERIOR",
         Set.of(),
-        Set.of("INNER_TAG"),
+        Set.of("inner_tag"),
         false,
         new Vector3(0, 0, 0),
         10,
@@ -97,14 +97,14 @@ class ZoneManagerTest {
 
   @Test
   void testEffectiveTags() {
-    Zone root = new Zone("root", "Root", null, "EXTERIOR", Set.of(), Set.of("A"), false, new Vector3(0, 0, 0), 10, 10);
+    Zone root = new Zone("root", "Root", null, "EXTERIOR", Set.of(), Set.of("a"), false, new Vector3(0, 0, 0), 10, 10);
     Zone child = new Zone(
         "child",
         "Child",
         "root",
         "EXTERIOR",
         Set.of(),
-        Set.of("B"),
+        Set.of("b"),
         false,
         new Vector3(0, 0, 0),
         10,
@@ -116,7 +116,7 @@ class ZoneManagerTest {
         "child",
         "EXTERIOR",
         Set.of(),
-        Set.of("C"),
+        Set.of("c"),
         false,
         new Vector3(0, 0, 0),
         10,
@@ -129,9 +129,9 @@ class ZoneManagerTest {
 
     Set<String> tags = grandchild.getEffectiveTags(zoneManager.getZoneMap());
     assertEquals(3, tags.size());
-    assertTrue(tags.contains("A"));
-    assertTrue(tags.contains("B"));
-    assertTrue(tags.contains("C"));
+    assertTrue(tags.contains("a"));
+    assertTrue(tags.contains("b"));
+    assertTrue(tags.contains("c"));
   }
 
   @Test

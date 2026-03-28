@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EnvironmentService {
 
-  private final TimeService timeService;
+  private final WorldTimeService worldTimeService;
   private final Random random = new Random();
 
   private String currentWeather = "CLEAR";
@@ -20,20 +20,20 @@ public class EnvironmentService {
   public Environment getCurrentEnvironment() {
     updateWeather();
 
-    int hour = timeService.getCurrentHour();
+    int hour = worldTimeService.getCurrentHour();
     String lightLevel = getLightLevel(hour);
     String terrainType = "Urban";
 
     List<String> tags = new ArrayList<>();
     tags.add("city");
-    tags.add(timeService.getDayPeriod());
+    tags.add(hour >= 6 && hour <= 18 ? "day" : "night");
     tags.add(currentWeather);
 
     return new Environment(terrainType, tags, lightLevel);
   }
 
   private void updateWeather() {
-    long currentTick = timeService.getCurrentTick();
+    long currentTick = worldTimeService.getCurrentTick();
     // Change weather every 10000 ticks (approx every simulation day or so depending on speed)
     if (lastWeatherChangeTick == -1 || currentTick - lastWeatherChangeTick > 10000) {
       String[] weatherOptions = {"CLEAR", "CLOUDY", "RAINY", "STORM", "FOG"};

@@ -47,12 +47,12 @@ public class PerceptionMonitor {
     // 2. Check for critical threats or immediate social interactions
     for (NearbyEntity entity : perception.nearbyEntities()) {
       if (entity.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE ||
-          (entity.tags() != null && entity.tags().contains("HOSTILE"))) {
+          (entity.tags() != null && entity.tags().stream().anyMatch(t -> "hostile".equalsIgnoreCase(t)))) {
         return new ReflexResult(true, "Threat detected: " + entity.name(), informativeEvents);
       }
 
       if (allowsRoutineInterruptions) {
-        if (entity.tags() != null && entity.tags().contains("RESOURCE")) {
+        if (entity.tags() != null && entity.tags().stream().anyMatch(t -> "resource".equalsIgnoreCase(t))) {
           informativeEvents.add(
               "Has visto un recurso: " + entity.name() + " a " + String.format("%.1fm", entity.distance()));
           return new ReflexResult(true, "Recurso detectado: " + entity.name(), informativeEvents);

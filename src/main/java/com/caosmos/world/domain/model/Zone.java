@@ -4,12 +4,10 @@ import com.caosmos.common.domain.model.world.Vector3;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Zone {
 
@@ -19,10 +17,43 @@ public class Zone {
   private String type; // e.g. INTERIOR, EXTERIOR
   private Set<String> physicalTags = new HashSet<>();
   private Set<String> contextualTags = new HashSet<>();
+
   private boolean isEntryRestricted; // Need specific entry
   private Vector3 center;
   private double width;
   private double length;
+
+  public Zone(
+      String id,
+      String name,
+      String parentId,
+      String type,
+      Set<String> physicalTags,
+      Set<String> contextualTags,
+      boolean isEntryRestricted,
+      Vector3 center,
+      double width,
+      double length
+  ) {
+    this.id = id;
+    this.name = name;
+    this.parentId = parentId;
+    this.type = type;
+    setPhysicalTags(physicalTags);
+    setContextualTags(contextualTags);
+    this.isEntryRestricted = isEntryRestricted;
+    this.center = center;
+    this.width = width;
+    this.length = length;
+  }
+
+  public void setPhysicalTags(Set<String> physicalTags) {
+    this.physicalTags = normalizeTags(physicalTags);
+  }
+
+  public void setContextualTags(Set<String> contextualTags) {
+    this.contextualTags = normalizeTags(contextualTags);
+  }
 
   public boolean contains(Vector3 position) {
     double halfWidth = width / 2.0;
@@ -70,5 +101,15 @@ public class Zone {
       return 0;
     }
     return 1 + allZones.get(parentId).getHierarchyDepth(allZones);
+  }
+
+  private Set<String> normalizeTags(Set<String> tags) {
+    if (tags == null) {
+      return new HashSet<>();
+    }
+    return tags.stream()
+        .filter(t -> t != null)
+        .map(String::toLowerCase)
+        .collect(java.util.stream.Collectors.toSet());
   }
 }

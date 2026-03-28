@@ -38,20 +38,28 @@ public class CitizenAdapter implements CitizenPort {
 
   @Override
   public boolean isInZoneWithTag(UUID citizenId, String tag) {
+    if (tag == null) {
+      return false;
+    }
     Vector3 pos = getPosition(citizenId);
-    return worldPort.getZoneTagsAt(pos).contains(tag);
+    return worldPort.getZoneTagsAt(pos).contains(tag.toLowerCase());
   }
 
   @Override
   public boolean isItemEquippedWithTag(UUID citizenId, String tag) {
-    return citizenRegistry.get(citizenId).map(citizen -> citizen.hasEquippedItemWithTag(tag)).orElse(false);
+    if (tag == null) {
+      return false;
+    }
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> citizen.hasEquippedItemWithTag(tag.toLowerCase()))
+        .orElse(false);
   }
 
   @Override
   public Vector3 getPosition(UUID citizenId) {
     return citizenRegistry.get(citizenId)
-                          .map(citizen -> citizen.getCurrentState().getPosition())
-                          .orElseThrow(() -> new IllegalArgumentException("Citizen not found: " + citizenId));
+        .map(citizen -> citizen.getCurrentState().getPosition())
+        .orElseThrow(() -> new IllegalArgumentException("Citizen not found: " + citizenId));
   }
 
   @Override
@@ -84,8 +92,8 @@ public class CitizenAdapter implements CitizenPort {
   @Override
   public ItemData removeFromInventory(UUID citizenId, String itemId) {
     return citizenRegistry.get(citizenId)
-                          .map(citizen -> citizen.removeFromInventory(itemId))
-                          .orElse(null);
+        .map(citizen -> citizen.removeFromInventory(itemId))
+        .orElse(null);
   }
 
   @Override
@@ -139,9 +147,9 @@ public class CitizenAdapter implements CitizenPort {
   @Override
   public boolean isInSafeZone(UUID citizenId) {
     return citizenRegistry.get(citizenId)
-                          .map(citizen -> citizen.getCurrentState().getCurrentZone())
-                          .map(zoneName -> zoneName != null && zoneName.contains("[seguro]"))
-                          .orElse(false);
+        .map(citizen -> citizen.getCurrentState().getCurrentZone())
+        .map(zoneName -> zoneName != null && zoneName.contains("[seguro]"))
+        .orElse(false);
   }
 
   @Override
@@ -182,14 +190,14 @@ public class CitizenAdapter implements CitizenPort {
   @Override
   public String getJob(UUID citizenId) {
     return citizenRegistry.get(citizenId)
-                          .map(citizen -> citizen.getCitizenProfile().identity().job())
-                          .orElse(null);
+        .map(citizen -> citizen.getCitizenProfile().identity().job())
+        .orElse(null);
   }
 
   @Override
   public String getWorkplaceTag(UUID citizenId) {
     return citizenRegistry.get(citizenId)
-                          .map(citizen -> citizen.getCitizenProfile().identity().workplaceTag())
-                          .orElse(null);
+        .map(citizen -> citizen.getCitizenProfile().identity().workplaceTag())
+        .orElse(null);
   }
 }

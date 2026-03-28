@@ -25,48 +25,52 @@ public class WorldAdapter implements WorldPort {
 
   @Override
   public boolean isNearObjectWithTag(Vector3 position, String tag, double maxDistance) {
+    if (tag == null) {
+      return false;
+    }
+    String normalizedTag = tag.toLowerCase();
     return spatialHash.getNearbyEntities(position, maxDistance).stream()
-                      .filter(entity -> entity instanceof WorldObject)
-                      .map(entity -> (WorldObject) entity)
-                      .anyMatch(obj -> obj.getTags().contains(tag));
+        .filter(entity -> entity instanceof WorldObject)
+        .map(entity -> (WorldObject) entity)
+        .anyMatch(obj -> obj.getTags().contains(normalizedTag));
   }
 
   @Override
   public boolean checkCollision(Vector3 position) {
     // Check nearby objects first for performance
     return spatialHash.getNearbyEntities(position, 5.0).stream()
-                      .filter(entity -> entity instanceof WorldObject)
-                      .map(entity -> (WorldObject) entity)
-                      .anyMatch(obj -> obj.intersects(position));
+        .filter(entity -> entity instanceof WorldObject)
+        .map(entity -> (WorldObject) entity)
+        .anyMatch(obj -> obj.intersects(position));
   }
 
   @Override
   public List<String> getZoneTagsAt(Vector3 position) {
     return zoneManager.findZoneAt(position, null)
-                      .map(zone -> (List<String>) new ArrayList<>(zone.getEffectiveTags(zoneManager.getZoneMap())))
-                      .orElse(Collections.emptyList());
+        .map(zone -> (List<String>) new ArrayList<>(zone.getEffectiveTags(zoneManager.getZoneMap())))
+        .orElse(Collections.emptyList());
   }
 
   @Override
   public boolean isNearObject(Vector3 position, String objectId, double maxDistance) {
     return spatialHash.getById(objectId)
-                      .filter(entity -> entity instanceof WorldObject)
-                      .map(entity -> (WorldObject) entity)
-                      .map(obj -> {
-                        if (obj.intersects(position)) {
-                          return true;
-                        }
+        .filter(entity -> entity instanceof WorldObject)
+        .map(entity -> (WorldObject) entity)
+        .map(obj -> {
+          if (obj.intersects(position)) {
+            return true;
+          }
 
-                        double dist = obj.getPosition().distanceTo2D(position);
-                        double sizeOffset = 0;
-                        if (obj.getRadius() != null) {
-                          sizeOffset = obj.getRadius();
-                        } else if (obj.getWidth() != null && obj.getLength() != null) {
-                          sizeOffset = Math.max(obj.getWidth(), obj.getLength()) / 2.0;
-                        }
-                        return dist <= (maxDistance + sizeOffset);
-                      })
-                      .orElse(false);
+          double dist = obj.getPosition().distanceTo2D(position);
+          double sizeOffset = 0;
+          if (obj.getRadius() != null) {
+            sizeOffset = obj.getRadius();
+          } else if (obj.getWidth() != null && obj.getLength() != null) {
+            sizeOffset = Math.max(obj.getWidth(), obj.getLength()) / 2.0;
+          }
+          return dist <= (maxDistance + sizeOffset);
+        })
+        .orElse(false);
   }
 
   @Override
@@ -84,14 +88,14 @@ public class WorldAdapter implements WorldPort {
   public ItemData removeObject(String objectId) {
     log.info("Removing object {}", objectId);
     return spatialHash.getById(objectId)
-                      .filter(entity -> entity instanceof WorldObject)
-                      .map(entity -> {
-                        WorldObject obj = (WorldObject) entity;
-                        ItemData data = new ItemData(obj.getId(), obj.getName(), new ArrayList<>(obj.getTags()));
-                        // TODO spatialHash.remove(objectId); // If there was a remove method
-                        return data;
-                      })
-                      .orElse(null);
+        .filter(entity -> entity instanceof WorldObject)
+        .map(entity -> {
+          WorldObject obj = (WorldObject) entity;
+          ItemData data = new ItemData(obj.getId(), obj.getName(), new ArrayList<>(obj.getTags()));
+          // TODO spatialHash.remove(objectId); // If there was a remove method
+          return data;
+        })
+        .orElse(null);
   }
 
   @Override

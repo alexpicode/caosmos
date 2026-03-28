@@ -69,10 +69,14 @@ public class InventoryManager {
   }
 
   public boolean hasEquippedItemWithTag(String tag) {
-    if (leftHand != null && leftHand.tags() != null && leftHand.tags().contains(tag)) {
+    if (tag == null) {
+      return false;
+    }
+    String normalizedTag = tag.toLowerCase();
+    if (leftHand != null && leftHand.tags() != null && leftHand.tags().contains(normalizedTag)) {
       return true;
     }
-    return rightHand != null && rightHand.tags() != null && rightHand.tags().contains(tag);
+    return rightHand != null && rightHand.tags() != null && rightHand.tags().contains(normalizedTag);
   }
 
   public Inventory getInventory() {
@@ -81,17 +85,17 @@ public class InventoryManager {
   }
 
   private InventoryCapacity getInventoryCapacity() {
-    String status = "vacío";
+    String status = "empty";
     double fillRatio = (double) items.size() / maxSlots;
 
     if (fillRatio >= 0.9) {
-      status = "lleno";
+      status = "full";
     } else if (fillRatio >= 0.7) {
-      status = "casi_lleno";
+      status = "almost_full";
     } else if (fillRatio >= 0.4) {
-      status = "mitad_lleno";
+      status = "half_full";
     } else if (fillRatio >= 0.1) {
-      status = "casi_vacío";
+      status = "almost_empty";
     }
 
     return new InventoryCapacity(items.size(), maxSlots, status);
