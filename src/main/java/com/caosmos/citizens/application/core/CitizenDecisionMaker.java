@@ -114,7 +114,7 @@ public class CitizenDecisionMaker {
     Map<String, Object> messageMap = new HashMap<>();
     messageMap.put("self_json", selfJson);
     messageMap.put("contextual_json", contextualJson);
-    messageMap.put("world_json", jsonSerializer.toJson(context.fullPerception()));
+    messageMap.put("world_json", jsonSerializer.toJson(context.fullPerception().world()));
 
     return promptTemplate.buildMessage(userPromptResource, messageMap);
   }
