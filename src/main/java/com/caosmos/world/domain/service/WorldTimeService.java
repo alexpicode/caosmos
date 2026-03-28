@@ -41,6 +41,7 @@ public class WorldTimeService implements SimulationClock {
     return worldTime.getCurrentHour();
   }
 
+  @Override
   public double getDeltaTime() {
     return lastDeltaTime;
   }

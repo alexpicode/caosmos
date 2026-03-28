@@ -5,4 +5,6 @@ public interface SimulationClock {
   void update(long tick);
 
   long getCurrentTick();
+
+  double getDeltaTime();
 }

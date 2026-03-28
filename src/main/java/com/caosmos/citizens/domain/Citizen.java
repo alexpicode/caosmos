@@ -14,7 +14,9 @@ import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldEntity;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +36,8 @@ public class Citizen implements WorldEntity {
 
   private final BiologyManager biologyManager;
   private final InventoryManager inventoryManager;
+
+  private final Set<String> visitedZoneIds = new HashSet<>();
 
   @Getter
   @Setter
@@ -269,5 +273,15 @@ public class Citizen implements WorldEntity {
         dtSeconds,
         (bm, val) -> bm.decreaseStress((double) val)
     ); // wait, stressRate should be increaseStress?
+  }
+
+  public boolean isZoneVisited(String zoneId) {
+    return zoneId != null && visitedZoneIds.contains(zoneId);
+  }
+
+  public void markZoneAsVisited(String zoneId) {
+    if (zoneId != null) {
+      visitedZoneIds.add(zoneId);
+    }
   }
 }

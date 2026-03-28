@@ -24,4 +24,16 @@ public record Vector3(
     double dz = other.z - this.z;
     return Math.atan2(dz, dx);
   }
+
+  public double magnitude() {
+    return Math.sqrt(x * x + y * y + z * z);
+  }
+
+  public Vector3 normalize() {
+    double mag = magnitude();
+    if (mag == 0) {
+      return new Vector3(0, 0, 0);
+    }
+    return new Vector3(x / mag, y / mag, z / mag);
+  }
 }

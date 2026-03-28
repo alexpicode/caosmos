@@ -2,27 +2,76 @@ package com.caosmos.citizens.domain.task;
 
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
+import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
+import com.caosmos.common.domain.model.world.Vector3;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Task for exploring the environment. Low focus.
+ * Task for exploring the environment in a specific direction. Low focus, stops on novelty.
  */
 @Slf4j
 public class ExploreTask implements Task {
 
-  private double elapsedSeconds = 0;
+  private static final double EXPLORATION_LIMIT = 50.0;
+  private static final double ARRIVAL_THRESHOLD = 0.5;
+
+  private final Vector3 directionNormalized;
+  private Vector3 startPosition;
+  private Vector3 targetPosition;
+
+  public ExploreTask(Vector3 direction) {
+    this.directionNormalized = direction.normalize();
+  }
+
+  @Override
+  public CitizenState getCitizenState() {
+    return CitizenState.MOVING;
+  }
 
   @Override
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
-    elapsedSeconds += dt;
+    Vector3 currentPos = citizen.getCurrentState().getPosition();
 
+    // Initialize positions on first tick
+    if (startPosition == null) {
+      startPosition = currentPos;
+      targetPosition = new Vector3(
+          startPosition.x() + directionNormalized.x() * EXPLORATION_LIMIT,
+          startPosition.y() + directionNormalized.y() * EXPLORATION_LIMIT,
+          startPosition.z() + directionNormalized.z() * EXPLORATION_LIMIT
+      );
+      log.info("Citizen {} started exploration from {} towards {}", citizen.getUuid(), startPosition, targetPosition);
+    }
+
+    double distanceToTarget = currentPos.distanceTo(targetPosition);
+    double distanceTraveled = currentPos.distanceTo(startPosition);
+
+    if (distanceTraveled >= EXPLORATION_LIMIT || distanceToTarget <= ARRIVAL_THRESHOLD) {
+      log.info("Citizen {} completed exploration distance limit.", citizen.getUuid());
+      return new ActiveTask("EXPLORE", "Exploration reached limit", null, true, allowsRoutineInterruptions());
+    }
+
+    // --- Physiological Costs ---
     // Slightly higher costs during active exploration
-    citizen.consumeEnergy(PhysiologicalThresholds.PASSIVE_ENERGY_DECAY_RATE * 1.5 * (dt / 3600.0));
-    citizen.increaseHunger(PhysiologicalThresholds.PASSIVE_HUNGER_RATE * 1.5 * (dt / 3600.0));
+    citizen.consumeEnergy(PhysiologicalThresholds.MOVE_ENERGY_COST_RATE * 1.2 * (dt / 3600.0));
+    citizen.increaseHunger(PhysiologicalThresholds.MOVE_HUNGER_COST_RATE * 1.2 * (dt / 3600.0));
 
-    boolean isComplete = (elapsedSeconds / 3600.0) >= 1.0; // Explore for 1 hour
-    return new ActiveTask("EXPLORE", "Exploring interest points", null, isComplete, allowsRoutineInterruptions());
+    // Calculate movement
+    double moveDistance = walkingSpeed * dt;
+    if (moveDistance > distanceToTarget) {
+      moveDistance = distanceToTarget;
+    }
+
+    double ratio = moveDistance / distanceToTarget;
+    double newX = currentPos.x() + (targetPosition.x() - currentPos.x()) * ratio;
+    double newY = currentPos.y() + (targetPosition.y() - currentPos.y()) * ratio;
+    double newZ = currentPos.z() + (targetPosition.z() - currentPos.z()) * ratio;
+
+    Vector3 newPos = new Vector3(newX, newY, newZ);
+    citizen.getCurrentState().setPosition(newPos);
+
+    return new ActiveTask("EXPLORE", "Exploring environment", null, false, allowsRoutineInterruptions());
   }
 
   @Override

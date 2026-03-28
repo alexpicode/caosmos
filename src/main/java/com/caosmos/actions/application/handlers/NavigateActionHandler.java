@@ -1,7 +1,6 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
-import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
@@ -31,69 +30,46 @@ public class NavigateActionHandler implements ActionHandler {
       String targetId = (String) request.parameters().get("targetId");
       String direction = (String) request.parameters().get("direction");
 
-      Vector3 target = null;
-
       if (targetId != null && !targetId.isBlank()) {
-        target = worldService.getObjectPosition(targetId).orElse(null);
+        Vector3 target = worldService.getObjectPosition(targetId).orElse(null);
         if (target == null) {
           return ActionResult.failure("Cannot find target object in world.", getActionType());
         }
+        citizenService.assignTravelToTask(citizenId, target, targetId);
+        log.debug("Citizen {} started TravelTo navigation to {} (target={})", citizenId, target, targetId);
+        return ActionResult.success("Started TravelTo navigation.", getActionType());
       } else if (direction != null && !direction.isBlank()) {
-        Vector3 currentPos = citizenService.getPosition(citizenId);
-        target = calculateDistantPos(currentPos, direction);
+        Vector3 directionVector = parseDirection(direction);
+        if (directionVector == null) {
+          return ActionResult.failure("Invalid direction: " + direction, getActionType());
+        }
+        citizenService.assignExploreTask(citizenId, directionVector);
+        log.debug("Citizen {} started Explore navigation in direction {}", citizenId, direction);
+        return ActionResult.success("Started Explore navigation.", getActionType());
       } else {
         return ActionResult.failure("NAVIGATE requires either 'targetId' or 'direction'.", getActionType());
       }
-
-      citizenService.assignNavigationTask(citizenId, target, targetId);
-
-      log.debug(
-          "Citizen {} started navigation to {} (via {}; target={})",
-          citizenId, target, direction != null ? direction : "id", targetId
-      );
-      return ActionResult.success("Started navigation.", getActionType());
     } catch (Exception e) {
       log.error("Failed to start navigation for {}: {}", citizenId, e.getMessage());
       return ActionResult.failure("Navigation failed: " + e.getMessage(), getActionType());
     }
   }
 
-  private Vector3 calculateDistantPos(Vector3 currentPos, String direction) {
-    if (currentPos == null || direction == null) {
-      return currentPos;
+  private Vector3 parseDirection(String direction) {
+    if (direction == null) {
+      return null;
     }
 
-    double distance = ActionThresholds.DISTANT_NAVIGATION_STEP; // Far enough to allow continuous travel
-    double x = currentPos.x();
-    double y = currentPos.y();
-    double z = currentPos.z();
-
-    switch (direction.toUpperCase()) {
-      case "NORTH" -> z += distance;
-      case "SOUTH" -> z -= distance;
-      case "EAST" -> x += distance;
-      case "WEST" -> x -= distance;
-      case "NORTHEAST" -> {
-        x += distance;
-        z += distance;
-      }
-      case "NORTHWEST" -> {
-        x -= distance;
-        z += distance;
-      }
-      case "SOUTHEAST" -> {
-        x += distance;
-        z -= distance;
-      }
-      case "SOUTHWEST" -> {
-        x -= distance;
-        z -= distance;
-      }
-      //case "UP" -> y += distance;
-      //case "DOWN" -> y -= distance;
-      default -> {
-      }
-    }
-    return new Vector3(x, y, z);
+    return switch (direction.toUpperCase()) {
+      case "NORTH" -> new Vector3(0, 0, 1);
+      case "SOUTH" -> new Vector3(0, 0, -1);
+      case "EAST" -> new Vector3(1, 0, 0);
+      case "WEST" -> new Vector3(-1, 0, 0);
+      case "NORTHEAST" -> new Vector3(1, 0, 1).normalize();
+      case "NORTHWEST" -> new Vector3(-1, 0, 1).normalize();
+      case "SOUTHEAST" -> new Vector3(1, 0, -1).normalize();
+      case "SOUTHWEST" -> new Vector3(-1, 0, -1).normalize();
+      default -> null;
+    };
   }
 }

@@ -8,17 +8,17 @@ import com.caosmos.common.domain.model.world.Vector3;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Task that moves a citizen towards a specific target position.
+ * Task that moves a citizen towards a specific target position. High focus navigation.
  */
 @Slf4j
-public class MoveToTargetTask implements Task {
+public class TravelToTask implements Task {
 
   private static final double ARRIVAL_THRESHOLD = 0.2;
 
   private final Vector3 target;
   private final String targetId;
 
-  public MoveToTargetTask(Vector3 target, String targetId) {
+  public TravelToTask(Vector3 target, String targetId) {
     this.target = target;
     this.targetId = targetId;
   }
@@ -36,7 +36,7 @@ public class MoveToTargetTask implements Task {
     if (distance <= ARRIVAL_THRESHOLD) {
       log.info("Citizen {} reached target {}", citizen.getUuid(), target);
       citizen.getCurrentState().setPosition(target); // Snap to target
-      return new ActiveTask("MoveToTarget", "Reached target", targetId, true, allowsRoutineInterruptions());
+      return new ActiveTask("TravelTo", "Reached target", targetId, true, allowsRoutineInterruptions());
     }
 
     // --- Physiological Costs ---
@@ -70,12 +70,17 @@ public class MoveToTargetTask implements Task {
     log.debug("Citizen {} moved towards {}. New pos: {}", citizen.getUuid(), target, newPos);
 
     boolean isComplete = moveDistance >= distance; // Complete if we reached or overshot
-    return new ActiveTask("MoveToTarget", "Moving to target", targetId, isComplete, allowsRoutineInterruptions());
+    return new ActiveTask("TravelTo", "Traveling to target", targetId, isComplete, allowsRoutineInterruptions());
+  }
+
+  @Override
+  public boolean allowsRoutineInterruptions() {
+    return false;
   }
 
   @Override
   public void onInterrupt(String reason) {
-    log.info("Movement to {} interrupted. Reason: {}", target, reason);
+    log.info("Travel to {} interrupted. Reason: {}", target, reason);
   }
 
 }

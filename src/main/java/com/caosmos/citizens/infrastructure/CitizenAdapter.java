@@ -3,9 +3,10 @@ package com.caosmos.citizens.infrastructure;
 import com.caosmos.citizens.application.registry.CitizenRegistry;
 import com.caosmos.citizens.application.registry.TaskRegistry;
 import com.caosmos.citizens.domain.Citizen;
-import com.caosmos.citizens.domain.task.MoveToTargetTask;
+import com.caosmos.citizens.domain.task.ExploreTask;
 import com.caosmos.citizens.domain.task.RestTask;
 import com.caosmos.citizens.domain.task.SleepTask;
+import com.caosmos.citizens.domain.task.TravelToTask;
 import com.caosmos.citizens.domain.task.WaitTask;
 import com.caosmos.citizens.domain.task.WorkTask;
 import com.caosmos.common.domain.contracts.CitizenPort;
@@ -177,9 +178,15 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
-  public void assignNavigationTask(UUID citizenId, Vector3 target, String targetId) {
-    log.debug("Setting navigation task for citizen {} to {}", citizenId, target);
-    taskRegistry.register(citizenId, new MoveToTargetTask(target, targetId));
+  public void assignTravelToTask(UUID citizenId, Vector3 target, String targetId) {
+    log.debug("Setting TravelTo task for citizen {} to {}", citizenId, target);
+    taskRegistry.register(citizenId, new TravelToTask(target, targetId));
+  }
+
+  @Override
+  public void assignExploreTask(UUID citizenId, Vector3 direction) {
+    log.debug("Setting Explore task for citizen {} in direction {}", citizenId, direction);
+    taskRegistry.register(citizenId, new ExploreTask(direction));
   }
 
   @Override

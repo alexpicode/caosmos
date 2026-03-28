@@ -1,0 +1,108 @@
+package com.caosmos.citizens.application.handler;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.caosmos.citizens.domain.Citizen;
+import com.caosmos.citizens.domain.model.CitizenProfile;
+import com.caosmos.citizens.domain.model.perception.Identity;
+import com.caosmos.citizens.domain.model.perception.ReflexResult;
+import com.caosmos.citizens.domain.model.perception.Status;
+import com.caosmos.common.domain.model.world.Environment;
+import com.caosmos.common.domain.model.world.Location;
+import com.caosmos.common.domain.model.world.NearbyEntity;
+import com.caosmos.common.domain.model.world.WorldDate;
+import com.caosmos.common.domain.model.world.WorldPerception;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class PerceptionMonitorTest {
+
+  private PerceptionMonitor monitor;
+  private Citizen citizen;
+  private WorldDate date;
+  private Environment environment;
+
+  @BeforeEach
+  void setUp() {
+    monitor = new PerceptionMonitor();
+    CitizenProfile profile = new CitizenProfile(
+        new Identity("Tester", null, null, Collections.emptyList(), Collections.emptyMap()),
+        new Status(100.0, 0.0, 100.0, 0.0),
+        new CitizenProfile.BaseLocation(0, 0, 0),
+        "Neutral",
+        "manifest-1"
+    );
+    citizen = new Citizen(UUID.randomUUID(), profile);
+    date = new WorldDate(1, "Morning");
+    environment = new Environment("Plain", List.of(), "High");
+  }
+
+  @Test
+  void shouldDetectNoveltyWhenEnteringNewZone() {
+    // Arrange
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("New Zone", "Building", "Hall", Set.of(), null, "zone-abc"),
+        environment,
+        Collections.emptyList(),
+        Collections.emptyList()
+    );
+
+    citizen.getCurrentState().setCurrentZoneId("old-zone");
+
+    // Act
+    ReflexResult result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.critical());
+    assertTrue(result.reason().contains("Descubrimiento de zona"));
+    assertTrue(citizen.isZoneVisited("zone-abc"));
+  }
+
+  @Test
+  void shouldDetectInterestingObject() {
+    // Arrange
+    NearbyEntity interestingEntity = new NearbyEntity("Unique-ID", "Old Statue", 5.0, "North", Set.of("INTERESTING"));
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Square", "Park", "Center", Set.of(), null, "zone-1"),
+        environment,
+        List.of(interestingEntity),
+        Collections.emptyList()
+    );
+
+    // Act
+    ReflexResult result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.critical());
+    assertTrue(result.reason().contains("Objeto de interés"));
+  }
+
+  @Test
+  void shouldIgnoreNoveltyInFocusMode() {
+    // Arrange
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("New Zone", "Building", "Hall", Set.of(), null, "zone-abc"),
+        environment,
+        Collections.emptyList(),
+        Collections.emptyList()
+    );
+
+    // Act
+    ReflexResult result = monitor.evaluate(
+        citizen,
+        perception,
+        false
+    ); // focus mode: allowsRoutineInterruptions = false
+
+    // Assert
+    assertFalse(result.critical());
+  }
+}

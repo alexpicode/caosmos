@@ -46,8 +46,7 @@ public class CitizenPerceptionHandler {
 
     // Evaluate reflexes
     ReflexResult reflex = perceptionMonitor.evaluate(
-        citizen.getCurrentState(),
-        citizen.getPerception().status(),
+        citizen,
         worldPerception,
         allowsRoutineInterruptions
     );

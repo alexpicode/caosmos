@@ -6,17 +6,17 @@ import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
 import com.caosmos.citizens.domain.model.perception.Status;
-import com.caosmos.citizens.domain.task.MoveToTargetTask;
+import com.caosmos.citizens.domain.task.TravelToTask;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.Collections;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class MoveToTargetTaskTest {
+class TravelToTaskTest {
 
   private Citizen citizen;
-  private MoveToTargetTask task;
+  private TravelToTask task;
 
   @BeforeEach
   void setUp() {
@@ -28,7 +28,7 @@ class MoveToTargetTaskTest {
     CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Normal", "manifest-1");
 
     citizen = new Citizen(uuid, profile);
-    task = new MoveToTargetTask(new Vector3(100, 0, 100), "target-1");
+    task = new TravelToTask(new Vector3(100, 0, 100), "target-1");
   }
 
   @Test

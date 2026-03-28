@@ -1,9 +1,8 @@
 package com.caosmos.citizens.application.handler;
 
+import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
-import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
-import com.caosmos.citizens.domain.model.perception.Status;
 import com.caosmos.common.domain.model.world.NearbyEntity;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.ArrayList;
@@ -20,11 +19,12 @@ public class PerceptionMonitor {
    * Evaluates perception to determine if there's a critical reason to stop the current task.
    */
   public ReflexResult evaluate(
-      CurrentState currentState,
-      Status status,
+      Citizen citizen,
       WorldPerception perception,
       boolean allowsRoutineInterruptions
   ) {
+    var currentState = citizen.getCurrentState();
+    var status = citizen.getPerception().status();
     List<String> informativeEvents = new ArrayList<>();
 
     // 1. Check for zone change reflexes
@@ -35,12 +35,22 @@ public class PerceptionMonitor {
     if (previousZoneId == null) {
       currentState.setCurrentZoneId(newZoneId);
       currentState.setCurrentZone(newZoneName);
+      citizen.markZoneAsVisited(newZoneId);
     } else if (!previousZoneId.equals(newZoneId)) {
       currentState.setCurrentZoneId(newZoneId);
       currentState.setCurrentZone(newZoneName);
+
+      boolean isNewZone = !citizen.isZoneVisited(newZoneId);
+      citizen.markZoneAsVisited(newZoneId);
+
       if (allowsRoutineInterruptions) {
-        informativeEvents.add("Has entrado a la zona: " + newZoneName);
-        return new ReflexResult(true, "Llegada/Entrada a zona: " + newZoneName, informativeEvents);
+        if (isNewZone) {
+          informativeEvents.add("¡NOVEDAD! Has entrado a una zona inexplorada: " + newZoneName);
+          return new ReflexResult(true, "Descubrimiento de zona: " + newZoneName, informativeEvents);
+        } else {
+          informativeEvents.add("Has entrado a la zona: " + newZoneName);
+          return new ReflexResult(true, "Llegada/Entrada a zona: " + newZoneName, informativeEvents);
+        }
       }
     }
 
@@ -52,6 +62,11 @@ public class PerceptionMonitor {
       }
 
       if (allowsRoutineInterruptions) {
+        if (entity.tags() != null && entity.tags().stream().anyMatch(t -> "INTERESTING".equalsIgnoreCase(t))) {
+          informativeEvents.add("¡INTERESANTE! Has avistado: " + entity.name());
+          return new ReflexResult(true, "Objeto de interés: " + entity.name(), informativeEvents);
+        }
+
         if (entity.tags() != null && entity.tags().stream().anyMatch(t -> "resource".equalsIgnoreCase(t))) {
           informativeEvents.add(
               "Has visto un recurso: " + entity.name() + " a " + String.format("%.1fm", entity.distance()));
