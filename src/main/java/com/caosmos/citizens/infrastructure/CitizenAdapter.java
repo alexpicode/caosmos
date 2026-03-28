@@ -148,7 +148,7 @@ public class CitizenAdapter implements CitizenPort {
   public boolean isInSafeZone(UUID citizenId) {
     return citizenRegistry.get(citizenId)
         .map(citizen -> citizen.getCurrentState().getCurrentZone())
-        .map(zoneName -> zoneName != null && zoneName.contains("[seguro]"))
+        .map(zoneName -> zoneName != null && zoneName.contains("safe"))
         .orElse(false);
   }
 
