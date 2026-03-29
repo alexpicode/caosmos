@@ -114,8 +114,10 @@ public class CitizenDecisionMaker {
     // Use world perception if available in context
     if (context.fullPerception() != null) {
       messageMap.put("world_json", jsonSerializer.toJson(context.fullPerception().world()));
+      messageMap.put("explore_tags_json", jsonSerializer.toJson(context.fullPerception().world().tagsForExplore()));
     } else {
       messageMap.put("world_json", "{}");
+      messageMap.put("explore_tags_json", "[]");
     }
 
     return promptTemplate.buildMessage(userPromptResource, messageMap);

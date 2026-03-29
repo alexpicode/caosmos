@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +44,9 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
 
   @Value("${caosmos.world.max-vision-distance}")
   private double maxVisionDistance;
+
+  @Value("${caosmos.world.explore-search-radius:250.0}")
+  private double exploreSearchRadius;
 
   @PostConstruct
   public void initialize() {
@@ -93,6 +97,8 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         maxVisionDistance
     );
 
+    Set<String> tagsForExplore = getTagsInRadius(position, exploreSearchRadius);
+
     String currentLocation = getCurrentLocation(nearbyEntities);
 
     Location location = new Location(
@@ -104,7 +110,14 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         zoneOpt.map(Zone::getId).orElse(null)
     );
 
-    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities, nearbyZones);
+    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities, nearbyZones, tagsForExplore);
+  }
+
+  private Set<String> getTagsInRadius(Vector3 position, double radius) {
+    return zoneManager.getAllZones().stream()
+        .filter(z -> position.distanceTo2D(z.getCenter()) <= radius)
+        .flatMap(z -> z.getTags().stream())
+        .collect(Collectors.toSet());
   }
 
   private static String getCurrentLocation(List<NearbyEntity> nearbyEntities) {

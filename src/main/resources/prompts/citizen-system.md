@@ -25,8 +25,12 @@ Workplace: <workplace>.
 
 - TRAVEL_TO: `params: { "targetId": "..." }`. Use this for continuous travel to a specific entity (like a workplace, a
   person, or a resource).
-- EXPLORE: `params: { "direction": "..." }`. Use this for continuous travel in a cardinal direction (NORTH, SOUTH, EAST,
-  WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST). Only use EXPLORE if the location of a resource is unknown; if you
+- EXPLORE: `params: { "direction": "...", "target": "..." }`. Use this for continuous travel in a cardinal direction (
+  NORTH, SOUTH, EAST,
+  WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST). If a "target" tag is provided (e.g. "mine", "market", "town"), you
+  will
+  automatically stop when a matching zone is physically found. Only use EXPLORE if the location of a resource is
+  unknown; if you
   already have a target ID, always use TRAVEL_TO.
 - REST: (no params). Use this to recover energy and reduce stress without sleeping. Ideal for short breaks.
 - PICKUP: `params: { "targetId": "..." }`

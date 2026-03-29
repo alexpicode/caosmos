@@ -6,7 +6,11 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "physicalTags": [],
+      "physicalTags": [
+        "town",
+        "urban",
+        "paved"
+      ],
       "contextualTags": [
         "town",
         "safe"
@@ -25,7 +29,12 @@
       "type": "EXTERIOR",
       "parentId": "town",
       "isEntryRestricted": false,
-      "physicalTags": [],
+      "physicalTags": [
+        "market",
+        "crowded",
+        "stalls",
+        "open-air"
+      ],
       "contextualTags": [
         "commerce"
       ],
@@ -81,7 +90,12 @@
       "parentId": "blacksmith",
       "type": "INTERIOR",
       "isEntryRestricted": true,
-      "physicalTags": [],
+      "physicalTags": [
+        "vault",
+        "stony",
+        "enclosed",
+        "dark"
+      ],
       "contextualTags": [
         "treasure",
         "restricted"
@@ -100,7 +114,11 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "physicalTags": [],
+      "physicalTags": [
+        "residential",
+        "houses",
+        "quiet"
+      ],
       "contextualTags": [
         "residential"
       ],
@@ -118,7 +136,11 @@
       "type": "EXTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "physicalTags": [],
+      "physicalTags": [
+        "industrial",
+        "mechanical",
+        "smoky"
+      ],
       "contextualTags": [
         "industrial"
       ],
@@ -137,7 +159,10 @@
       "parentId": null,
       "isEntryRestricted": false,
       "physicalTags": [
-        "mine"
+        "mine",
+        "rocky",
+        "tunnel",
+        "dark"
       ],
       "contextualTags": [
         "mining",

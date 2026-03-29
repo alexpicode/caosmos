@@ -3,6 +3,7 @@ package com.caosmos.citizens.application.handler;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.caosmos.citizens.application.registry.TaskRegistry;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
@@ -27,9 +28,12 @@ class PerceptionMonitorTest {
   private WorldDate date;
   private Environment environment;
 
+  private TaskRegistry taskRegistry;
+
   @BeforeEach
   void setUp() {
-    monitor = new PerceptionMonitor();
+    taskRegistry = new TaskRegistry();
+    monitor = new PerceptionMonitor(taskRegistry);
     CitizenProfile profile = new CitizenProfile(
         new Identity("Tester", null, null, Collections.emptyList(), Collections.emptyMap()),
         new Status(100.0, 0.0, 100.0, 0.0),
@@ -50,7 +54,8 @@ class PerceptionMonitorTest {
         new Location("New Zone", "Building", "Hall", Set.of(), null, "zone-abc"),
         environment,
         Collections.emptyList(),
-        Collections.emptyList()
+        Collections.emptyList(),
+        Collections.emptySet()
     );
 
     // Act
@@ -58,7 +63,7 @@ class PerceptionMonitorTest {
 
     // Assert
     assertTrue(result.isCritical());
-    assertTrue(result.reason().contains("Descubrimiento de zona"));
+    assertTrue(result.reason().contains("Zone discovery"));
   }
 
   @Test
@@ -70,7 +75,8 @@ class PerceptionMonitorTest {
         new Location("Square", "Park", "Center", Set.of(), null, "zone-1"),
         environment,
         List.of(interestingEntity),
-        Collections.emptyList()
+        Collections.emptyList(),
+        Collections.emptySet()
     );
 
     // Act
@@ -78,7 +84,7 @@ class PerceptionMonitorTest {
 
     // Assert
     assertTrue(result.isCritical());
-    assertTrue(result.reason().contains("Objeto de interés"));
+    assertTrue(result.reason().contains("Object of interest"));
   }
 
   @Test
@@ -89,7 +95,8 @@ class PerceptionMonitorTest {
         new Location("New Zone", "Building", "Hall", Set.of(), null, "zone-abc"),
         environment,
         Collections.emptyList(),
-        Collections.emptyList()
+        Collections.emptyList(),
+        Collections.emptySet()
     );
 
     // Act

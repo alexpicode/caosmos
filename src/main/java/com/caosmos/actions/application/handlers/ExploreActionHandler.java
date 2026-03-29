@@ -31,14 +31,20 @@ public class ExploreActionHandler implements ActionHandler {
         return ActionResult.failure("EXPLORE requires 'direction'.", getActionType());
       }
 
+      String target = (String) request.parameters().get("target");
+
       Vector3 directionVector = parseDirection(direction);
       if (directionVector == null) {
         return ActionResult.failure("Invalid direction: " + direction, getActionType());
       }
 
-      citizenService.assignExploreTask(citizenId, directionVector);
-      log.debug("Citizen {} started Explore navigation in direction {}", citizenId, direction);
-      return ActionResult.success("Started continuous exploration in direction " + direction + ".", getActionType());
+      citizenService.assignExploreTask(citizenId, directionVector, target);
+      log.debug("Citizen {} started Explore in direction {} with target {}", citizenId, direction, target);
+      return ActionResult.success(
+          "Started continuous exploration in direction " + direction + (target != null ? " searching for " + target
+              : "") + ".",
+          getActionType()
+      );
 
     } catch (Exception e) {
       log.error("Failed to start exploration for {}: {}", citizenId, e.getMessage());

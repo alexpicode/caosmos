@@ -17,11 +17,17 @@ public class ExploreTask implements Task {
   private static final double ARRIVAL_THRESHOLD = 0.5;
 
   private final Vector3 directionNormalized;
+  private final String targetTag;
   private Vector3 startPosition;
   private Vector3 targetPosition;
 
-  public ExploreTask(Vector3 direction) {
+  public ExploreTask(Vector3 direction, String targetTag) {
     this.directionNormalized = direction.normalize();
+    this.targetTag = targetTag != null ? targetTag.toLowerCase() : null;
+  }
+
+  public String getTargetTag() {
+    return targetTag;
   }
 
   @Override
