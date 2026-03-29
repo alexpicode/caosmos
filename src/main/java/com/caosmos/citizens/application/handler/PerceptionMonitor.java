@@ -45,11 +45,11 @@ public class PerceptionMonitor {
 
       if (allowsRoutineInterruptions) {
         if (isNewZone) {
-          informativeEvents.add("¡NOVEDAD! Has entrado a una zona inexplorada: " + newZoneName);
-          return new ReflexResult(true, "Descubrimiento de zona: " + newZoneName, informativeEvents);
+          informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
+          return new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents);
         } else {
-          informativeEvents.add("Has entrado a la zona: " + newZoneName);
-          return new ReflexResult(true, "Llegada/Entrada a zona: " + newZoneName, informativeEvents);
+          informativeEvents.add("You've entered the zone: " + newZoneName);
+          return new ReflexResult(true, "Zone arrival/entry: " + newZoneName, informativeEvents);
         }
       }
     }
@@ -63,14 +63,14 @@ public class PerceptionMonitor {
 
       if (allowsRoutineInterruptions) {
         if (entity.tags() != null && entity.tags().stream().anyMatch(t -> "INTERESTING".equalsIgnoreCase(t))) {
-          informativeEvents.add("¡INTERESANTE! Has avistado: " + entity.name());
-          return new ReflexResult(true, "Objeto de interés: " + entity.name(), informativeEvents);
+          informativeEvents.add("INTERESTING! You've spotted: " + entity.name());
+          return new ReflexResult(true, "Object of interest: " + entity.name(), informativeEvents);
         }
 
         if (entity.tags() != null && entity.tags().stream().anyMatch(t -> "resource".equalsIgnoreCase(t))) {
           informativeEvents.add(
-              "Has visto un recurso: " + entity.name() + " a " + String.format("%.1fm", entity.distance()));
-          return new ReflexResult(true, "Recurso detectado: " + entity.name(), informativeEvents);
+              "You've seen a resource: " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
+          return new ReflexResult(true, "Resource detected: " + entity.name(), informativeEvents);
         }
 
         informativeEvents.add("Seen " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
