@@ -39,7 +39,7 @@ class PickupActionHandlerTest {
   @Test
   void testPickupFailsWhenFar() {
     String targetId = "rock1";
-    ActionRequest request = new ActionRequest("PICKUP", Map.of("targetId", targetId));
+    ActionRequest request = new ActionRequest("PICKUP", null, Map.of("targetId", targetId));
 
     when(citizenPort.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)).thenReturn(false);
 
@@ -53,7 +53,7 @@ class PickupActionHandlerTest {
   @Test
   void testPickupSucceedsWhenNear() {
     String targetId = "rock1";
-    ActionRequest request = new ActionRequest("PICKUP", Map.of("targetId", targetId));
+    ActionRequest request = new ActionRequest("PICKUP", null, Map.of("targetId", targetId));
     ItemData item = new ItemData(targetId, "Rock", Collections.emptyList());
 
     when(citizenPort.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)).thenReturn(true);

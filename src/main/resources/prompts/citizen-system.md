@@ -25,13 +25,13 @@ Workplace: <workplace>.
 
 - TRAVEL_TO: `params: { "targetId": "..." }`. Use this for continuous travel to a specific entity (like a workplace, a
   person, or a resource).
-- EXPLORE: `params: { "direction": "...", "target": "..." }`. Use this for continuous travel in a cardinal direction (
-  NORTH, SOUTH, EAST,
-  WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST). If a "target" tag is provided (e.g. "mine", "market", "town"), you
-  will
-  automatically stop when a matching zone is physically found. Only use EXPLORE if the location of a resource is
-  unknown; if you
-  already have a target ID, always use TRAVEL_TO.
+- EXPLORE: `params: { "direction": "...", "targetTag": "..." (optional) }`. Use this for continuous travel in a cardinal
+  direction (NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST). If a `targetTag` is provided
+  (select from the `Distant Interest Tags` list if available), you will automatically stop when a matching zone is
+  physically found.
+  **Targeting Rules**: Only use `targetTag` for semantic tags (e.g., "mining").
+  If you already have a specific target identifier, use `TRAVEL_TO`. If no distant tags are relevant or available,
+  omit the `targetTag` parameter and just explore the direction.
 - REST: (no params). Use this to recover energy and reduce stress without sleeping. Ideal for short breaks.
 - PICKUP: `params: { "targetId": "..." }`
 - EXAMINE: `params: { "targetId": "..." }`
@@ -42,7 +42,8 @@ Workplace: <workplace>.
 - UNEQUIP: `params: { "hand": "left"|"right" }`
 - DROP: `params: { "targetId": "..." }`
 - SLEEP: (no params)
-- WAIT: (no params)
+- WAIT: (no params). Use this for very short pauses. Avoid using this continuously unless you are intentionally
+  waiting for a specific event. Favor EXPLORE or other activities if you have no immediate task.
 - TALK: `params: { "targetId": "...", "message": "..." }` (to socialize and reduce stress)
 - WORK: `params: { "workplaceType": "..." }` (e.g., "shop", "mine", "farm", "office")
 - CONTINUE: (no params) Use this to PERIST in your current task without any change. Use this especially during "Routine
@@ -71,5 +72,8 @@ Respond ONLY with a JSON object (no extra text) containing:
 - No text outside the JSON.
 - The data you receive IS the ground truth. If a PICKUP did not add an item to your inventory, it failed — act
   accordingly.
+- **IDs vs Tags**: Distinguish between unique identifiers and semantic tags. Use `targetId` for specific unique IDs
+  (e.g., "zone_mining_01"). Use `targetTag` for semantic categories (e.g., "mining"). Do not use a unique ID as a
+  tag.
 - Treat FAILED or unimplemented actions as if they never happened.
 - If a target is not in your perception, you cannot interact with it. Do not attempt to guess or invent IDs.

@@ -5,6 +5,7 @@ import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.common.domain.model.world.Vector3;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,17 +18,16 @@ public class ExploreTask implements Task {
   private static final double ARRIVAL_THRESHOLD = 0.5;
 
   private final Vector3 directionNormalized;
+  @Getter
   private final String targetTag;
+  private final String reason;
   private Vector3 startPosition;
   private Vector3 targetPosition;
 
-  public ExploreTask(Vector3 direction, String targetTag) {
+  public ExploreTask(Vector3 direction, String targetTag, String reason) {
     this.directionNormalized = direction.normalize();
     this.targetTag = targetTag != null ? targetTag.toLowerCase() : null;
-  }
-
-  public String getTargetTag() {
-    return targetTag;
+    this.reason = reason;
   }
 
   @Override
@@ -79,7 +79,11 @@ public class ExploreTask implements Task {
     Vector3 newPos = new Vector3(newX, newY, newZ);
     citizen.getCurrentState().setPosition(newPos);
 
-    return new ActiveTask("EXPLORE", "Exploring environment", null, false, allowsRoutineInterruptions());
+    String taskTarget = targetTag != null ? "Search: " + targetTag : null;
+    if (reason != null) {
+      taskTarget = taskTarget != null ? taskTarget + " (" + reason + ")" : reason;
+    }
+    return new ActiveTask("EXPLORE", "Exploring environment", taskTarget, false, allowsRoutineInterruptions());
   }
 
   @Override

@@ -33,7 +33,7 @@ class WorkActionHandlerTest {
 
   @Test
   void testWorkFailsWhenNotInZone() {
-    ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "mine"));
+    ActionRequest request = new ActionRequest("WORK", null, Map.of("workplaceType", "mine"));
 
     when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_MINING)).thenReturn(false);
 
@@ -46,7 +46,7 @@ class WorkActionHandlerTest {
 
   @Test
   void testWorkSucceedsInZoneWithTool() {
-    ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "mine"));
+    ActionRequest request = new ActionRequest("WORK", null, Map.of("workplaceType", "mine"));
 
     when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_MINING)).thenReturn(true);
     when(citizenPort.isItemEquippedWithTag(citizenId, ActionThresholds.ITEM_TAG_MINING)).thenReturn(true);
@@ -59,7 +59,7 @@ class WorkActionHandlerTest {
 
   @Test
   void testWorkFailsInZoneWithoutTool() {
-    ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "mine"));
+    ActionRequest request = new ActionRequest("WORK", null, Map.of("workplaceType", "mine"));
 
     when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_MINING)).thenReturn(true);
     when(citizenPort.isItemEquippedWithTag(citizenId, ActionThresholds.ITEM_TAG_MINING)).thenReturn(false);
@@ -73,7 +73,7 @@ class WorkActionHandlerTest {
 
   @Test
   void testWorkSucceedsInZoneNoToolRequired() {
-    ActionRequest request = new ActionRequest("WORK", Map.of("workplaceType", "shop"));
+    ActionRequest request = new ActionRequest("WORK", null, Map.of("workplaceType", "shop"));
 
     when(citizenPort.isInZoneWithTag(citizenId, ActionThresholds.TAG_COMMERCE)).thenReturn(true);
 

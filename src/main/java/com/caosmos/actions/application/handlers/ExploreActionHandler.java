@@ -31,17 +31,25 @@ public class ExploreActionHandler implements ActionHandler {
         return ActionResult.failure("EXPLORE requires 'direction'.", getActionType());
       }
 
-      String target = (String) request.parameters().get("target");
+      String targetTag = (String) request.parameters().get("targetTag");
+      String reasoning = request.reasoning();
 
       Vector3 directionVector = parseDirection(direction);
       if (directionVector == null) {
         return ActionResult.failure("Invalid direction: " + direction, getActionType());
       }
 
-      citizenService.assignExploreTask(citizenId, directionVector, target);
-      log.debug("Citizen {} started Explore in direction {} with target {}", citizenId, direction, target);
+      citizenService.assignExploreTask(citizenId, directionVector, targetTag, reasoning);
+      log.debug(
+          "Citizen {} started Explore in direction {} with target {} - reason: {}",
+          citizenId,
+          direction,
+          targetTag,
+          reasoning
+      );
       return ActionResult.success(
-          "Started continuous exploration in direction " + direction + (target != null ? " searching for " + target
+          "Started continuous exploration in direction " + direction + (targetTag != null ? " searching for "
+              + targetTag
               : "") + ".",
           getActionType()
       );

@@ -30,7 +30,7 @@ class ExploreTaskTest {
 
     citizen = new Citizen(uuid, profile);
     // Explore North (0, 0, 1)
-    task = new ExploreTask(new Vector3(0, 0, 1), null);
+    task = new ExploreTask(new Vector3(0, 0, 1), null, null);
   }
 
   @Test

@@ -56,10 +56,16 @@ public class CitizenDecisionMaker {
         systemMessage,
         userMessage
     );
-    log.info("[CITIZEN:{}] AI DECISION: {} - reasoning: {}", citizenName, response.type(), response.reasoning());
+    log.info(
+        "[CITIZEN:{}] AI DECISION: {} - params: {} - reasoning: {}",
+        citizenName,
+        response.type(),
+        response.params(),
+        response.reasoning()
+    );
 
     // 4. Dispatch Resulting Action
-    ActionRequest request = new ActionRequest(response.type(), response.params());
+    ActionRequest request = new ActionRequest(response.type(), response.reasoning(), response.params());
     ActionResult result = actionPort.dispatch(citizen.getUuid(), request);
     log.info(
         "[CITIZEN:{}] DISPATCH RESULT: {} - {}",
