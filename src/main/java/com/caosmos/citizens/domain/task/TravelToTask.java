@@ -32,6 +32,8 @@ public class TravelToTask implements Task {
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
     Vector3 currentPos = citizen.getCurrentState().getPosition();
     double distance = currentPos.distanceTo(target);
+    var biology = citizen.biology();
+    double hours = dt / 3600.0;
 
     if (distance <= ARRIVAL_THRESHOLD) {
       log.info("Citizen {} reached target {}", citizen.getUuid(), target);
@@ -41,13 +43,13 @@ public class TravelToTask implements Task {
 
     // --- Physiological Costs ---
     // Energy decay
-    citizen.consumeEnergy(PhysiologicalThresholds.MOVE_ENERGY_COST_RATE * (dt / 3600.0));
+    biology.decreaseEnergy(PhysiologicalThresholds.MOVE_ENERGY_COST_RATE * hours);
     // Hunger increase
-    citizen.increaseHunger(PhysiologicalThresholds.MOVE_HUNGER_COST_RATE * (dt / 3600.0));
+    biology.increaseHunger(PhysiologicalThresholds.MOVE_HUNGER_COST_RATE * hours);
 
     // Calculate movement distance for this tick
     double currentWalkingSpeed = walkingSpeed;
-    if (citizen.getPerception().status().energy() < PhysiologicalThresholds.ENERGY_EXTREME_FATIGUE) {
+    if (biology.getEnergy() < PhysiologicalThresholds.ENERGY_EXTREME_FATIGUE) {
       currentWalkingSpeed *= PhysiologicalThresholds.EXTREME_FATIGUE_SPEED_FACTOR;
     }
 

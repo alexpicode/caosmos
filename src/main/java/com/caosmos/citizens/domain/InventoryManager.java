@@ -1,5 +1,6 @@
 package com.caosmos.citizens.domain;
 
+import com.caosmos.citizens.domain.model.Hand;
 import com.caosmos.citizens.domain.model.perception.Equipment;
 import com.caosmos.citizens.domain.model.perception.EquippedItem;
 import com.caosmos.citizens.domain.model.perception.Inventory;
@@ -11,7 +12,7 @@ import java.util.Map;
 import lombok.Data;
 
 /**
- * Manages inventory slots, equipment, and items for a citizen
+ * Manages inventory slots, equipment, and items for a citizen.
  */
 @Data
 public class InventoryManager {
@@ -42,26 +43,46 @@ public class InventoryManager {
     return items.get(itemId);
   }
 
-  public boolean equipLeftHand(EquippedItem item) {
-    this.leftHand = item;
+  /**
+   * Equips an item from the inventory to the specified hand.
+   *
+   * @return true if the item was found and equipped successfully.
+   */
+  public boolean equipToHand(String itemId, Hand hand) {
+    ItemData itemToEquip = getItem(itemId);
+    if (itemToEquip == null) {
+      return false;
+    }
+
+    EquippedItem eqItem = new EquippedItem(itemToEquip.id(), itemToEquip.name(), itemToEquip.tags());
+
+    switch (hand) {
+      case LEFT -> this.leftHand = eqItem;
+      case RIGHT -> this.rightHand = eqItem;
+    }
+
     return true;
+
   }
 
-  public boolean equipRightHand(EquippedItem item) {
-    this.rightHand = item;
-    return true;
-  }
-
-  public EquippedItem unequipLeftHand() {
-    EquippedItem item = leftHand;
-    leftHand = null;
-    return item;
-  }
-
-  public EquippedItem unequipRightHand() {
-    EquippedItem item = rightHand;
-    rightHand = null;
-    return item;
+  /**
+   * Unequips the item from the specified hand.
+   *
+   * @return true if the hand had an item that was unequipped.
+   */
+  public boolean unequipHand(Hand hand) {
+    return switch (hand) {
+      case LEFT -> {
+        EquippedItem item = leftHand;
+        leftHand = null;
+        yield item != null;
+      }
+      case RIGHT -> {
+        EquippedItem item = rightHand;
+        rightHand = null;
+        yield item != null;
+      }
+    };
   }
 
   public Equipment getEquipment() {

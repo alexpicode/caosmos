@@ -37,22 +37,18 @@ public class CitizenDecisionMaker {
   /**
    * Makes a decision for a citizen based on their current state and world perception.
    */
-  public LastAction makeDecision(Citizen citizen, PulseContext context, PulseConfiguration pulseConfiguration) {
-
+  public LastAction makeDecision(Citizen citizen, PulseContext context, PulseConfiguration config) {
     String citizenName = citizen.getCitizenProfile().identity().name();
 
-    // Prepare System Message
-    String systemMessage = buildSystemMessage(citizen, pulseConfiguration.systemPromptResource());
+    // 1. Prepare Prompts
+    String systemMessage = buildSystemMessage(citizen, config.systemPromptResource());
+    String userMessage = buildUserMessage(citizen, context, config.userPromptResource());
 
-    // Prepare User Message (Full Perception + Informative Events)
-    String userMessage = buildUserMessage(citizen, context, pulseConfiguration.userPromptResource());
+    // 2. Set thinking state
+    citizen.transitionTo(CitizenState.THINKING, "Deciding next action");
 
-    // Set citizen state to thinking for the actual reasoning process
-    citizen.transitionTo(CitizenState.THINKING, "Deciding what to do");
-
-    log.info("[CITIZEN:{}] Thinking...", citizenName);
-
-    // Delegate reasoning to ThinkingProvider
+    // 3. Request Thinking from AI
+    log.info("[CITIZEN:{}] Requesting AI Decision...", citizenName);
     AgentAction response = thinkingProvider.think(
         citizen.getUuid(),
         citizenName,
@@ -60,77 +56,79 @@ public class CitizenDecisionMaker {
         systemMessage,
         userMessage
     );
-    log.info("[CITIZEN:{}] Action Decided: {}", citizenName, response);
+    log.info("[CITIZEN:{}] AI DECISION: {} - reasoning: {}", citizenName, response.type(), response.reasoning());
 
-    // Dispatch action
+    // 4. Dispatch Resulting Action
     ActionRequest request = new ActionRequest(response.type(), response.params());
     ActionResult result = actionPort.dispatch(citizen.getUuid(), request);
-    log.info("[CITIZEN:{}] Action Result: {}", citizenName, result);
+    log.info(
+        "[CITIZEN:{}] DISPATCH RESULT: {} - {}",
+        citizenName,
+        result.success() ? "SUCCESS" : "FAILED",
+        result.message()
+    );
 
-    LastAction newLastAction = buildLastAction(request, result, response);
-
-    return newLastAction;
+    // 5. Construct Domain Result
+    return buildLastAction(request, result, response);
   }
 
-
-  /**
-   * Builds the system prompt for AI reasoning.
-   */
   private String buildSystemMessage(Citizen citizen, Resource systemPromptResource) {
     Map<String, Object> systemMap = new HashMap<>();
-    systemMap.put("name", citizen.getCitizenProfile().identity().name());
-    systemMap.put("traits", String.join(", ", citizen.getCitizenProfile().identity().traits()));
-    systemMap.put("skills", jsonSerializer.toJson(citizen.getCitizenProfile().identity().skills()));
+    var identity = citizen.getCitizenProfile().identity();
+
+    systemMap.put("name", identity.name());
+    systemMap.put("job", identity.job());
+    systemMap.put("workplace", identity.workplaceTag());
+    systemMap.put("traits", String.join(", ", identity.traits()));
+    systemMap.put("skills", jsonSerializer.toJson(identity.skills()));
     systemMap.put("personality", citizen.getCitizenProfile().personality());
 
     return promptTemplate.buildMessage(systemPromptResource, systemMap);
   }
 
-  /**
-   * Builds the user message for AI reasoning.
-   */
+
   private String buildUserMessage(Citizen citizen, PulseContext context, Resource userPromptResource) {
+    CitizenPerception perception = citizen.getPerception();
 
-    CitizenPerception citizenPerception = context.fullPerception().citizen();
-
+    // 1. Self State (JSON)
     Map<String, Object> selfMap = new HashMap<>();
-    selfMap.put("identity", citizenPerception.identity());
-    selfMap.put("status", citizenPerception.status());
-    selfMap.put("equipment", citizenPerception.equipment());
-    selfMap.put("inventory", citizenPerception.inventory());
-    selfMap.put("position", citizenPerception.position());
-
+    selfMap.put("status", perception.status());
+    selfMap.put("equipment", perception.equipment());
+    selfMap.put("inventory", perception.inventory());
+    selfMap.put("position", perception.position());
     String selfJson = jsonSerializer.toJson(selfMap);
 
+    // 2. Contextual Data (JSON)
     Map<String, Object> contextualMap = new HashMap<>();
     contextualMap.put("current_state", citizen.getState());
-    contextualMap.put("active_task", citizenPerception.activeTask());
-
-    contextualMap.put("last_action", citizenPerception.lastAction());
-
-    if (citizenPerception.lastAction() != null) {
-      String status = citizenPerception.lastAction().status();
-      if ("SUCCESS".equals(status) || "FAILED".equals(status) ||
-          "CRITICAL_INTERRUPT".equals(status) || "ROUTINE_INTERRUPT".equals(status)) {
-        contextualMap.put("interrupt_reason", status);
-      }
-    }
-
-    contextualMap.put("events", context.unprocessedEvents());
-
+    contextualMap.put("active_task", perception.activeTask());
+    contextualMap.put("last_action", perception.lastAction());
+    contextualMap.put("recent_events", context.unprocessedEvents());
     String contextualJson = jsonSerializer.toJson(contextualMap);
 
+    // 3. Assemble Template
     Map<String, Object> messageMap = new HashMap<>();
     messageMap.put("self_json", selfJson);
     messageMap.put("contextual_json", contextualJson);
-    messageMap.put("world_json", jsonSerializer.toJson(context.fullPerception().world()));
+
+    // Use world perception if available in context
+    if (context.fullPerception() != null) {
+      messageMap.put("world_json", jsonSerializer.toJson(context.fullPerception().world()));
+    } else {
+      messageMap.put("world_json", "{}");
+    }
 
     return promptTemplate.buildMessage(userPromptResource, messageMap);
   }
 
-  private static LastAction buildLastAction(ActionRequest request, ActionResult result, AgentAction response) {
+  private LastAction buildLastAction(ActionRequest request, ActionResult result, AgentAction response) {
     String status = result.success() ? "SUCCESS" : "FAILED";
-
-    return new LastAction(request.type(), status, response.reasoning(), result.message(), response.params());
+    return new LastAction(
+        request.type(),
+        status,
+        response.reasoning(),
+        result.message() != null ? result.message() : response.reasoning(),
+        response.params()
+    );
   }
 }

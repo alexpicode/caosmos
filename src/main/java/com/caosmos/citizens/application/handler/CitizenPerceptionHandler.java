@@ -3,6 +3,7 @@ package com.caosmos.citizens.application.handler;
 import com.caosmos.citizens.application.model.FullPerception;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.perception.CitizenPerception;
+import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
 import com.caosmos.common.domain.model.world.Vector3;
@@ -44,12 +45,23 @@ public class CitizenPerceptionHandler {
     );
     log.debug("[CITIZEN:{}] WorldPerception at position {}: {}", citizenName, currentPosition, worldPerception);
 
-    // Evaluate reflexes
-    ReflexResult reflex = perceptionMonitor.evaluate(
+    // Evaluate reflexes (pure evaluation)
+    PerceptionEvaluation eval = perceptionMonitor.evaluate(
         citizen,
         worldPerception,
         allowsRoutineInterruptions
     );
+
+    // Apply state changes recommended by the evaluation
+    if (eval.newZoneId() != null) {
+      citizen.getCurrentState().setCurrentZoneId(eval.newZoneId());
+      citizen.getCurrentState().setCurrentZone(eval.newZoneName());
+      if (eval.shouldMarkVisited()) {
+        citizen.markZoneAsVisited(eval.newZoneId());
+      }
+    }
+
+    ReflexResult reflex = eval.reflex();
 
     // Add informative events to the provided list without duplicates
     reflex.informativeEvents().forEach(e -> {
@@ -64,3 +76,4 @@ public class CitizenPerceptionHandler {
     return new FullPerception(citizenPerception, worldPerception, reflex);
   }
 }
+

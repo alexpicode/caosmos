@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
-import com.caosmos.citizens.domain.model.perception.ReflexResult;
+import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.Status;
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.Location;
@@ -53,15 +53,12 @@ class PerceptionMonitorTest {
         Collections.emptyList()
     );
 
-    citizen.getCurrentState().setCurrentZoneId("old-zone");
-
     // Act
-    ReflexResult result = monitor.evaluate(citizen, perception, true);
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
 
     // Assert
-    assertTrue(result.critical());
+    assertTrue(result.isCritical());
     assertTrue(result.reason().contains("Descubrimiento de zona"));
-    assertTrue(citizen.isZoneVisited("zone-abc"));
   }
 
   @Test
@@ -77,10 +74,10 @@ class PerceptionMonitorTest {
     );
 
     // Act
-    ReflexResult result = monitor.evaluate(citizen, perception, true);
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
 
     // Assert
-    assertTrue(result.critical());
+    assertTrue(result.isCritical());
     assertTrue(result.reason().contains("Objeto de interés"));
   }
 
@@ -96,13 +93,13 @@ class PerceptionMonitorTest {
     );
 
     // Act
-    ReflexResult result = monitor.evaluate(
+    PerceptionEvaluation result = monitor.evaluate(
         citizen,
         perception,
         false
     ); // focus mode: allowsRoutineInterruptions = false
 
     // Assert
-    assertFalse(result.critical());
+    assertFalse(result.isCritical());
   }
 }

@@ -2,6 +2,7 @@ package com.caosmos.citizens.application.handler;
 
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
+import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
 import com.caosmos.common.domain.model.world.NearbyEntity;
 import com.caosmos.common.domain.model.world.WorldPerception;
@@ -10,15 +11,17 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 /**
- * Monitors perception to detect critical stimuli that require immediate attention (reflexes).
+ * Monitors perception to detect critical stimuli that require immediate attention (reflexes). Pure evaluator that
+ * doesn't mutate state directly.
  */
 @Component
 public class PerceptionMonitor {
 
   /**
-   * Evaluates perception to determine if there's a critical reason to stop the current task.
+   * Evaluates perception to determine if there's a critical reason to stop the current task. Returns a
+   * PerceptionEvaluation containing reflexes and recommended state changes.
    */
-  public ReflexResult evaluate(
+  public PerceptionEvaluation evaluate(
       Citizen citizen,
       WorldPerception perception,
       boolean allowsRoutineInterruptions
@@ -27,47 +30,61 @@ public class PerceptionMonitor {
     var status = citizen.getPerception().status();
     List<String> informativeEvents = new ArrayList<>();
 
-    // 1. Check for zone change reflexes
+    // 1. Check for zone changes
     String previousZoneId = currentState.getCurrentZoneId();
     String newZoneId = perception.location().zoneId();
     String newZoneName = perception.location().zone();
 
-    if (previousZoneId == null) {
-      currentState.setCurrentZoneId(newZoneId);
-      currentState.setCurrentZone(newZoneName);
-      citizen.markZoneAsVisited(newZoneId);
-    } else if (!previousZoneId.equals(newZoneId)) {
-      currentState.setCurrentZoneId(newZoneId);
-      currentState.setCurrentZone(newZoneName);
+    String pendingZoneId = null;
+    String pendingZoneName = null;
+    boolean shouldMarkVisited = false;
+
+    if (previousZoneId == null || !previousZoneId.equals(newZoneId)) {
+      pendingZoneId = newZoneId;
+      pendingZoneName = newZoneName;
 
       boolean isNewZone = !citizen.isZoneVisited(newZoneId);
-      citizen.markZoneAsVisited(newZoneId);
+      shouldMarkVisited = true; // Mark visited even if not a "novelty" for interruption purposes
 
-      if (isNewZone && allowsRoutineInterruptions) {
+      if (isNewZone && allowsRoutineInterruptions && previousZoneId != null) {
         informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
-        return new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents);
+        return new PerceptionEvaluation(
+            new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents),
+            pendingZoneId, pendingZoneName, shouldMarkVisited
+        );
       }
 
-      informativeEvents.add("You've entered the zone: " + newZoneName);
+      if (previousZoneId != null) {
+        informativeEvents.add("You've entered the zone: " + newZoneName);
+      }
     }
 
     // 2. Check for critical threats or immediate social interactions
     for (NearbyEntity entity : perception.nearbyEntities()) {
       if (entity.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE ||
-          (entity.tags() != null && entity.tags().stream().anyMatch(t -> "hostile".equalsIgnoreCase(t)))) {
-        return new ReflexResult(true, "Threat detected: " + entity.name(), informativeEvents);
+          hasTag(entity, "hostile")) {
+        return new PerceptionEvaluation(
+            new ReflexResult(true, "Threat detected: " + entity.name(), informativeEvents),
+            pendingZoneId, pendingZoneName, shouldMarkVisited
+        );
       }
 
       if (allowsRoutineInterruptions) {
-        if (entity.tags() != null && entity.tags().stream().anyMatch(t -> "INTERESTING".equalsIgnoreCase(t))) {
+        if (hasTag(entity, "interesting")) {
           informativeEvents.add("INTERESTING! You've spotted: " + entity.name());
-          return new ReflexResult(true, "Object of interest: " + entity.name(), informativeEvents);
+          return new PerceptionEvaluation(
+              new ReflexResult(true, "Object of interest: " + entity.name(), informativeEvents),
+              pendingZoneId, pendingZoneName, shouldMarkVisited
+          );
         }
 
-        if (entity.tags() != null && entity.tags().stream().anyMatch(t -> "resource".equalsIgnoreCase(t))) {
+        if (hasTag(entity, "resource")) {
           informativeEvents.add(
               "You've seen a resource: " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
-          return new ReflexResult(true, "Resource detected: " + entity.name(), informativeEvents);
+          return new PerceptionEvaluation(
+              new ReflexResult(true, "Resource detected: " + entity.name(), informativeEvents),
+              pendingZoneId, pendingZoneName, shouldMarkVisited
+          );
         }
 
         informativeEvents.add("Seen " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
@@ -88,6 +105,14 @@ public class PerceptionMonitor {
       informativeEvents.add("You are at the limit of your mental endurance.");
     }
 
-    return new ReflexResult(false, null, informativeEvents);
+    return new PerceptionEvaluation(
+        new ReflexResult(false, null, informativeEvents),
+        pendingZoneId, pendingZoneName, shouldMarkVisited
+    );
+  }
+
+  private boolean hasTag(NearbyEntity entity, String tag) {
+    return entity.tags() != null &&
+        entity.tags().stream().anyMatch(tag::equalsIgnoreCase);
   }
 }

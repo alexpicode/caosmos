@@ -47,7 +47,7 @@ class SleepTaskTest {
   @Test
   void testSleepCompletesAtFullEnergy() {
     // Almost full energy
-    citizen.consumeEnergy(-79.5); // Energy = 99.5
+    citizen.biology().increaseEnergy(79.5); // Energy = 99.5
 
     var result = task.executeOnTick(citizen, 360.0, 0.0); // 6 mins = 1.0 energy recovery
 

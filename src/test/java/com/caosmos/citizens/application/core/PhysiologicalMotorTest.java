@@ -43,7 +43,7 @@ class PhysiologicalMotorTest {
   void testStarvationDrainsVitality() {
     // Force high hunger
     for (int i = 0; i < 200; i++) {
-      citizen.increaseHunger(1.0);
+      citizen.biology().increaseHunger(1.0);
     }
 
     double dt = 3600.0; // 1 hour
@@ -56,7 +56,7 @@ class PhysiologicalMotorTest {
   @Test
   void testCriticalThresholdExhaustion() {
     // Force low energy
-    citizen.consumeEnergy(96.0); // Energy = 4.0 (< 5.0 collapse)
+    citizen.biology().decreaseEnergy(96.0); // Energy = 4.0 (< 5.0 collapse)
 
     var reflex = motor.evaluateCriticalThresholds(citizen);
 

@@ -21,6 +21,9 @@ public class WorkTask implements Task {
   @Override
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
     elapsedSeconds += dt;
+    double hours = dt / 3600.0;
+    var biology = citizen.biology();
+
     double energyRate;
     double hungerRate;
     double stressRate;
@@ -36,9 +39,9 @@ public class WorkTask implements Task {
       stressRate = PhysiologicalThresholds.SHOP_STRESS_INCREASE_RATE;
     }
 
-    citizen.consumeEnergy(Math.abs(energyRate) * (dt / 3600.0));
-    citizen.increaseHunger(hungerRate * (dt / 3600.0));
-    citizen.applyStress(stressRate * (dt / 3600.0));
+    biology.decreaseEnergy(Math.abs(energyRate) * hours);
+    biology.increaseHunger(hungerRate * hours);
+    biology.increaseStress(stressRate * hours);
 
     boolean shiftComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WORK_DURATION_HOURS;
 

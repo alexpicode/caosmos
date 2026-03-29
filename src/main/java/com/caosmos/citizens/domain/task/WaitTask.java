@@ -21,13 +21,15 @@ public class WaitTask implements Task {
   @Override
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
     elapsedSeconds += dt;
+    double hours = dt / 3600.0;
+    var biology = citizen.biology();
 
     // 1. Minimum energy decay (active repose)
-    citizen.consumeEnergy(Math.abs(PhysiologicalThresholds.WAIT_ENERGY_DECAY_RATE) * (dt / 3600.0));
+    biology.decreaseEnergy(Math.abs(PhysiologicalThresholds.WAIT_ENERGY_DECAY_RATE) * hours);
 
     // 2. Stress reduction in safe zone
     if (inSafeZone) {
-      citizen.reduceStress(Math.abs(PhysiologicalThresholds.SAFE_ZONE_STRESS_REDUCTION_RATE) * (dt / 3600.0));
+      biology.decreaseStress(Math.abs(PhysiologicalThresholds.SAFE_ZONE_STRESS_REDUCTION_RATE) * hours);
     }
 
     boolean isComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WAIT_DURATION_HOURS;

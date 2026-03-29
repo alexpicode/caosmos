@@ -6,11 +6,11 @@ import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.application.model.PulseContext;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
+import com.caosmos.citizens.domain.model.InterruptType;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.common.application.telemetry.BiometricsEntry;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
 import com.caosmos.common.domain.contracts.AgentPulse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class CitizenPulse implements AgentPulse {
   private final PulseConfiguration pulseConfiguration;
   private final EntityTelemetryService telemetryService;
 
-  private final List<String> unprocessedEvents = new ArrayList<>();
+  private final EventBuffer eventBuffer = new EventBuffer();
 
 
   @Override
@@ -55,29 +55,17 @@ public class CitizenPulse implements AgentPulse {
 
     // 2. Check Physiological Reflexes (Higher Priority Safety Layer)
     Optional<PhysiologicalReflex> physReflex = physiologicalMotor.evaluateCriticalThresholds(citizen);
-    physReflex.ifPresent(r -> {
-      r.events().forEach(e -> {
-        if (!unprocessedEvents.contains(e)) {
-          unprocessedEvents.add(e);
-        }
-      });
-    });
+    physReflex.ifPresent(r -> eventBuffer.addAll(r.events()));
 
     if (physReflex.isPresent() && physReflex.get().critical()) {
-      PulseContext context = new PulseContext(
-          citizenName,
-          tick,
-          null,
-          new ArrayList<>(unprocessedEvents),
-          citizen.getLastAction()
-      );
       handleInterruption(
+          tick,
+          citizenName,
           physReflex.get().forcedActionType(),
           physReflex.get().reason(),
           physReflex.get().events(),
-          context,
           true,
-          "CRITICAL_INTERRUPT"
+          InterruptType.CRITICAL
       );
       return;
     }
@@ -91,28 +79,22 @@ public class CitizenPulse implements AgentPulse {
       allowsRoutine = citizen.getActiveTask().allowsRoutineInterruptions();
     }
 
-    var fullPerception = perceptionHandler.handlePerception(citizen, unprocessedEvents, allowsRoutine);
-
-    PulseContext context = new PulseContext(
-        citizenName,
-        tick,
-        fullPerception,
-        new ArrayList<>(unprocessedEvents),
-        citizen.getLastAction()
-    );
+    var fullPerception = perceptionHandler.handlePerception(citizen, eventBuffer.snapshot(), allowsRoutine);
 
     // 5. Check Perception-based interruptions
     if (fullPerception.reflex().critical() && citizen.getLastAction() != null) {
-      String interruptReason =
-          allowsRoutine && !fullPerception.reflex().reason().contains("Threat") ? "ROUTINE_INTERRUPT"
-              : "CRITICAL_INTERRUPT";
+      InterruptType type = allowsRoutine && !fullPerception.reflex().reason().contains("Threat")
+          ? InterruptType.ROUTINE
+          : InterruptType.CRITICAL;
+
       handleInterruption(
+          tick,
+          citizenName,
           citizen.getLastAction().type(),
           fullPerception.reflex().reason(),
-          new ArrayList<>(),
-          context,
+          List.of(), // Events already in buffer
           true,
-          interruptReason
+          type
       );
       return;
     }
@@ -120,66 +102,67 @@ public class CitizenPulse implements AgentPulse {
     // 6. Decision Phase
     if (CitizenState.IDLE.equals(citizen.getState())) {
       log.info("[CITIZEN:{}] Entering Decision Phase (IDLE)...", citizenName);
-      performDecision(context);
+      performDecision(createContext(tick, citizenName));
     }
   }
 
   private void handleInterruption(
-      String actionType, String reason, List<String> events, PulseContext context,
-      boolean cancelTask, String interruptType
+      long tick, String citizenName, String actionType, String reason, List<String> events,
+      boolean cancelTask, InterruptType interruptType
   ) {
-    String citizenName = citizen.getCitizenProfile().identity().name();
-    log.info("[CITIZEN:{}] INTERRUPTION: {} (Action: {}, CancelTask: {})", citizenName, reason, actionType, cancelTask);
+    log.info(
+        "[CITIZEN:{}] INTERRUPTION: {} (Action: {}, Type: {}, CancelTask: {})",
+        citizenName, reason, actionType, interruptType, cancelTask
+    );
 
-    // Ensure events are added to the list for the perception context
-    events.forEach(e -> {
-      if (!unprocessedEvents.contains(e)) {
-        unprocessedEvents.add(e);
-      }
-    });
+    eventBuffer.addAll(events);
 
-    // Preserve existing action parameters while updating status and result
+    LastAction interruptedAction = buildInterruptedAction(actionType, reason, interruptType);
+
+    if (cancelTask) {
+      taskManager.cancelActiveTask(citizen, CitizenState.INTERRUPTED, interruptedAction);
+    } else {
+      citizen.transitionTo(CitizenState.INTERRUPTED, interruptedAction);
+    }
+
+    performDecision(createContext(tick, citizenName));
+  }
+
+  private LastAction buildInterruptedAction(String actionType, String reason, InterruptType type) {
     LastAction original = citizen.getLastAction();
     if (original == null) {
       original = new LastAction(
           actionType != null ? actionType : "UNKNOWN",
-          interruptType,
+          type.name(),
           reason,
           reason,
           Map.of()
       );
     }
 
-    LastAction interruptedAction = original
-        .withStatus(interruptType)
-        .withResultMessage(reason + (events.isEmpty() ? "" : " | " + String.join(" | ", events)));
+    LastAction interrupted = original.withStatus(type.name())
+        .withResultMessage(reason);
 
     if (actionType != null) {
-      interruptedAction = interruptedAction.withType(actionType);
+      interrupted = interrupted.withType(actionType);
     }
+    return interrupted;
+  }
 
-    // Cancel current task and set state to thinking/interrupted if requested
-    if (cancelTask) {
-      taskManager.cancelActiveTask(citizen, CitizenState.INTERRUPTED, interruptedAction);
-    } else {
-      // Just transition to state to signal thinking, but keep the task
-      citizen.transitionTo(CitizenState.INTERRUPTED, interruptedAction);
-    }
-
-    // Force direct decision
-    performDecision(context);
+  private PulseContext createContext(long tick, String citizenName) {
+    return new PulseContext(
+        citizenName,
+        tick,
+        null, // fullPerception is gathered per step if needed, context uses latest
+        eventBuffer.snapshot(),
+        citizen.getLastAction()
+    );
   }
 
   private void performDecision(PulseContext context) {
-    // Delegate to decision maker
     var lastAction = decisionMaker.makeDecision(citizen, context, pulseConfiguration);
-
-    // Update state with decision results
     citizen.transitionTo(CitizenState.IDLE, lastAction);
-
-    // Clear unprocessed events after they've been processed in a decision
-    unprocessedEvents.clear();
+    eventBuffer.clear();
   }
-
-
 }
+

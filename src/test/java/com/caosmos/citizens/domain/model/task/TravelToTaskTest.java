@@ -47,7 +47,7 @@ class TravelToTaskTest {
   @Test
   void testFatigueReducesSpeed() {
     // Force extreme fatigue
-    citizen.consumeEnergy(90.0); // Energy = 10.0 (< 15.0 EXTREME_FATIGUE)
+    citizen.biology().decreaseEnergy(90.0); // Energy = 10.0 (< 15.0 EXTREME_FATIGUE)
 
     Vector3 startPos = citizen.getPosition();
     task.executeOnTick(citizen, 10.0, 1.0); // Move for 10 seconds at 1.0 m/s

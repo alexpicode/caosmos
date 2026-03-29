@@ -13,13 +13,16 @@ public class RestTask implements Task {
 
   @Override
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
+    var biology = citizen.biology();
+    double hours = dt / 3600.0;
+
     // 1. Recover Energy
-    citizen.increaseEnergy(PhysiologicalThresholds.REST_ENERGY_RECOVERY_RATE * (dt / 3600.0));
+    biology.increaseEnergy(PhysiologicalThresholds.REST_ENERGY_RECOVERY_RATE * hours);
 
     // 2. Reduce Stress
-    citizen.reduceStress(PhysiologicalThresholds.REST_STRESS_REDUCTION_RATE * (dt / 3600.0));
+    biology.decreaseStress(PhysiologicalThresholds.REST_STRESS_REDUCTION_RATE * hours);
 
-    boolean isComplete = citizen.getPerception().status().energy() >= 100.0;
+    boolean isComplete = biology.getEnergy() >= 100.0;
 
     return new ActiveTask("REST", "Resting and relaxing", null, isComplete, allowsRoutineInterruptions());
   }

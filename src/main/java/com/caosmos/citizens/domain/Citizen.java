@@ -5,15 +5,9 @@ import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.CitizenPerception;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
-import com.caosmos.citizens.domain.model.perception.Equipment;
-import com.caosmos.citizens.domain.model.perception.EquippedItem;
-import com.caosmos.citizens.domain.model.perception.Inventory;
 import com.caosmos.citizens.domain.model.perception.LastAction;
-import com.caosmos.citizens.domain.model.perception.Status;
-import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldEntity;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -60,6 +54,16 @@ public class Citizen implements WorldEntity {
     this.currentState = new CurrentState(initialPosition, null, null, CitizenState.IDLE, null, null);
   }
 
+  // --- Manager Accessors ---
+
+  public BiologyManager biology() {
+    return biologyManager;
+  }
+
+  public InventoryManager inventory() {
+    return inventoryManager;
+  }
+
   // --- Convenience Methods ---
 
   public CitizenState getState() {
@@ -102,15 +106,12 @@ public class Citizen implements WorldEntity {
 
   @Override
   public Map<String, Object> getProperties() {
-    Map<String, Object> props = new HashMap<>();
-    props.put("tags", citizenProfile.identity().traits());
-    if (currentState.getActiveTask() != null) {
-      props.put(
-          "activeTask",
-          Map.of("type", currentState.getActiveTask().type(), "goal", currentState.getActiveTask().goal())
-      );
-    }
-    return props;
+    return Map.of(
+        "tags", citizenProfile.identity().traits(),
+        "activeTask", currentState.getActiveTask() != null ?
+            Map.of("type", currentState.getActiveTask().type(), "goal", currentState.getActiveTask().goal()) :
+            Map.of()
+    );
   }
 
   // --- State Transition Methods ---
@@ -165,115 +166,16 @@ public class Citizen implements WorldEntity {
   }
 
   public CitizenPerception getPerception() {
-
-    // Get status from biology manager (no longer needs inventory capacity)
-    Status status = biologyManager.getStatus();
-
-    // Get equipment and inventory from inventory manager (inventory now includes
-    // capacity)
-    Equipment equipment = inventoryManager.getEquipment();
-    Inventory inventory = inventoryManager.getInventory();
-
     return new CitizenPerception(
         citizenProfile.identity(),
-        status,
+        biologyManager.getStatus(),
         currentState.getState(),
-        equipment,
-        inventory,
+        inventoryManager.getEquipment(),
+        inventoryManager.getInventory(),
         currentState.getLastAction(),
         currentState.getActiveTask(),
         currentState.getPosition()
     );
-  }
-
-  public void consumeEnergy(double amount) {
-    biologyManager.decreaseEnergy(amount);
-  }
-
-  public void decayVitality(double amount) {
-    biologyManager.decreaseVitality(amount);
-  }
-
-  public void increaseEnergy(double amount) {
-    biologyManager.increaseEnergy(amount);
-  }
-
-  public void increaseVitality(double amount) {
-    biologyManager.increaseVitality(amount);
-  }
-
-  public boolean addToInventory(ItemData item) {
-    return inventoryManager.addItem(item);
-  }
-
-  public ItemData removeFromInventory(String itemId) {
-    return inventoryManager.removeItem(itemId);
-  }
-
-  public boolean equipItem(String itemId, String hand) {
-    ItemData itemToEquip = inventoryManager.getItem(itemId);
-
-    if (itemToEquip == null) {
-      return false;
-    }
-
-    EquippedItem eqItem = new EquippedItem(itemToEquip.id(), itemToEquip.name(), itemToEquip.tags());
-
-    if ("left".equalsIgnoreCase(hand)) {
-      return inventoryManager.equipLeftHand(eqItem);
-    } else if ("right".equalsIgnoreCase(hand)) {
-      return inventoryManager.equipRightHand(eqItem);
-    }
-    return false;
-  }
-
-  public boolean unequipItem(String hand) {
-    if ("left".equalsIgnoreCase(hand)) {
-      return inventoryManager.unequipLeftHand() != null;
-    } else if ("right".equalsIgnoreCase(hand)) {
-      return inventoryManager.unequipRightHand() != null;
-    }
-    return false;
-  }
-
-  public boolean hasEquippedItemWithTag(String tag) {
-    return inventoryManager.hasEquippedItemWithTag(tag);
-  }
-
-  public void eat(double nutrition) {
-    biologyManager.decreaseHunger(nutrition);
-    biologyManager.increaseEnergy(nutrition / 2.0);
-  }
-
-  public void drink(double hydration) {
-    biologyManager.decreaseStress(hydration);
-    biologyManager.increaseVitality(hydration / 2.0);
-  }
-
-  public void sleep() {
-    biologyManager.increaseEnergy(100.0);
-  }
-
-  public void applyStress(double amount) {
-    biologyManager.increaseStress(amount);
-  }
-
-  public void reduceStress(double amount) {
-    biologyManager.decreaseStress(amount);
-  }
-
-  public void increaseHunger(double amount) {
-    biologyManager.increaseHunger(amount);
-  }
-
-  public void applyPhysiologicalRates(double dtSeconds, double hungerRate, double energyRate, double stressRate) {
-    biologyManager.applyRate(hungerRate, dtSeconds, (bm, val) -> bm.increaseHunger((double) val));
-    biologyManager.applyRate(energyRate, dtSeconds, (bm, val) -> bm.decreaseEnergy((double) val));
-    biologyManager.applyRate(
-        stressRate,
-        dtSeconds,
-        (bm, val) -> bm.decreaseStress((double) val)
-    ); // wait, stressRate should be increaseStress?
   }
 
   public boolean isZoneVisited(String zoneId) {
@@ -286,3 +188,4 @@ public class Citizen implements WorldEntity {
     }
   }
 }
+

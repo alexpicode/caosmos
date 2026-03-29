@@ -32,6 +32,8 @@ public class ExploreTask implements Task {
   @Override
   public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
     Vector3 currentPos = citizen.getCurrentState().getPosition();
+    var biology = citizen.biology();
+    double hours = dt / 3600.0;
 
     // Initialize positions on first tick
     if (startPosition == null) {
@@ -54,8 +56,8 @@ public class ExploreTask implements Task {
 
     // --- Physiological Costs ---
     // Slightly higher costs during active exploration
-    citizen.consumeEnergy(PhysiologicalThresholds.MOVE_ENERGY_COST_RATE * 1.2 * (dt / 3600.0));
-    citizen.increaseHunger(PhysiologicalThresholds.MOVE_HUNGER_COST_RATE * 1.2 * (dt / 3600.0));
+    biology.decreaseEnergy(PhysiologicalThresholds.MOVE_ENERGY_COST_RATE * 1.2 * hours);
+    biology.increaseHunger(PhysiologicalThresholds.MOVE_HUNGER_COST_RATE * 1.2 * hours);
 
     // Calculate movement
     double moveDistance = walkingSpeed * dt;
