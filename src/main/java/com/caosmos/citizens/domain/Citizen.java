@@ -37,6 +37,7 @@ public class Citizen implements WorldEntity {
   private final BiologyManager biologyManager;
   private final InventoryManager inventoryManager;
 
+  @Getter
   private final Set<String> visitedZoneIds = new HashSet<>();
 
   @Getter
