@@ -43,15 +43,12 @@ public class PerceptionMonitor {
       boolean isNewZone = !citizen.isZoneVisited(newZoneId);
       citizen.markZoneAsVisited(newZoneId);
 
-      if (allowsRoutineInterruptions) {
-        if (isNewZone) {
-          informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
-          return new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents);
-        } else {
-          informativeEvents.add("You've entered the zone: " + newZoneName);
-          return new ReflexResult(true, "Zone arrival/entry: " + newZoneName, informativeEvents);
-        }
+      if (isNewZone && allowsRoutineInterruptions) {
+        informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
+        return new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents);
       }
+
+      informativeEvents.add("You've entered the zone: " + newZoneName);
     }
 
     // 2. Check for critical threats or immediate social interactions

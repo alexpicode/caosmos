@@ -133,10 +133,12 @@
     {
       "id": "mining_zone",
       "name": "Mining Zone",
-      "type": "EXTERIOR",
+      "type": "INTERIOR",
       "parentId": null,
       "isEntryRestricted": false,
-      "physicalTags": [],
+      "physicalTags": [
+        "mine"
+      ],
       "contextualTags": [
         "mining",
         "dangerous"

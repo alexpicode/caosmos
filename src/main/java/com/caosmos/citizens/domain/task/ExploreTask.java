@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExploreTask implements Task {
 
-  private static final double EXPLORATION_LIMIT = 50.0;
+  private static final double EXPLORATION_LIMIT = 250.0;
   private static final double ARRIVAL_THRESHOLD = 0.5;
 
   private final Vector3 directionNormalized;
