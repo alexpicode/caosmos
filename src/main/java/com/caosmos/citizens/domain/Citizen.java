@@ -108,9 +108,10 @@ public class Citizen implements WorldEntity {
   public Map<String, Object> getProperties() {
     return Map.of(
         "tags", citizenProfile.identity().traits(),
-        "activeTask", currentState.getActiveTask() != null ?
-            Map.of("type", currentState.getActiveTask().type(), "goal", currentState.getActiveTask().goal()) :
-            Map.of()
+        "activeTask",
+        currentState.getActiveTask() != null
+            ? Map.of("type", currentState.getActiveTask().type(), "goal", currentState.getActiveTask().goal())
+            : Map.of()
     );
   }
 
@@ -182,10 +183,11 @@ public class Citizen implements WorldEntity {
     return zoneId != null && visitedZoneIds.contains(zoneId);
   }
 
-  public void markZoneAsVisited(String zoneId) {
+  public void enterZone(String zoneId, String zoneName) {
     if (zoneId != null) {
-      visitedZoneIds.add(zoneId);
+      this.currentState.setCurrentZoneId(zoneId);
+      this.currentState.setCurrentZone(zoneName);
+      this.visitedZoneIds.add(zoneId.toLowerCase());
     }
   }
 }
-

@@ -37,20 +37,18 @@ public class PerceptionMonitor {
 
     String pendingZoneId = null;
     String pendingZoneName = null;
-    boolean shouldMarkVisited = false;
 
     if (previousZoneId == null || !previousZoneId.equals(newZoneId)) {
       pendingZoneId = newZoneId;
       pendingZoneName = newZoneName;
 
       boolean isNewZone = !citizen.isZoneVisited(newZoneId);
-      shouldMarkVisited = true; // Mark visited even if not a "novelty" for interruption purposes
 
       if (isNewZone && allowsRoutineInterruptions && previousZoneId != null) {
         informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
         return new PerceptionEvaluation(
             new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents),
-            pendingZoneId, pendingZoneName, shouldMarkVisited
+            pendingZoneId, pendingZoneName
         );
       }
 
@@ -65,7 +63,7 @@ public class PerceptionMonitor {
           hasTag(entity, "hostile")) {
         return new PerceptionEvaluation(
             new ReflexResult(true, "Threat detected: " + entity.name(), informativeEvents),
-            pendingZoneId, pendingZoneName, shouldMarkVisited
+            pendingZoneId, pendingZoneName
         );
       }
 
@@ -74,7 +72,7 @@ public class PerceptionMonitor {
           informativeEvents.add("INTERESTING! You've spotted: " + entity.name());
           return new PerceptionEvaluation(
               new ReflexResult(true, "Object of interest: " + entity.name(), informativeEvents),
-              pendingZoneId, pendingZoneName, shouldMarkVisited
+              pendingZoneId, pendingZoneName
           );
         }
 
@@ -83,7 +81,7 @@ public class PerceptionMonitor {
               "You've seen a resource: " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
           return new PerceptionEvaluation(
               new ReflexResult(true, "Resource detected: " + entity.name(), informativeEvents),
-              pendingZoneId, pendingZoneName, shouldMarkVisited
+              pendingZoneId, pendingZoneName
           );
         }
 
@@ -107,7 +105,7 @@ public class PerceptionMonitor {
 
     return new PerceptionEvaluation(
         new ReflexResult(false, null, informativeEvents),
-        pendingZoneId, pendingZoneName, shouldMarkVisited
+        pendingZoneId, pendingZoneName
     );
   }
 

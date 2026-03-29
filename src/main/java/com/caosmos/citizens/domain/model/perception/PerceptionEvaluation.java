@@ -7,8 +7,7 @@ package com.caosmos.citizens.domain.model.perception;
 public record PerceptionEvaluation(
     ReflexResult reflex,
     String newZoneId,
-    String newZoneName,
-    boolean shouldMarkVisited
+    String newZoneName
 ) {
 
   public boolean isCritical() {
@@ -17,6 +16,10 @@ public record PerceptionEvaluation(
 
   public String reason() {
     return reflex != null ? reflex.reason() : null;
+  }
+
+  public boolean hasEnteredNewZone() {
+    return newZoneId != null;
   }
 }
 

@@ -53,12 +53,8 @@ public class CitizenPerceptionHandler {
     );
 
     // Apply state changes recommended by the evaluation
-    if (eval.newZoneId() != null) {
-      citizen.getCurrentState().setCurrentZoneId(eval.newZoneId());
-      citizen.getCurrentState().setCurrentZone(eval.newZoneName());
-      if (eval.shouldMarkVisited()) {
-        citizen.markZoneAsVisited(eval.newZoneId());
-      }
+    if (eval.hasEnteredNewZone()) {
+      citizen.enterZone(eval.newZoneId(), eval.newZoneName());
     }
 
     ReflexResult reflex = eval.reflex();
