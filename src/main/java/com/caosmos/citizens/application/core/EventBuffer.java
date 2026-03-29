@@ -1,5 +1,6 @@
 package com.caosmos.citizens.application.core;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -20,10 +21,10 @@ public class EventBuffer {
   }
 
   /**
-   * Returns an immutable snapshot of the current events in insertion order.
+   * Returns a mutable snapshot of the current events in insertion order.
    */
   public List<String> snapshot() {
-    return List.copyOf(events);
+    return new ArrayList<>(events);
   }
 
   public void clear() {
