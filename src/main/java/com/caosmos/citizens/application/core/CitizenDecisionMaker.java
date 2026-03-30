@@ -94,7 +94,10 @@ public class CitizenDecisionMaker {
 
 
   private String buildUserMessage(Citizen citizen, PulseContext context, Resource userPromptResource) {
-    CitizenPerception perception = citizen.getPerception();
+    // 0. Extract perception from context (enriched with Mental Map) or domain (fallback)
+    CitizenPerception perception = (context.fullPerception() != null)
+        ? context.fullPerception().citizen()
+        : citizen.getPerception();
 
     // 1. Self State (JSON)
     Map<String, Object> selfMap = new HashMap<>();
@@ -104,6 +107,7 @@ public class CitizenDecisionMaker {
     selfMap.put("position", perception.position());
     selfMap.put("mental_map", perception.mentalMap());
     String selfJson = jsonSerializer.toJson(selfMap);
+    log.debug("Self JSON: {}", selfJson);
 
     // 2. Contextual Data (JSON)
     Map<String, Object> contextualMap = new HashMap<>();

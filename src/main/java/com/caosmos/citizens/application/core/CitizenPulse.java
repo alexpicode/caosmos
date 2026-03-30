@@ -1,6 +1,7 @@
 package com.caosmos.citizens.application.core;
 
 import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
+import com.caosmos.citizens.application.model.FullPerception;
 import com.caosmos.citizens.application.model.PhysiologicalReflex;
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.application.model.PulseContext;
@@ -58,6 +59,8 @@ public class CitizenPulse implements AgentPulse {
     physReflex.ifPresent(r -> eventBuffer.addAll(r.events()));
 
     if (physReflex.isPresent() && physReflex.get().critical()) {
+      // Collect latest perception for the decision context
+      var fullPerception = perceptionHandler.handlePerception(citizen, eventBuffer.snapshot(), false);
       handleInterruption(
           tick,
           citizenName,
@@ -65,7 +68,8 @@ public class CitizenPulse implements AgentPulse {
           physReflex.get().reason(),
           physReflex.get().events(),
           true,
-          InterruptType.CRITICAL
+          InterruptType.CRITICAL,
+          fullPerception
       );
       return;
     }
@@ -94,7 +98,8 @@ public class CitizenPulse implements AgentPulse {
           fullPerception.reflex().reason(),
           List.of(), // Events already in buffer
           true,
-          type
+          type,
+          fullPerception
       );
       return;
     }
@@ -102,13 +107,13 @@ public class CitizenPulse implements AgentPulse {
     // 6. Decision Phase
     if (CitizenState.IDLE.equals(citizen.getState())) {
       log.info("[CITIZEN:{}] Entering Decision Phase (IDLE)...", citizenName);
-      performDecision(createContext(tick, citizenName));
+      performDecision(createContext(tick, citizenName, fullPerception));
     }
   }
 
   private void handleInterruption(
       long tick, String citizenName, String actionType, String reason, List<String> events,
-      boolean cancelTask, InterruptType interruptType
+      boolean cancelTask, InterruptType interruptType, FullPerception fullPerception
   ) {
     log.info(
         "[CITIZEN:{}] INTERRUPTION: {} (Action: {}, Type: {}, CancelTask: {})",
@@ -125,7 +130,7 @@ public class CitizenPulse implements AgentPulse {
       citizen.transitionTo(CitizenState.INTERRUPTED, interruptedAction);
     }
 
-    performDecision(createContext(tick, citizenName));
+    performDecision(createContext(tick, citizenName, fullPerception));
   }
 
   private LastAction buildInterruptedAction(String actionType, String reason, InterruptType type) {
@@ -149,11 +154,11 @@ public class CitizenPulse implements AgentPulse {
     return interrupted;
   }
 
-  private PulseContext createContext(long tick, String citizenName) {
+  private PulseContext createContext(long tick, String citizenName, FullPerception fullPerception) {
     return new PulseContext(
         citizenName,
         tick,
-        null, // fullPerception is gathered per step if needed, context uses latest
+        fullPerception,
         eventBuffer.snapshot(),
         citizen.getLastAction()
     );

@@ -15,6 +15,7 @@ public class CurrentState {
   private CitizenState state;
   private ActiveTask activeTask;
   private LastAction lastAction;
+  private MentalMap mentalMap;
 }
 
 

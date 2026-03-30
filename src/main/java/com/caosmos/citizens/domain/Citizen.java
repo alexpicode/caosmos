@@ -52,7 +52,7 @@ public class Citizen implements WorldEntity {
       initialPosition = new Vector3(base.x(), base.y(), base.z());
     }
 
-    this.currentState = new CurrentState(initialPosition, null, null, CitizenState.IDLE, null, null);
+    this.currentState = new CurrentState(initialPosition, null, null, CitizenState.IDLE, null, null, null);
   }
 
   // --- Manager Accessors ---
@@ -167,11 +167,11 @@ public class Citizen implements WorldEntity {
     currentState.setActiveTask(activeTask);
   }
 
-  public CitizenPerception getPerception() {
-    return getPerception(null);
+  public void updateMentalMap(MentalMap mentalMap) {
+    currentState.setMentalMap(mentalMap);
   }
 
-  public CitizenPerception getPerception(MentalMap mentalMap) {
+  public CitizenPerception getPerception() {
     return new CitizenPerception(
         citizenProfile.identity(),
         biologyManager.getStatus(),
@@ -181,7 +181,7 @@ public class Citizen implements WorldEntity {
         currentState.getLastAction(),
         currentState.getActiveTask(),
         currentState.getPosition(),
-        mentalMap
+        currentState.getMentalMap()
     );
   }
 

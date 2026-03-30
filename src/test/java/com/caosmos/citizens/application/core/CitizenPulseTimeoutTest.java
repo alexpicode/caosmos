@@ -53,7 +53,7 @@ class CitizenPulseTimeoutTest {
     when(perception.status().vitality()).thenReturn(100.0);
     when(perception.status().energy()).thenReturn(100.0);
     when(perception.status().stress()).thenReturn(0.0);
-    when(citizen.getCurrentState()).thenReturn(new CurrentState(null, null, null, CitizenState.BUSY, null, null));
+    when(citizen.getCurrentState()).thenReturn(new CurrentState(null, null, null, CitizenState.BUSY, null, null, null));
     when(citizen.getState()).thenReturn(CitizenState.BUSY);
     when(citizen.getActiveTask()).thenReturn(new ActiveTask("T", "G", "TG", false, false));
 
