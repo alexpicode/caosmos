@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,9 +27,9 @@ public class SpatialHash implements WorldRegistry {
 
   public SpatialHash() {
     this.cellSize = DEFAULT_CELL_SIZE;
-    this.grid = new HashMap<>();
-    this.objectToKeys = new HashMap<>();
-    this.objectById = new HashMap<>();
+    this.grid = new ConcurrentHashMap<>();
+    this.objectToKeys = new ConcurrentHashMap<>();
+    this.objectById = new ConcurrentHashMap<>();
   }
 
   private long hashCoordinates(int x, int z) {
@@ -63,7 +64,7 @@ public class SpatialHash implements WorldRegistry {
     getCellCoordinates(obj.getPosition(), coords);
 
     long key = hashCoordinates(coords[0], coords[1]);
-    grid.computeIfAbsent(key, k -> new HashSet<>()).add(obj);
+    grid.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet()).add(obj);
     objectToKeys.put(obj.getId(), key);
     objectById.put(obj.getId(), obj);
   }
@@ -78,7 +79,7 @@ public class SpatialHash implements WorldRegistry {
         if (cell != null) {
           cell.remove(obj);
           if (cell.isEmpty()) {
-            grid.remove(key);
+            grid.remove(key, cell);
           }
         }
       }
