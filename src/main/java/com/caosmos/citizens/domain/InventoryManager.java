@@ -27,8 +27,19 @@ public class InventoryManager {
     this.items = new LinkedHashMap<>();
   }
 
+  public int getUsedSlotsCount() {
+    int count = items.size();
+    if (leftHand != null) {
+      count++;
+    }
+    if (rightHand != null) {
+      count++;
+    }
+    return count;
+  }
+
   public boolean addItem(ItemData item) {
-    if (items.size() >= maxSlots) {
+    if (getUsedSlotsCount() >= maxSlots) {
       return false;
     }
     items.put(item.id(), item);
@@ -49,9 +60,17 @@ public class InventoryManager {
    * @return true if the item was found and equipped successfully.
    */
   public boolean equipToHand(String itemId, Hand hand) {
-    ItemData itemToEquip = getItem(itemId);
+    ItemData itemToEquip = items.remove(itemId);
     if (itemToEquip == null) {
       return false;
+    }
+
+    // If something was in the hand, move it back to backpack
+    // This is safe because total capacity counts hands and backpack
+    if (hand == Hand.LEFT && leftHand != null) {
+      unequipHand(Hand.LEFT);
+    } else if (hand == Hand.RIGHT && rightHand != null) {
+      unequipHand(Hand.RIGHT);
     }
 
     EquippedItem eqItem = new EquippedItem(itemToEquip.id(), itemToEquip.name(), itemToEquip.tags());
@@ -62,7 +81,6 @@ public class InventoryManager {
     }
 
     return true;
-
   }
 
   /**
@@ -71,18 +89,22 @@ public class InventoryManager {
    * @return true if the hand had an item that was unequipped.
    */
   public boolean unequipHand(Hand hand) {
-    return switch (hand) {
-      case LEFT -> {
-        EquippedItem item = leftHand;
-        leftHand = null;
-        yield item != null;
-      }
-      case RIGHT -> {
-        EquippedItem item = rightHand;
-        rightHand = null;
-        yield item != null;
-      }
-    };
+    EquippedItem item = (hand == Hand.LEFT) ? leftHand : rightHand;
+    if (item == null) {
+      return false;
+    }
+
+    // Clear hand
+    if (hand == Hand.LEFT) {
+      leftHand = null;
+    } else {
+      rightHand = null;
+    }
+
+    // Move back to regular items (backpack)
+    // Note: This won't fail capacity because the item was already counting while equipped
+    items.put(item.id(), new ItemData(item.id(), item.name(), item.tags()));
+    return true;
   }
 
   public Equipment getEquipment() {
@@ -107,7 +129,8 @@ public class InventoryManager {
 
   private InventoryCapacity getInventoryCapacity() {
     String status = "empty";
-    double fillRatio = (double) items.size() / maxSlots;
+    int used = getUsedSlotsCount();
+    double fillRatio = (double) used / maxSlots;
 
     if (fillRatio >= 0.9) {
       status = "full";
@@ -119,6 +142,6 @@ public class InventoryManager {
       status = "almost_empty";
     }
 
-    return new InventoryCapacity(items.size(), maxSlots, status);
+    return new InventoryCapacity(used, maxSlots, status);
   }
 }

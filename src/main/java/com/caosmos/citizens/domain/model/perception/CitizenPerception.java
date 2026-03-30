@@ -11,7 +11,8 @@ public record CitizenPerception(
     Inventory inventory,
     LastAction lastAction,
     ActiveTask activeTask,
-    Vector3 position
+    Vector3 position,
+    MentalMap mentalMap
 ) {
 
 }

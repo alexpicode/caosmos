@@ -6,6 +6,7 @@ import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.CitizenPerception;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.LastAction;
+import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldEntity;
 import java.util.HashSet;
@@ -167,6 +168,10 @@ public class Citizen implements WorldEntity {
   }
 
   public CitizenPerception getPerception() {
+    return getPerception(null);
+  }
+
+  public CitizenPerception getPerception(MentalMap mentalMap) {
     return new CitizenPerception(
         citizenProfile.identity(),
         biologyManager.getStatus(),
@@ -175,7 +180,8 @@ public class Citizen implements WorldEntity {
         inventoryManager.getInventory(),
         currentState.getLastAction(),
         currentState.getActiveTask(),
-        currentState.getPosition()
+        currentState.getPosition(),
+        mentalMap
     );
   }
 

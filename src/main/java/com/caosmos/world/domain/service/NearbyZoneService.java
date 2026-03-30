@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -113,6 +114,17 @@ public class NearbyZoneService {
     }
 
     return result.stream().sorted(Comparator.comparingDouble(NearbyZone::distance)).toList();
+  }
+
+  public Optional<Zone> findNearestZoneWithTag(Vector3 position, String tag) {
+    return zoneManager.getAllZones()
+        .stream()
+        .filter(z -> z.getTags() != null && z.getTags().stream().anyMatch(t -> t.equalsIgnoreCase(tag)))
+        .min(Comparator.comparingDouble(z -> position.distanceTo2D(z.getCenter())));
+  }
+
+  public Optional<Zone> findNearestCity(Vector3 position) {
+    return findNearestZoneWithTag(position, "urban");
   }
 
   private NearbyZone mapToNearbyZone(Zone zone, Vector3 position) {

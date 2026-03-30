@@ -102,6 +102,7 @@ public class CitizenDecisionMaker {
     selfMap.put("equipment", perception.equipment());
     selfMap.put("inventory", perception.inventory());
     selfMap.put("position", perception.position());
+    selfMap.put("mental_map", perception.mentalMap());
     String selfJson = jsonSerializer.toJson(selfMap);
 
     // 2. Contextual Data (JSON)
