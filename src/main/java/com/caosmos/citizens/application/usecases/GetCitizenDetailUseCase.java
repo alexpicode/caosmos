@@ -33,7 +33,6 @@ public class GetCitizenDetailUseCase {
               c.getPerception(),
               c.getLastAction(),
               biometrics,
-              c.getCitizenProfile().manifestId(),
               c.getVisitedZoneIds()
           );
         });

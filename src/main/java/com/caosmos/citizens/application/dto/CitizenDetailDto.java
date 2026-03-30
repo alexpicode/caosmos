@@ -11,7 +11,6 @@ public record CitizenDetailDto(
     CitizenPerception perception,
     LastAction currentAction,
     Collection<BiometricsEntry> biometrics,
-    String manifest_id,
     Set<String> visitedZoneIds
 ) {
 

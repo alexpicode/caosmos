@@ -109,4 +109,47 @@ class PerceptionMonitorTest {
     // Assert
     assertFalse(result.isCritical());
   }
+
+  @Test
+  void shouldIgnoreUnknownTerritory() {
+    // Arrange: Start in a zone
+    citizen.enterZone("zone-1", "Zone 1");
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Unknown Territory", "EXTERIOR", "Open Area", Set.of(), null, null),
+        environment,
+        Collections.emptyList(),
+        Collections.emptyList(),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertFalse(result.isCritical(), "Entering Unknown Territory should not be critical");
+    assertTrue(result.hasEnteredNewZone(), "Should still mark as zone changed to null");
+  }
+
+  @Test
+  void shouldNotTriggerWhenStayingInUnknownTerritory() {
+    // Arrange: Start in Unknown Territory
+    citizen.enterZone(null, "Unknown Territory");
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Unknown Territory", "EXTERIOR", "Open Area", Set.of(), null, null),
+        environment,
+        Collections.emptyList(),
+        Collections.emptyList(),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertFalse(result.hasEnteredNewZone(), "Should not detect change when staying in null");
+  }
 }

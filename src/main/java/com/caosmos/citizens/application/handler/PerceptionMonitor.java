@@ -10,6 +10,7 @@ import com.caosmos.common.domain.model.world.NearbyEntity;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -43,37 +44,39 @@ public class PerceptionMonitor {
     String newZoneId = perception.location().zoneId();
     String newZoneName = perception.location().zone();
 
+    boolean zoneChanged = !Objects.equals(previousZoneId, newZoneId);
     String pendingZoneId = null;
     String pendingZoneName = null;
 
-    if (previousZoneId == null || !previousZoneId.equals(newZoneId)) {
+    if (zoneChanged) {
       pendingZoneId = newZoneId;
       pendingZoneName = newZoneName;
 
-      boolean isNewZone = !citizen.isZoneVisited(newZoneId);
+      // Only handle valid zones (ignore Unknown Territory for reflexes/events)
+      if (newZoneId != null) {
+        boolean isNewZone = !citizen.isZoneVisited(newZoneId);
 
-      if (allowsRoutineInterruptions && previousZoneId != null) {
-        // Check for specific search target in ExploreTask
-        String targetFound = checkSearchTarget(citizen.getUuid(), perception.location().tags());
+        if (allowsRoutineInterruptions) {
+          // Check for specific search target in ExploreTask
+          String targetFound = checkSearchTarget(citizen.getUuid(), perception.location().tags());
 
-        if (targetFound != null) {
-          informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + " in " + newZoneName);
-          return new PerceptionEvaluation(
-              new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
-              pendingZoneId, pendingZoneName
-          );
+          if (targetFound != null) {
+            informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + " in " + newZoneName);
+            return new PerceptionEvaluation(
+                new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
+                pendingZoneId, pendingZoneName, true
+            );
+          }
+
+          if (isNewZone) {
+            informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
+            return new PerceptionEvaluation(
+                new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents),
+                pendingZoneId, pendingZoneName, true
+            );
+          }
         }
 
-        if (isNewZone) {
-          informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
-          return new PerceptionEvaluation(
-              new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents),
-              pendingZoneId, pendingZoneName
-          );
-        }
-      }
-
-      if (previousZoneId != null) {
         informativeEvents.add("You've entered the zone: " + newZoneName);
       }
     }
@@ -84,7 +87,7 @@ public class PerceptionMonitor {
           hasTag(entity, "hostile")) {
         return new PerceptionEvaluation(
             new ReflexResult(true, "Threat detected: " + entity.name(), informativeEvents),
-            pendingZoneId, pendingZoneName
+            pendingZoneId, pendingZoneName, zoneChanged
         );
       }
 
@@ -93,7 +96,7 @@ public class PerceptionMonitor {
           informativeEvents.add("INTERESTING! You've spotted: " + entity.name());
           return new PerceptionEvaluation(
               new ReflexResult(true, "Object of interest: " + entity.name(), informativeEvents),
-              pendingZoneId, pendingZoneName
+              pendingZoneId, pendingZoneName, zoneChanged
           );
         }
 
@@ -102,7 +105,7 @@ public class PerceptionMonitor {
               "You've seen a resource: " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
           return new PerceptionEvaluation(
               new ReflexResult(true, "Resource detected: " + entity.name(), informativeEvents),
-              pendingZoneId, pendingZoneName
+              pendingZoneId, pendingZoneName, zoneChanged
           );
         }
 
@@ -126,7 +129,7 @@ public class PerceptionMonitor {
 
     return new PerceptionEvaluation(
         new ReflexResult(false, null, informativeEvents),
-        pendingZoneId, pendingZoneName
+        pendingZoneId, pendingZoneName, zoneChanged
     );
   }
 

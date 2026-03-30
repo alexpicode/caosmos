@@ -184,9 +184,10 @@ public class Citizen implements WorldEntity {
   }
 
   public void enterZone(String zoneId, String zoneName) {
+    this.currentState.setCurrentZoneId(zoneId);
+    this.currentState.setCurrentZone(zoneName);
+
     if (zoneId != null) {
-      this.currentState.setCurrentZoneId(zoneId);
-      this.currentState.setCurrentZone(zoneName);
       this.visitedZoneIds.add(zoneId.toLowerCase());
     }
   }
