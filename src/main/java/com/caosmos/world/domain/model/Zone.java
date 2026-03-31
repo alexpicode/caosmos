@@ -19,6 +19,7 @@ public class Zone {
   private Set<String> contextualTags = new HashSet<>();
 
   private boolean isEntryRestricted; // Need specific entry
+  private String category;
   private Vector3 center;
   private double width;
   private double length;
@@ -28,6 +29,7 @@ public class Zone {
       String name,
       String parentId,
       String type,
+      String category,
       Set<String> physicalTags,
       Set<String> contextualTags,
       boolean isEntryRestricted,
@@ -39,6 +41,7 @@ public class Zone {
     this.name = name;
     this.parentId = parentId;
     this.type = type;
+    this.category = category;
     setPhysicalTags(physicalTags);
     setContextualTags(contextualTags);
     this.isEntryRestricted = isEntryRestricted;

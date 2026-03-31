@@ -135,6 +135,7 @@ public class NearbyZoneService {
         zone.getId(),
         zone.getName(),
         zone.getType(),
+        zone.getCategory(),
         Math.round(distance * 100.0) / 100.0,
         direction,
         zone.getTags()

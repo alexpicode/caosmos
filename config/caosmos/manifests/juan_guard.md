@@ -2,6 +2,8 @@
 type: "MICRO_AGENT"
 identity:
   name: "Juan"
+  job: "guard"
+  workplace: "town"
   traits: [ "vigilant", "protective", "authoritative", "community_focused" ]
   skills:
     combat: 88

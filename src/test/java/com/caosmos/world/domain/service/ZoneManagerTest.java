@@ -21,7 +21,19 @@ class ZoneManagerTest {
 
   @Test
   void testFindZoneAt_Simple() {
-    Zone zone = new Zone("z1", "Zone 1", null, "EXTERIOR", Set.of(), Set.of(), false, new Vector3(0, 0, 0), 10, 10);
+    Zone zone = new Zone(
+        "z1",
+        "Zone 1",
+        null,
+        "EXTERIOR",
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
     zoneManager.addZone(zone);
 
     Optional<Zone> found = zoneManager.findZoneAt(new Vector3(0, 0, 0), null);
@@ -36,6 +48,7 @@ class ZoneManagerTest {
         "Outer",
         null,
         "EXTERIOR",
+        "TEST",
         Set.of(),
         Set.of("outer_tag"),
         false,
@@ -48,6 +61,7 @@ class ZoneManagerTest {
         "Inner",
         "outer",
         "EXTERIOR",
+        "TEST",
         Set.of(),
         Set.of("inner_tag"),
         false,
@@ -67,12 +81,25 @@ class ZoneManagerTest {
 
   @Test
   void testFindZoneAt_RestrictedEntry() {
-    Zone outer = new Zone("outer", "Outer", null, "EXTERIOR", Set.of(), Set.of(), false, new Vector3(0, 0, 0), 20, 20);
+    Zone outer = new Zone(
+        "outer",
+        "Outer",
+        null,
+        "EXTERIOR",
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        20,
+        20
+    );
     Zone restricted = new Zone(
         "restricted",
         "Restricted",
         "outer",
         "INTERIOR",
+        "TEST",
         Set.of(),
         Set.of(),
         true,
@@ -97,12 +124,25 @@ class ZoneManagerTest {
 
   @Test
   void testEffectiveTags() {
-    Zone root = new Zone("root", "Root", null, "EXTERIOR", Set.of(), Set.of("a"), false, new Vector3(0, 0, 0), 10, 10);
+    Zone root = new Zone(
+        "root",
+        "Root",
+        null,
+        "EXTERIOR",
+        "TEST",
+        Set.of(),
+        Set.of("a"),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
     Zone child = new Zone(
         "child",
         "Child",
         "root",
         "EXTERIOR",
+        "TEST",
         Set.of(),
         Set.of("b"),
         false,
@@ -115,6 +155,7 @@ class ZoneManagerTest {
         "Grandchild",
         "child",
         "EXTERIOR",
+        "TEST",
         Set.of(),
         Set.of("c"),
         false,
@@ -136,12 +177,25 @@ class ZoneManagerTest {
 
   @Test
   void testHierarchyDepth() {
-    Zone root = new Zone("root", "Root", null, "EXTERIOR", Set.of(), Set.of(), false, new Vector3(0, 0, 0), 10, 10);
+    Zone root = new Zone(
+        "root",
+        "Root",
+        null,
+        "EXTERIOR",
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
     Zone child = new Zone(
         "child",
         "Child",
         "root",
         "EXTERIOR",
+        "TEST",
         Set.of(),
         Set.of(),
         false,

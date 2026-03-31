@@ -106,6 +106,11 @@ public class Citizen implements WorldEntity {
   }
 
   @Override
+  public String getCategory() {
+    return "CITIZEN";
+  }
+
+  @Override
   public Map<String, Object> getProperties() {
     return Map.of(
         "tags", citizenProfile.identity().traits(),

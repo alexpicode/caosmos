@@ -4,6 +4,7 @@
       "id": "town",
       "name": "Town Center",
       "type": "EXTERIOR",
+      "category": "URBAN",
       "parentId": null,
       "isEntryRestricted": false,
       "physicalTags": [
@@ -27,6 +28,7 @@
       "id": "market",
       "name": "Market",
       "type": "EXTERIOR",
+      "category": "COMMERCE",
       "parentId": "town",
       "isEntryRestricted": false,
       "physicalTags": [
@@ -50,6 +52,7 @@
       "id": "park",
       "name": "Park",
       "type": "EXTERIOR",
+      "category": "NATURE",
       "parentId": "town",
       "isEntryRestricted": false,
       "physicalTags": [
@@ -70,6 +73,7 @@
       "name": "Blacksmith Workshop",
       "parentId": "town",
       "type": "INTERIOR",
+      "category": "WORKSHOP",
       "isEntryRestricted": false,
       "physicalTags": [
         "forge",
@@ -89,6 +93,7 @@
       "name": "Blacksmith Vault",
       "parentId": "blacksmith",
       "type": "INTERIOR",
+      "category": "STORAGE",
       "isEntryRestricted": true,
       "physicalTags": [
         "vault",
@@ -112,6 +117,7 @@
       "id": "residential_zone",
       "name": "Residential Zone",
       "type": "EXTERIOR",
+      "category": "RESIDENTIAL",
       "parentId": null,
       "isEntryRestricted": false,
       "physicalTags": [
@@ -134,6 +140,7 @@
       "id": "industrial_zone",
       "name": "Industrial Zone",
       "type": "EXTERIOR",
+      "category": "INDUSTRIAL",
       "parentId": null,
       "isEntryRestricted": false,
       "physicalTags": [
@@ -156,6 +163,7 @@
       "id": "mining_zone",
       "name": "Mining Zone",
       "type": "INTERIOR",
+      "category": "MINING",
       "parentId": null,
       "isEntryRestricted": false,
       "physicalTags": [
@@ -180,6 +188,7 @@
       "id": "forest_zone",
       "name": "Forest Zone",
       "type": "EXTERIOR",
+      "category": "NATURE",
       "parentId": null,
       "isEntryRestricted": false,
       "physicalTags": [

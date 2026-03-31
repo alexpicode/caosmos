@@ -13,6 +13,7 @@ public class WorldObject implements WorldEntity {
   public WorldObject(
       String id,
       String name,
+      String category,
       Vector3 position,
       Set<String> tags,
       String parentZoneId,
@@ -22,6 +23,7 @@ public class WorldObject implements WorldEntity {
   ) {
     this.id = id;
     this.name = name;
+    this.category = category;
     this.position = position;
     setTags(tags);
     this.parentZoneId = parentZoneId;
@@ -32,6 +34,7 @@ public class WorldObject implements WorldEntity {
 
   private String id;
   private String name;
+  private String category;
   private Vector3 position;
   private Set<String> tags;
 

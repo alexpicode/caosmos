@@ -104,6 +104,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     Location location = new Location(
         zoneName,
         zoneType,
+        zoneOpt.map(Zone::getCategory).orElse("UNKNOWN"),
         currentLocation,
         finalTags,
         parentZoneName,

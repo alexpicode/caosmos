@@ -46,6 +46,7 @@ public class NearbyEntityService {
       NearbyEntity entity = new NearbyEntity(
           obj.getId(),
           obj.getDisplayName(),
+          obj.getCategory(),
           Math.round(distance * 100.0) / 100.0,
           direction,
           (obj instanceof WorldObject wo) ? wo.getTags() : Set.of()

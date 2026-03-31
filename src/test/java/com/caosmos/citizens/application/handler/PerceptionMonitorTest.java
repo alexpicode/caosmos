@@ -51,7 +51,7 @@ class PerceptionMonitorTest {
     // Arrange
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("New Zone", "Building", "Hall", Set.of(), null, "zone-abc"),
+        new Location("New Zone", "Building", "TEST", "Hall", Set.of(), null, "zone-abc"),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),
@@ -69,10 +69,17 @@ class PerceptionMonitorTest {
   @Test
   void shouldDetectInterestingObject() {
     // Arrange
-    NearbyEntity interestingEntity = new NearbyEntity("Unique-ID", "Old Statue", 5.0, "North", Set.of("INTERESTING"));
+    NearbyEntity interestingEntity = new NearbyEntity(
+        "Unique-ID",
+        "Old Statue",
+        "DECORATION",
+        5.0,
+        "North",
+        Set.of("INTERESTING")
+    );
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("Square", "Park", "Center", Set.of(), null, "zone-1"),
+        new Location("Square", "Park", "TEST", "Center", Set.of(), null, "zone-1"),
         environment,
         List.of(interestingEntity),
         Collections.emptyList(),
@@ -92,7 +99,7 @@ class PerceptionMonitorTest {
     // Arrange
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("New Zone", "Building", "Hall", Set.of(), null, "zone-abc"),
+        new Location("New Zone", "Building", "TEST", "Hall", Set.of(), null, "zone-abc"),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),
@@ -117,7 +124,7 @@ class PerceptionMonitorTest {
 
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("Unknown Territory", "EXTERIOR", "Open Area", Set.of(), null, null),
+        new Location("Unknown Territory", "EXTERIOR", "TEST", "Open Area", Set.of(), null, null),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),
@@ -139,7 +146,7 @@ class PerceptionMonitorTest {
 
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("Unknown Territory", "EXTERIOR", "Open Area", Set.of(), null, null),
+        new Location("Unknown Territory", "EXTERIOR", "TEST", "Open Area", Set.of(), null, null),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),

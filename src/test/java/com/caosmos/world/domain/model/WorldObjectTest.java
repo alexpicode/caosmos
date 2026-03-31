@@ -11,7 +11,17 @@ class WorldObjectTest {
 
   @Test
   void testCircleIntersection() {
-    WorldObject obj = new WorldObject("tree", "Tree", new Vector3(10, 0, 10), Set.of(), null, 2.0, null, null);
+    WorldObject obj = new WorldObject(
+        "tree",
+        "Tree",
+        "NATURE",
+        new Vector3(10, 0, 10),
+        Set.of(),
+        null,
+        2.0,
+        null,
+        null
+    );
 
     assertTrue(obj.intersects(new Vector3(11, 0, 11)), "Point (11,11) should be inside radius 2.0 at (10,10)");
     assertFalse(obj.intersects(new Vector3(13, 0, 10)), "Point (13,10) should be outside radius 2.0 at (10,10)");
@@ -19,7 +29,17 @@ class WorldObjectTest {
 
   @Test
   void testRectangularIntersection() {
-    WorldObject obj = new WorldObject("bench", "Bench", new Vector3(0, 0, 0), Set.of(), null, null, 4.0, 2.0);
+    WorldObject obj = new WorldObject(
+        "bench",
+        "Bench",
+        "FURNITURE",
+        new Vector3(0, 0, 0),
+        Set.of(),
+        null,
+        null,
+        4.0,
+        2.0
+    );
 
     assertTrue(obj.intersects(new Vector3(1.5, 0, 0.5)), "Point (1.5, 0.5) should be inside 4x2 box at (0,0)");
     assertTrue(obj.intersects(new Vector3(-2, 0, -1)), "Edge point (-2, -1) should be inside 4x2 box at (0,0)");

@@ -138,6 +138,6 @@ class NearbyZoneServiceTest {
       double z,
       Set<String> physical
   ) {
-    return new Zone(id, name, parentId, type, physical, Set.of(), false, new Vector3(x, 0, z), 2, 2);
+    return new Zone(id, name, parentId, type, "TEST", physical, Set.of(), false, new Vector3(x, 0, z), 2, 2);
   }
 }

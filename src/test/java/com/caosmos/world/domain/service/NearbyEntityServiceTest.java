@@ -90,7 +90,7 @@ class NearbyEntityServiceTest {
   }
 
   private Zone createZone(String id, String name, String parentId, String type) {
-    return new Zone(id, name, parentId, type, Set.of(), Set.of(), false, new Vector3(0, 0, 0), 0, 0);
+    return new Zone(id, name, parentId, type, "TEST", Set.of(), Set.of(), false, new Vector3(0, 0, 0), 0, 0);
   }
 
   private WorldObject createObject(String id, String name, String zoneId, double x, double z) {

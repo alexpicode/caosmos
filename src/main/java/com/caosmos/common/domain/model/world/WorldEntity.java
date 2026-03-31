@@ -15,6 +15,8 @@ public interface WorldEntity {
 
   String getZoneId();
 
+  String getCategory();
+
   default Map<String, Object> getProperties() {
     return Collections.emptyMap();
   }
