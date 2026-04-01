@@ -11,7 +11,6 @@ import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -57,8 +56,8 @@ public class PerceptionMonitor {
         boolean isNewZone = !citizen.isZoneVisited(newZoneId);
 
         if (allowsRoutineInterruptions) {
-          // Check for specific search target in ExploreTask
-          String targetFound = checkSearchTarget(citizen.getUuid(), perception.location().tags());
+          // Check for specific search target in ExploreTask (Zone category)
+          String targetFound = checkSearchTarget(citizen.getUuid(), perception.location().category());
 
           if (targetFound != null) {
             informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + " in " + newZoneName);
@@ -109,6 +108,16 @@ public class PerceptionMonitor {
           );
         }
 
+        // Check for specific search target in ExploreTask (NearbyEntity category)
+        String targetFound = checkSearchTarget(citizen.getUuid(), entity.category());
+        if (targetFound != null) {
+          informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + ": " + entity.name());
+          return new PerceptionEvaluation(
+              new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
+              pendingZoneId, pendingZoneName, zoneChanged
+          );
+        }
+
         informativeEvents.add("Seen " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
       }
     }
@@ -133,12 +142,15 @@ public class PerceptionMonitor {
     );
   }
 
-  private String checkSearchTarget(UUID citizenId, Set<String> currentTags) {
+  private String checkSearchTarget(UUID citizenId, String currentCategory) {
+    if (currentCategory == null) {
+      return null;
+    }
     return taskRegistry.get(citizenId)
         .filter(task -> task instanceof ExploreTask)
         .map(task -> (ExploreTask) task)
-        .map(ExploreTask::getTargetTag)
-        .filter(target -> target != null && currentTags.stream().anyMatch(target::equalsIgnoreCase))
+        .map(ExploreTask::getTargetCategory)
+        .filter(target -> target != null && target.equalsIgnoreCase(currentCategory))
         .orElse(null);
   }
 

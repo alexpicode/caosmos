@@ -13,7 +13,7 @@ public class Zone {
 
   private String id;
   private String name;
-  private String parentId; // For nested zones
+  private String parentZoneId; // For nested zones
   private String type; // e.g. INTERIOR, EXTERIOR
   private Set<String> physicalTags = new HashSet<>();
   private Set<String> contextualTags = new HashSet<>();
@@ -27,7 +27,7 @@ public class Zone {
   public Zone(
       String id,
       String name,
-      String parentId,
+      String parentZoneId,
       String type,
       String category,
       Set<String> physicalTags,
@@ -39,7 +39,7 @@ public class Zone {
   ) {
     this.id = id;
     this.name = name;
-    this.parentId = parentId;
+    this.parentZoneId = parentZoneId;
     this.type = type;
     this.category = category;
     setPhysicalTags(physicalTags);
@@ -67,8 +67,8 @@ public class Zone {
 
   public Set<String> getEffectiveTags(Map<String, Zone> allZones) {
     Set<String> effectiveTags = getTags();
-    if (parentId != null && allZones.containsKey(parentId)) {
-      Zone parent = allZones.get(parentId);
+    if (parentZoneId != null && allZones.containsKey(parentZoneId)) {
+      Zone parent = allZones.get(parentZoneId);
       if ("INTERIOR".equals(this.type)) {
         // In interiors, we only inherit contextual tags that pass through walls
         effectiveTags.addAll(parent.getEffectiveContextualTags(allZones));
@@ -82,8 +82,8 @@ public class Zone {
 
   public Set<String> getEffectiveContextualTags(Map<String, Zone> allZones) {
     Set<String> effective = new HashSet<>(this.contextualTags != null ? this.contextualTags : Set.of());
-    if (parentId != null && allZones.containsKey(parentId)) {
-      effective.addAll(allZones.get(parentId).getEffectiveContextualTags(allZones));
+    if (parentZoneId != null && allZones.containsKey(parentZoneId)) {
+      effective.addAll(allZones.get(parentZoneId).getEffectiveContextualTags(allZones));
     }
     return effective;
   }
@@ -100,10 +100,10 @@ public class Zone {
   }
 
   public int getHierarchyDepth(Map<String, Zone> allZones) {
-    if (parentId == null || !allZones.containsKey(parentId)) {
+    if (parentZoneId == null || !allZones.containsKey(parentZoneId)) {
       return 0;
     }
-    return 1 + allZones.get(parentId).getHierarchyDepth(allZones);
+    return 1 + allZones.get(parentZoneId).getHierarchyDepth(allZones);
   }
 
   private Set<String> normalizeTags(Set<String> tags) {

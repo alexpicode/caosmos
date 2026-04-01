@@ -195,15 +195,15 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
-  public void assignExploreTask(UUID citizenId, Vector3 direction, String targetTag, String reason) {
+  public void assignExploreTask(UUID citizenId, Vector3 direction, String targetCategory, String reason) {
     log.debug(
         "Setting Explore task for citizen {} in direction {} with target {} - reason: {}",
         citizenId,
         direction,
-        targetTag,
+        targetCategory,
         reason
     );
-    taskRegistry.register(citizenId, new ExploreTask(direction, targetTag, reason));
+    taskRegistry.register(citizenId, new ExploreTask(direction, targetCategory, reason));
   }
 
   @Override

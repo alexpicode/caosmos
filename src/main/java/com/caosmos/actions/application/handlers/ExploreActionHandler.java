@@ -31,7 +31,7 @@ public class ExploreActionHandler implements ActionHandler {
         return ActionResult.failure("EXPLORE requires 'direction'.", getActionType());
       }
 
-      String targetTag = (String) request.parameters().get("targetTag");
+      String targetCategory = (String) request.parameters().get("targetCategory");
       String reasoning = request.reasoning();
 
       Vector3 directionVector = parseDirection(direction);
@@ -39,17 +39,17 @@ public class ExploreActionHandler implements ActionHandler {
         return ActionResult.failure("Invalid direction: " + direction, getActionType());
       }
 
-      citizenService.assignExploreTask(citizenId, directionVector, targetTag, reasoning);
+      citizenService.assignExploreTask(citizenId, directionVector, targetCategory, reasoning);
       log.debug(
           "Citizen {} started Explore in direction {} with target {} - reason: {}",
           citizenId,
           direction,
-          targetTag,
+          targetCategory,
           reasoning
       );
       return ActionResult.success(
-          "Started continuous exploration in direction " + direction + (targetTag != null ? " searching for "
-              + targetTag
+          "Started continuous exploration in direction " + direction + (targetCategory != null ? " searching for "
+              + targetCategory
               : "") + ".",
           getActionType()
       );

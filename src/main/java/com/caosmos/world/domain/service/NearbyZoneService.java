@@ -63,25 +63,25 @@ public class NearbyZoneService {
   private boolean isHierarchicallyRelevant(Zone zone, Zone currentZone, Map<String, Zone> allZones) {
     if (currentZone == null) {
       // If no current zone, only show root zones
-      return zone.getParentId() == null;
+      return zone.getParentZoneId() == null;
     }
 
     // Direct Parent
-    if (currentZone.getParentId() != null && currentZone.getParentId().equals(zone.getId())) {
+    if (currentZone.getParentZoneId() != null && currentZone.getParentZoneId().equals(zone.getId())) {
       return true;
     }
 
     // Direct Children
-    if (zone.getParentId() != null && zone.getParentId().equals(currentZone.getId())) {
+    if (zone.getParentZoneId() != null && zone.getParentZoneId().equals(currentZone.getId())) {
       return true;
     }
 
     // Siblings: Only visible if we are in an EXTERIOR zone (Open Sight rule)
     if ("EXTERIOR".equals(currentZone.getType())) {
-      if (currentZone.getParentId() == null && zone.getParentId() == null) {
+      if (currentZone.getParentZoneId() == null && zone.getParentZoneId() == null) {
         return true;
       }
-      return currentZone.getParentId() != null && currentZone.getParentId().equals(zone.getParentId());
+      return currentZone.getParentZoneId() != null && currentZone.getParentZoneId().equals(zone.getParentZoneId());
     }
 
     return false;
@@ -94,7 +94,7 @@ public class NearbyZoneService {
 
     // If current is INTERIOR, hide all EXTERIOR except parent
     if ("EXTERIOR".equals(zone.getType())) {
-      return currentZone.getParentId() != null && currentZone.getParentId().equals(zone.getId());
+      return currentZone.getParentZoneId() != null && currentZone.getParentZoneId().equals(zone.getId());
     }
 
     return true;

@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +60,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
 
     Map<String, Zone> allZones = zoneManager.getZoneMap();
     Set<String> tags = zoneOpt.map(z -> z.getEffectiveTags(allZones)).orElse(Set.of());
-    String parentZoneName = zoneOpt.flatMap(z -> Optional.ofNullable(z.getParentId())).flatMap(zoneManager::getZone)
+    String parentZoneName = zoneOpt.flatMap(z -> Optional.ofNullable(z.getParentZoneId())).flatMap(zoneManager::getZone)
         .map(Zone::getName).orElse(null);
 
     WorldDate worldDate = worldTimeService.getWorldDate();
@@ -97,7 +96,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         maxVisionDistance
     );
 
-    Set<String> tagsForExplore = getTagsInRadius(position, exploreSearchRadius);
+    Set<String> categoriesForExplore = getCategoriesInRadius(position, exploreSearchRadius);
 
     String currentLocation = getCurrentLocation(nearbyEntities);
 
@@ -111,14 +110,30 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         zoneOpt.map(Zone::getId).orElse(null)
     );
 
-    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities, nearbyZones, tagsForExplore);
+    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities, nearbyZones, categoriesForExplore);
   }
 
-  private Set<String> getTagsInRadius(Vector3 position, double radius) {
-    return zoneManager.getAllZones().stream()
+  private Set<String> getCategoriesInRadius(Vector3 position, double radius) {
+    Set<String> categories = new java.util.HashSet<>();
+
+    // 1. Categories from Zones
+    zoneManager.getAllZones().stream()
         .filter(z -> position.distanceTo2D(z.getCenter()) <= radius)
-        .flatMap(z -> z.getTags().stream())
-        .collect(Collectors.toSet());
+        .forEach(z -> {
+          if (z.getCategory() != null) {
+            categories.add(z.getCategory());
+          }
+        });
+
+    // 2. Categories from WorldObjects
+    spatialHash.getNearbyEntities(position, radius).stream()
+        .forEach(e -> {
+          if (e.getCategory() != null) {
+            categories.add(e.getCategory());
+          }
+        });
+
+    return categories;
   }
 
   private static String getCurrentLocation(List<NearbyEntity> nearbyEntities) {

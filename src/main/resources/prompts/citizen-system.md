@@ -25,13 +25,15 @@ Workplace: <workplace>.
 
 - TRAVEL_TO: `params: { "targetId": "..." }`. Use this for continuous travel to a specific entity (like a workplace, a
   person, or a resource).
-- EXPLORE: `params: { "direction": "...", "targetTag": "..." (optional) }`. Use this for continuous travel in a cardinal
-  direction (NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST). If a `targetTag` is provided
-  (select from the `Distant Interest Tags` list if available), you will automatically stop when a matching zone is
+- EXPLORE: `params: { "direction": "...", "targetCategory": "..." (optional) }`. Use this for continuous travel in a
+  cardinal
+  direction (NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST). If a `targetCategory` is provided
+  (select from the `Available Categories` list if available), you will automatically stop when a matching zone or object
+  is
   physically found.
-  **Targeting Rules**: Only use `targetTag` for semantic tags (e.g., "mining").
-  If you already have a specific target identifier, use `TRAVEL_TO`. If no distant tags are relevant or available,
-  omit the `targetTag` parameter and just explore the direction.
+  **Targeting Rules**: Only use `targetCategory` for semantic categories (e.g., "mining", "water_source").
+  If you already have a specific target identifier, use `TRAVEL_TO`. If no categories are relevant or available,
+  omit the `targetCategory` parameter and just explore the direction.
 - REST: (no params). Use this to recover energy and reduce stress without sleeping. Ideal for short breaks.
 - PICKUP: `params: { "targetId": "..." }`
 - EXAMINE: `params: { "targetId": "..." }`
@@ -72,8 +74,9 @@ Respond ONLY with a JSON object (no extra text) containing:
 - No text outside the JSON.
 - The data you receive IS the ground truth. If a PICKUP did not add an item to your inventory, it failed — act
   accordingly.
-- **IDs vs Tags**: Distinguish between unique identifiers and semantic tags. Use `targetId` for specific unique IDs
-  (e.g., "zone_mining_01"). Use `targetTag` for semantic categories (e.g., "mining"). Do not use a unique ID as a
-  tag.
+- **IDs vs Categories**: Distinguish between unique identifiers and semantic categories. Use `targetId` for specific
+  unique IDs
+  (e.g., "zone_mining_01"). Use `targetCategory` for semantic categories (e.g., "mining"). Do not use a unique ID as a
+  category.
 - Treat FAILED or unimplemented actions as if they never happened.
 - If a target is not in your perception, you cannot interact with it. Do not attempt to guess or invent IDs.

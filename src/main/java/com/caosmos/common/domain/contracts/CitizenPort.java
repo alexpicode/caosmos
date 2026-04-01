@@ -45,7 +45,7 @@ public interface CitizenPort {
 
   void assignTravelToTask(UUID citizenId, Vector3 target, String targetId);
 
-  void assignExploreTask(UUID citizenId, Vector3 direction, String targetTag, String reason);
+  void assignExploreTask(UUID citizenId, Vector3 direction, String targetCategory, String reason);
 
   void continueTask(UUID citizenId);
 

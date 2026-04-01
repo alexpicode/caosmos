@@ -11,7 +11,7 @@ public interface WorldEntity {
 
   Vector3 getPosition();
 
-  String getDisplayName();
+  String getName();
 
   String getZoneId();
 

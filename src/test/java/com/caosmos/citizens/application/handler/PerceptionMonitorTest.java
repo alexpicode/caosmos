@@ -51,7 +51,7 @@ class PerceptionMonitorTest {
     // Arrange
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("New Zone", "Building", "TEST", "Hall", Set.of(), null, "zone-abc"),
+        new Location("New Zone", "Building", "URBAN", "Hall", Set.of(), null, "zone-abc"),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),
@@ -79,7 +79,7 @@ class PerceptionMonitorTest {
     );
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("Square", "Park", "TEST", "Center", Set.of(), null, "zone-1"),
+        new Location("Square", "Park", "NATURE", "Center", Set.of(), null, "zone-1"),
         environment,
         List.of(interestingEntity),
         Collections.emptyList(),
@@ -99,7 +99,7 @@ class PerceptionMonitorTest {
     // Arrange
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("New Zone", "Building", "TEST", "Hall", Set.of(), null, "zone-abc"),
+        new Location("New Zone", "Building", "URBAN", "Hall", Set.of(), null, "zone-abc"),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),
@@ -124,7 +124,7 @@ class PerceptionMonitorTest {
 
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("Unknown Territory", "EXTERIOR", "TEST", "Open Area", Set.of(), null, null),
+        new Location("Unknown Territory", "EXTERIOR", "WILDERNESS", "Open Area", Set.of(), null, null),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),
@@ -146,7 +146,7 @@ class PerceptionMonitorTest {
 
     WorldPerception perception = new WorldPerception(
         date,
-        new Location("Unknown Territory", "EXTERIOR", "TEST", "Open Area", Set.of(), null, null),
+        new Location("Unknown Territory", "EXTERIOR", "WILDERNESS", "Open Area", Set.of(), null, null),
         environment,
         Collections.emptyList(),
         Collections.emptyList(),
@@ -158,5 +158,70 @@ class PerceptionMonitorTest {
 
     // Assert
     assertFalse(result.hasEnteredNewZone(), "Should not detect change when staying in null");
+  }
+
+  @Test
+  void shouldCompleteSearchWhenEnteringTargetCategoryZone() {
+    // Arrange
+    taskRegistry.register(
+        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
+            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+            "MINING",
+            "Looking for gold"
+        )
+    );
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Gold Mine", "INDUSTRIAL", "MINING", "Shaft", Set.of(), null, "zone-mine"),
+        environment,
+        Collections.emptyList(),
+        Collections.emptyList(),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.isCritical());
+    assertTrue(result.reason().contains("Target found: mining"));
+  }
+
+  @Test
+  void shouldCompleteSearchWhenSeeingTargetCategoryObject() {
+    // Arrange
+    taskRegistry.register(
+        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
+            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+            "TOOL",
+            "Looking for a pickaxe"
+        )
+    );
+
+    NearbyEntity toolObject = new NearbyEntity(
+        "obj-1",
+        "Iron Pickaxe",
+        "TOOL",
+        2.0,
+        "Forward",
+        Set.of()
+    );
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Workshop", "WORKSHOP", "WORKSHOP", "Table", Set.of(), null, "zone-ws"),
+        environment,
+        List.of(toolObject),
+        Collections.emptyList(),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.isCritical());
+    assertTrue(result.reason().contains("Target found: tool"));
   }
 }

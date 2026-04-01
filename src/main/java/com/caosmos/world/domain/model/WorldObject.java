@@ -62,11 +62,6 @@ public class WorldObject implements WorldEntity {
   }
 
   @Override
-  public String getDisplayName() {
-    return name;
-  }
-
-  @Override
   public String getZoneId() {
     return parentZoneId;
   }

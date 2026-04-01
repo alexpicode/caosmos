@@ -96,7 +96,7 @@ public class Citizen implements WorldEntity {
   }
 
   @Override
-  public String getDisplayName() {
+  public String getName() {
     return citizenProfile.identity().name();
   }
 

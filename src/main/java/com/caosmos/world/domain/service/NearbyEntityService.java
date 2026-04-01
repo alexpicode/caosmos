@@ -45,7 +45,7 @@ public class NearbyEntityService {
 
       NearbyEntity entity = new NearbyEntity(
           obj.getId(),
-          obj.getDisplayName(),
+          obj.getName(),
           obj.getCategory(),
           Math.round(distance * 100.0) / 100.0,
           direction,

@@ -25,15 +25,15 @@ public class GetWorldEntitiesUseCase {
     Collection<WorldEntity> entities = getFilteredEntities(minX, minZ, maxX, maxZ, type);
 
     return entities.stream()
-                   .map(e -> new WorldEntitySummaryDTO(
-                       e.getId(),
-                       e.getType(),
-                       e.getDisplayName(),
-                       e.getPosition().x(),
-                       e.getPosition().y(),
-                       e.getPosition().z()
-                   ))
-                   .collect(Collectors.toList());
+        .map(e -> new WorldEntitySummaryDTO(
+            e.getId(),
+            e.getType(),
+            e.getName(),
+            e.getPosition().x(),
+            e.getPosition().y(),
+            e.getPosition().z()
+        ))
+        .collect(Collectors.toList());
   }
 
   private Collection<WorldEntity> getFilteredEntities(Double minX, Double minZ, Double maxX, Double maxZ, String type) {

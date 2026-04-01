@@ -9,7 +9,7 @@ public record WorldPerception(
     Environment environment,
     List<NearbyEntity> nearbyEntities,
     List<NearbyZone> nearbyZones,
-    Set<String> tagsForExplore
+    Set<String> categoriesForExplore
 ) {
 
 }

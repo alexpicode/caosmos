@@ -19,14 +19,14 @@ public class ExploreTask implements Task {
 
   private final Vector3 directionNormalized;
   @Getter
-  private final String targetTag;
+  private final String targetCategory;
   private final String reason;
   private Vector3 startPosition;
   private Vector3 targetPosition;
 
-  public ExploreTask(Vector3 direction, String targetTag, String reason) {
+  public ExploreTask(Vector3 direction, String targetCategory, String reason) {
     this.directionNormalized = direction.normalize();
-    this.targetTag = targetTag != null ? targetTag.toLowerCase() : null;
+    this.targetCategory = targetCategory != null ? targetCategory.toLowerCase() : null;
     this.reason = reason;
   }
 
@@ -79,7 +79,7 @@ public class ExploreTask implements Task {
     Vector3 newPos = new Vector3(newX, newY, newZ);
     citizen.getCurrentState().setPosition(newPos);
 
-    String taskTarget = targetTag != null ? "Search: " + targetTag : null;
+    String taskTarget = targetCategory != null ? "Search: " + targetCategory : null;
     if (reason != null) {
       taskTarget = taskTarget != null ? taskTarget + " (" + reason + ")" : reason;
     }
