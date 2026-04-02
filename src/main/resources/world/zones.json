@@ -5,7 +5,7 @@
       "name": "Town Center",
       "type": "EXTERIOR",
       "category": "URBAN",
-      "parentId": null,
+      "parentZoneId": null,
       "isEntryRestricted": false,
       "physicalTags": [
         "town",
@@ -29,7 +29,7 @@
       "name": "Market",
       "type": "EXTERIOR",
       "category": "COMMERCE",
-      "parentId": "town",
+      "parentZoneId": "town",
       "isEntryRestricted": false,
       "physicalTags": [
         "market",
@@ -53,7 +53,7 @@
       "name": "Park",
       "type": "EXTERIOR",
       "category": "NATURE",
-      "parentId": "town",
+      "parentZoneId": "town",
       "isEntryRestricted": false,
       "physicalTags": [
         "recreation",
@@ -71,7 +71,7 @@
     {
       "id": "blacksmith",
       "name": "Blacksmith Workshop",
-      "parentId": "town",
+      "parentZoneId": "town",
       "type": "INTERIOR",
       "category": "WORKSHOP",
       "isEntryRestricted": true,
@@ -91,7 +91,7 @@
     {
       "id": "blacksmith_vault",
       "name": "Blacksmith Vault",
-      "parentId": "blacksmith",
+      "parentZoneId": "blacksmith",
       "type": "INTERIOR",
       "category": "MINING",
       "isEntryRestricted": true,
@@ -118,7 +118,7 @@
       "name": "Residential Zone",
       "type": "EXTERIOR",
       "category": "RESIDENTIAL",
-      "parentId": null,
+      "parentZoneId": null,
       "isEntryRestricted": false,
       "physicalTags": [
         "residential",
@@ -141,7 +141,7 @@
       "name": "Industrial Zone",
       "type": "EXTERIOR",
       "category": "INDUSTRIAL",
-      "parentId": null,
+      "parentZoneId": null,
       "isEntryRestricted": false,
       "physicalTags": [
         "industrial",
@@ -164,7 +164,7 @@
       "name": "Mining Zone",
       "type": "INTERIOR",
       "category": "MINING",
-      "parentId": null,
+      "parentZoneId": null,
       "isEntryRestricted": false,
       "physicalTags": [
         "mine",
@@ -189,7 +189,7 @@
       "name": "Forest Zone",
       "type": "EXTERIOR",
       "category": "NATURE",
-      "parentId": null,
+      "parentZoneId": null,
       "isEntryRestricted": false,
       "physicalTags": [
         "nature",
@@ -207,7 +207,7 @@
     {
       "id": "alice_house_interior",
       "name": "Alice's House",
-      "parentId": "residential_zone",
+      "parentZoneId": "residential_zone",
       "type": "INTERIOR",
       "category": "RESIDENTIAL",
       "isEntryRestricted": true,
@@ -230,7 +230,7 @@
     {
       "id": "grocery_store_interior",
       "name": "Grocery Store",
-      "parentId": "market",
+      "parentZoneId": "market",
       "type": "INTERIOR",
       "category": "COMMERCE",
       "isEntryRestricted": true,
@@ -253,7 +253,7 @@
     {
       "id": "town_library_interior",
       "name": "Town Library",
-      "parentId": "residential_zone",
+      "parentZoneId": "residential_zone",
       "type": "INTERIOR",
       "category": "KNOWLEDGE",
       "isEntryRestricted": true,
@@ -277,7 +277,7 @@
     {
       "id": "cave1_interior",
       "name": "Dark Cave",
-      "parentId": "mining_zone",
+      "parentZoneId": "mining_zone",
       "type": "INTERIOR",
       "category": "NATURE",
       "isEntryRestricted": true,

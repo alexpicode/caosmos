@@ -2,6 +2,7 @@ package com.caosmos.world.domain.model;
 
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,7 @@ public class Zone implements WorldElement {
   private Set<String> physicalTags = new HashSet<>();
   private Set<String> contextualTags = new HashSet<>();
 
+  @JsonProperty("isEntryRestricted")
   private boolean isEntryRestricted; // Need specific entry
   private String category;
   private Vector3 center;

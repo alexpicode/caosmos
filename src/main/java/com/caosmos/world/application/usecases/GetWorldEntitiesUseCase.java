@@ -44,8 +44,14 @@ public class GetWorldEntitiesUseCase {
     }
 
     if (type != null && !type.isEmpty()) {
-      return entities.stream().filter(e -> e.getType().equalsIgnoreCase(type)).toList();
+      return entities.stream()
+          .filter(e -> e.getType().equalsIgnoreCase(type))
+          .toList();
     }
-    return entities;
+
+    // Default: filter out Zones to avoid duplication with /zones endpoint
+    return entities.stream()
+        .filter(e -> !"ZONE".equalsIgnoreCase(e.getType()))
+        .toList();
   }
 }

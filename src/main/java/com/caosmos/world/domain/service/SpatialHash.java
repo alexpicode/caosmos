@@ -95,7 +95,7 @@ public class SpatialHash implements WorldRegistry {
         (key, cell) -> {
           if (cell != null) {
             for (WorldElement obj : cell) {
-              if (position.distanceTo2D(obj.getPosition()) <= radius) {
+              if (obj instanceof Zone || position.distanceTo2D(obj.getPosition()) <= radius) {
                 result.add(obj);
               }
             }
@@ -113,7 +113,7 @@ public class SpatialHash implements WorldRegistry {
           if (cell != null) {
             for (WorldElement obj : cell) {
               Vector3 pos = obj.getPosition();
-              if (pos.x() >= minX && pos.x() <= maxX && pos.z() >= minZ && pos.z() <= maxZ) {
+              if (obj instanceof Zone || (pos.x() >= minX && pos.x() <= maxX && pos.z() >= minZ && pos.z() <= maxZ)) {
                 result.add(obj);
               }
             }

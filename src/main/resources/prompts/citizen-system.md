@@ -38,6 +38,8 @@ Workplace: <workplace>.
 - PICKUP: `params: { "targetId": "..." }`
 - EXAMINE: `params: { "targetId": "..." }`
 - USE: `params: { "targetId": "..." }`
+- INTERACT: `params: { "targetId": "..." }`. Use this to interact with special objects like doors, gateways, or levers.
+  For gateways (e.g., "Oak Door"), this is the ONLY way to move between an exterior zone and an interior one.
 - EAT: `params: { "targetId": "..." }`
 - DRINK: `params: { "targetId": "..." }`
 - EQUIP: `params: { "targetId": "...", "hand": "left"|"right" }`
