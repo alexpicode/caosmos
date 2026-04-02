@@ -79,6 +79,21 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
+  public Optional<WorldObject> getObject(String objectId) {
+    return spatialHash.getById(objectId)
+        .filter(e -> e instanceof WorldObject)
+        .map(e -> (WorldObject) e);
+  }
+
+  @Override
+  public String getZoneName(String zoneId) {
+    if (zoneId == null) {
+      return "Open World";
+    }
+    return zoneManager.getZone(zoneId).map(com.caosmos.world.domain.model.Zone::getName).orElse("Unknown Area");
+  }
+
+  @Override
   public void updateObjectTag(String objectId, String newTag) {
     // TODO Update object tag in the world
     log.info("Updating tag for object {}: {}", objectId, newTag);

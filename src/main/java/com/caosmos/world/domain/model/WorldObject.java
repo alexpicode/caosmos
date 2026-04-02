@@ -17,6 +17,7 @@ public class WorldObject implements WorldElement {
       Vector3 position,
       Set<String> tags,
       String parentZoneId,
+      String targetZoneId,
       Double radius,
       Double width,
       Double length
@@ -27,6 +28,7 @@ public class WorldObject implements WorldElement {
     this.position = position;
     setTags(tags);
     this.parentZoneId = parentZoneId;
+    this.targetZoneId = targetZoneId;
     this.radius = radius;
     this.width = width;
     this.length = length;
@@ -50,6 +52,7 @@ public class WorldObject implements WorldElement {
   }
 
   private String parentZoneId;
+  private String targetZoneId;
 
   // Collision properties
   private Double radius; // Circular collision

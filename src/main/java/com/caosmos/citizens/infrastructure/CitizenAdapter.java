@@ -73,6 +73,20 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
+  public String getCurrentZoneId(UUID citizenId) {
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> citizen.getCurrentState().getCurrentZoneId())
+        .orElse(null);
+  }
+
+  @Override
+  public void enterZone(UUID citizenId, String zoneId, String zoneName) {
+    citizenRegistry.get(citizenId).ifPresent(citizen -> {
+      citizen.enterZone(zoneId, zoneName);
+    });
+  }
+
+  @Override
   public void consumeEnergy(UUID citizenId, double amount) {
     log.info("Consuming {} energy for citizen {}", amount, citizenId);
     citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.biology().decreaseEnergy(amount));

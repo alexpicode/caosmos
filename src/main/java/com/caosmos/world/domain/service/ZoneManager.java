@@ -54,8 +54,8 @@ public class ZoneManager {
   }
 
   public void clearZones() {
+    zones.forEach(z -> spatialHash.remove(z.getId()));
     zones.clear();
-    spatialHash.clear();
   }
 
   public Optional<Zone> findNearestZoneWithTag(Vector3 position, String tag) {

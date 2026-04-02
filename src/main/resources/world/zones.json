@@ -74,7 +74,7 @@
       "parentId": "town",
       "type": "INTERIOR",
       "category": "WORKSHOP",
-      "isEntryRestricted": false,
+      "isEntryRestricted": true,
       "physicalTags": [
         "forge",
         "noisy"
@@ -93,7 +93,7 @@
       "name": "Blacksmith Vault",
       "parentId": "blacksmith",
       "type": "INTERIOR",
-      "category": "STORAGE",
+      "category": "MINING",
       "isEntryRestricted": true,
       "physicalTags": [
         "vault",
@@ -203,6 +203,100 @@
       },
       "width": 400,
       "length": 200
+    },
+    {
+      "id": "alice_house_interior",
+      "name": "Alice's House",
+      "parentId": "residential_zone",
+      "type": "INTERIOR",
+      "category": "RESIDENTIAL",
+      "isEntryRestricted": true,
+      "physicalTags": [
+        "cozy",
+        "wooden",
+        "homey"
+      ],
+      "contextualTags": [
+        "safe"
+      ],
+      "center": {
+        "x": -250,
+        "y": 0,
+        "z": 50
+      },
+      "width": 8,
+      "length": 12
+    },
+    {
+      "id": "grocery_store_interior",
+      "name": "Grocery Store",
+      "parentId": "market",
+      "type": "INTERIOR",
+      "category": "COMMERCE",
+      "isEntryRestricted": true,
+      "physicalTags": [
+        "shelves",
+        "food-smell",
+        "busy"
+      ],
+      "contextualTags": [
+        "commerce"
+      ],
+      "center": {
+        "x": 60,
+        "y": 0,
+        "z": 20
+      },
+      "width": 10,
+      "length": 15
+    },
+    {
+      "id": "town_library_interior",
+      "name": "Town Library",
+      "parentId": "residential_zone",
+      "type": "INTERIOR",
+      "category": "KNOWLEDGE",
+      "isEntryRestricted": true,
+      "physicalTags": [
+        "books",
+        "quiet",
+        "dusty"
+      ],
+      "contextualTags": [
+        "knowledge",
+        "public"
+      ],
+      "center": {
+        "x": -250,
+        "y": 0,
+        "z": 0
+      },
+      "width": 15,
+      "length": 20
+    },
+    {
+      "id": "cave1_interior",
+      "name": "Dark Cave",
+      "parentId": "mining_zone",
+      "type": "INTERIOR",
+      "category": "NATURE",
+      "isEntryRestricted": true,
+      "physicalTags": [
+        "damp",
+        "rocky",
+        "dark"
+      ],
+      "contextualTags": [
+        "mysterious",
+        "dangerous"
+      ],
+      "center": {
+        "x": -30,
+        "y": 0,
+        "z": 300
+      },
+      "width": 20,
+      "length": 20
     }
   ]
 }

@@ -22,10 +22,11 @@ public class SpringAiThinkingAdapter implements ThinkingProvider {
   public SpringAiThinkingAdapter(ChatClient.Builder chatClientBuilder, EntityTelemetryService telemetryService) {
     this.telemetryService = telemetryService;
     ChatMemory chatMemory = MessageWindowChatMemory.builder()
-                                                   .maxMessages(10)
-                                                   .build();
+        .maxMessages(10)
+        .build();
 
     this.sharedChatClient = chatClientBuilder
+//        .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), SimpleLoggerAdvisor.builder().build())
         .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
         .build();
   }
@@ -33,11 +34,11 @@ public class SpringAiThinkingAdapter implements ThinkingProvider {
   @Override
   public AgentAction think(UUID entityId, String entityName, long tick, String systemPrompt, String userMessage) {
     AgentAction action = sharedChatClient.prompt()
-                                         .system(systemPrompt)
-                                         .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, entityId.toString()))
-                                         .user(u -> u.text(userMessage + "\n" + outputConverter.getFormat()))
-                                         .call()
-                                         .entity(outputConverter);
+        .system(systemPrompt)
+        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, entityId.toString()))
+        .user(u -> u.text(userMessage + "\n" + outputConverter.getFormat()))
+        .call()
+        .entity(outputConverter);
 
     //TODO: Refactor this to use a more robust way to get the action target
     String actionTarget = action.params().toString();

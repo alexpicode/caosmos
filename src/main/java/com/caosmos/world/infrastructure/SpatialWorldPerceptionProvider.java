@@ -53,7 +53,14 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
 
   @Override
   public WorldPerception getPerceptionAt(Vector3 position, String currentZoneId, Predicate<WorldElement> filter) {
-    Optional<Zone> zoneOpt = zoneManager.findZoneAt(position, currentZoneId);
+    Optional<Zone> currentZone = currentZoneId != null ? zoneManager.getZone(currentZoneId) : Optional.empty();
+
+    Optional<Zone> zoneOpt;
+    if (currentZone.isPresent() && currentZone.get().isEntryRestricted()) {
+      zoneOpt = currentZone; // Logical Wall enforced
+    } else {
+      zoneOpt = zoneManager.findZoneAt(position, currentZoneId);
+    }
     String zoneName = zoneOpt.map(Zone::getName).orElse("Unknown Territory");
     String zoneType = zoneOpt.map(Zone::getZoneType).orElse("EXTERIOR");
 

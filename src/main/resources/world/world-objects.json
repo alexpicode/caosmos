@@ -62,52 +62,58 @@
       "radius": 1.5
     },
     {
-      "id": "store1",
-      "name": "Grocery Store",
-      "category": "COMMERCE",
+      "id": "grocery_store_door",
+      "name": "Glass Door",
+      "category": "GATEWAY",
       "position": {
         "x": 60,
         "y": 0,
-        "z": 20
+        "z": 12.5
       },
       "tags": [
-        "commerce",
-        "food"
+        "entrance",
+        "shop",
+        "glass"
       ],
-      "width": 10.0,
-      "length": 15.0
+      "radius": 0.5,
+      "parentZoneId": "market",
+      "targetZoneId": "grocery_store_interior"
     },
     {
-      "id": "mine1",
-      "name": "Iron Mine",
-      "category": "RESOURCE",
+      "id": "mine_entrance",
+      "name": "Mine Entrance",
+      "category": "GATEWAY",
       "position": {
         "x": 0,
         "y": 0,
-        "z": 300
+        "z": 200
       },
       "tags": [
-        "resource",
-        "mining"
+        "entrance",
+        "dark",
+        "tunnel"
       ],
-      "radius": 8.0
+      "radius": 1.0,
+      "parentZoneId": null,
+      "targetZoneId": "mining_zone"
     },
     {
-      "id": "house1",
-      "name": "Alice's House",
-      "category": "BUILDING",
+      "id": "alice_house_door",
+      "name": "Oak Door",
+      "category": "GATEWAY",
       "position": {
         "x": -250,
         "y": 0,
-        "z": 50
+        "z": 44
       },
       "tags": [
-        "building",
-        "home",
-        "rest"
+        "entrance",
+        "house",
+        "wood"
       ],
-      "width": 8.0,
-      "length": 12.0
+      "radius": 0.5,
+      "parentZoneId": "residential_zone",
+      "targetZoneId": "alice_house_interior"
     },
     {
       "id": "hammer1",
@@ -123,7 +129,8 @@
         "crafting",
         "construction"
       ],
-      "radius": 0.2
+      "radius": 0.2,
+      "parentZoneId": "alice_house_interior"
     },
     {
       "id": "axe1",
@@ -139,7 +146,8 @@
         "woodcutting",
         "weapon"
       ],
-      "radius": 0.2
+      "radius": 0.2,
+      "parentZoneId": "alice_house_interior"
     },
     {
       "id": "pickaxe1",
@@ -187,7 +195,8 @@
         "gardening",
         "digging"
       ],
-      "radius": 0.2
+      "radius": 0.2,
+      "parentZoneId": "alice_house_interior"
     },
     {
       "id": "campfire1",
@@ -221,7 +230,8 @@
         "security"
       ],
       "width": 1.0,
-      "length": 0.6
+      "length": 0.6,
+      "parentZoneId": "alice_house_interior"
     },
     {
       "id": "workbench1",
@@ -238,7 +248,8 @@
         "work"
       ],
       "width": 2.0,
-      "length": 1.0
+      "length": 1.0,
+      "parentZoneId": "blacksmith"
     },
     {
       "id": "anvil1",
@@ -254,7 +265,8 @@
         "metalwork",
         "tool"
       ],
-      "radius": 0.5
+      "radius": 0.5,
+      "parentZoneId": "blacksmith"
     },
     {
       "id": "loom1",
@@ -388,38 +400,40 @@
       "radius": 4.0
     },
     {
-      "id": "library1",
-      "name": "Town Library",
-      "category": "BUILDING",
+      "id": "library_door",
+      "name": "Heavy Library Door",
+      "category": "GATEWAY",
       "position": {
         "x": -250,
         "y": 0,
-        "z": 0
+        "z": -10
       },
       "tags": [
-        "building",
-        "knowledge",
-        "quiet"
+        "entrance",
+        "library",
+        "stone"
       ],
-      "width": 15.0,
-      "length": 20.0
+      "radius": 0.5,
+      "parentZoneId": "residential_zone",
+      "targetZoneId": "town_library_interior"
     },
     {
-      "id": "blacksmith1",
-      "name": "Blacksmith Shop",
-      "category": "BUILDING",
+      "id": "blacksmith_door",
+      "name": "Workshop Door",
+      "category": "GATEWAY",
       "position": {
         "x": 0,
         "y": 0,
-        "z": 70
+        "z": 50
       },
       "tags": [
-        "building",
-        "crafting",
-        "metalwork"
+        "entrance",
+        "forge",
+        "iron"
       ],
-      "width": 12.0,
-      "length": 12.0
+      "radius": 0.5,
+      "parentZoneId": "town",
+      "targetZoneId": "blacksmith"
     },
     {
       "id": "market_stall1",
@@ -501,7 +515,9 @@
         "exploration",
         "shelter"
       ],
-      "radius": 2.5
+      "radius": 2.5,
+      "parentZoneId": "mining_zone",
+      "targetZoneId": "cave1_interior"
     },
     {
       "id": "compass1",

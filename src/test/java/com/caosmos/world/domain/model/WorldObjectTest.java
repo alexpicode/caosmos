@@ -18,6 +18,7 @@ class WorldObjectTest {
         new Vector3(10, 0, 10),
         Set.of(),
         null,
+        null, // targetZoneId
         2.0,
         null,
         null
@@ -36,6 +37,7 @@ class WorldObjectTest {
         new Vector3(0, 0, 0),
         Set.of(),
         null,
+        null, // targetZoneId
         null,
         4.0,
         2.0

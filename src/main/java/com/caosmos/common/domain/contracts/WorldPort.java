@@ -2,6 +2,7 @@ package com.caosmos.common.domain.contracts;
 
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.world.domain.model.WorldObject;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,10 @@ public interface WorldPort {
   void interactWithObject(String objectId);
 
   Optional<Vector3> getObjectPosition(String objectId);
+
+  Optional<WorldObject> getObject(String objectId);
+
+  String getZoneName(String zoneId);
 
   boolean isNearObjectWithTag(Vector3 position, String tag, double maxDistance);
 

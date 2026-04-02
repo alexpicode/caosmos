@@ -11,6 +11,10 @@ public interface CitizenPort {
 
   void updatePosition(UUID citizenId, Vector3 newPos);
 
+  String getCurrentZoneId(UUID citizenId);
+
+  void enterZone(UUID citizenId, String zoneId, String zoneName);
+
   void consumeEnergy(UUID citizenId, double amount);
 
   boolean addToInventory(UUID citizenId, String itemId, String itemName, List<String> tags);

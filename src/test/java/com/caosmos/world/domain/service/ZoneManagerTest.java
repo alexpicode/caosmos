@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.world.domain.model.Zone;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -211,5 +213,70 @@ class ZoneManagerTest {
 
     assertEquals(0, root.getHierarchyDepth(zoneManager.getZoneMap()));
     assertEquals(1, child.getHierarchyDepth(zoneManager.getZoneMap()));
+  }
+
+  @Test
+  void testClearZones_DoesNotClearOtherEntities() {
+    // 1. Register a non-zone entity directly in spatialHash
+    WorldElement entity = new WorldElement() {
+      @Override
+      public String getId() {
+        return "e1";
+      }
+
+      @Override
+      public String getType() {
+        return "OBJECT";
+      }
+
+      @Override
+      public String getName() {
+        return "Entity 1";
+      }
+
+      @Override
+      public Vector3 getPosition() {
+        return new Vector3(5, 0, 5);
+      }
+
+      @Override
+      public String getZoneId() {
+        return "outer";
+      }
+
+      @Override
+      public String getCategory() {
+        return "DECOR";
+      }
+    };
+    spatialHash.register(entity);
+
+    // 2. Add a zone via zoneManager
+    Zone zone = new Zone(
+        "z1",
+        "Zone 1",
+        null,
+        "EXTERIOR",
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+    zoneManager.addZone(zone);
+
+    // 3. Verify both are there
+    assertEquals(2, spatialHash.getAllEntities().size());
+
+    // 4. Clear zones
+    zoneManager.clearZones();
+
+    // 5. Verify only the zone is gone, the entity remains
+    Collection<WorldElement> remaining = spatialHash.getAllEntities();
+    assertEquals(1, remaining.size());
+    assertTrue(remaining.stream().anyMatch(e -> e.getId().equals("e1")));
+    assertTrue(remaining.stream().noneMatch(e -> e.getId().equals("z1")));
   }
 }

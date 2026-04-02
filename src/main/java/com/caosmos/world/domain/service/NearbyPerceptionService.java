@@ -97,6 +97,11 @@ public class NearbyPerceptionService {
       return true;
     }
 
+    // Perception Bridge (Gateway Visibility)
+    if (element instanceof WorldObject obj && Objects.equals(obj.getTargetZoneId(), currentZoneId)) {
+      return true;
+    }
+
     // 2. Navigation: If it's a zone, we only care about hierarchy/connectivity
     if (element instanceof Zone targetZone) {
       return isZoneVisible(targetZone, currentZone, zoneMap);
