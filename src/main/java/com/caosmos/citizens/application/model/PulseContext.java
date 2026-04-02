@@ -1,5 +1,6 @@
 package com.caosmos.citizens.application.model;
 
+import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import java.util.List;
 

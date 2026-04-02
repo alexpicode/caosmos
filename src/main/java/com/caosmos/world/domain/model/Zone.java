@@ -1,6 +1,7 @@
 package com.caosmos.world.domain.model;
 
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -9,12 +10,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class Zone {
+public class Zone implements WorldElement {
 
   private String id;
   private String name;
   private String parentZoneId; // For nested zones
-  private String type; // e.g. INTERIOR, EXTERIOR
+  private String zoneType; // e.g. INTERIOR, EXTERIOR
   private Set<String> physicalTags = new HashSet<>();
   private Set<String> contextualTags = new HashSet<>();
 
@@ -28,7 +29,7 @@ public class Zone {
       String id,
       String name,
       String parentZoneId,
-      String type,
+      String zoneType,
       String category,
       Set<String> physicalTags,
       Set<String> contextualTags,
@@ -40,7 +41,7 @@ public class Zone {
     this.id = id;
     this.name = name;
     this.parentZoneId = parentZoneId;
-    this.type = type;
+    this.zoneType = zoneType;
     this.category = category;
     setPhysicalTags(physicalTags);
     setContextualTags(contextualTags);
@@ -48,6 +49,21 @@ public class Zone {
     this.center = center;
     this.width = width;
     this.length = length;
+  }
+
+  @Override
+  public String getType() {
+    return "ZONE";
+  }
+
+  @Override
+  public Vector3 getPosition() {
+    return center;
+  }
+
+  @Override
+  public String getZoneId() {
+    return parentZoneId;
   }
 
   public void setPhysicalTags(Set<String> physicalTags) {
@@ -69,7 +85,7 @@ public class Zone {
     Set<String> effectiveTags = getTags();
     if (parentZoneId != null && allZones.containsKey(parentZoneId)) {
       Zone parent = allZones.get(parentZoneId);
-      if ("INTERIOR".equals(this.type)) {
+      if ("INTERIOR".equals(this.zoneType)) {
         // In interiors, we only inherit contextual tags that pass through walls
         effectiveTags.addAll(parent.getEffectiveContextualTags(allZones));
       } else {

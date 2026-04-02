@@ -1,9 +1,6 @@
 package com.caosmos.common.domain.model.world;
 
-import java.util.Collections;
-import java.util.Map;
-
-public interface WorldEntity {
+public interface WorldElement {
 
   String getId();
 
@@ -16,8 +13,4 @@ public interface WorldEntity {
   String getZoneId();
 
   String getCategory();
-
-  default Map<String, Object> getProperties() {
-    return Collections.emptyMap();
-  }
 }

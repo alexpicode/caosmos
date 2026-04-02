@@ -7,8 +7,7 @@ public record WorldPerception(
     WorldDate date,
     Location location,
     Environment environment,
-    List<NearbyEntity> nearbyEntities,
-    List<NearbyZone> nearbyZones,
+    List<NearbyElement> nearbyElements,
     Set<String> categoriesForExplore
 ) {
 

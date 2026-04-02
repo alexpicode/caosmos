@@ -4,6 +4,7 @@ import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
+import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.common.domain.model.world.Vector3;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExploreTask implements Task {
 
-  private static final double EXPLORATION_LIMIT = 250.0;
+  private static final double EXPLORATION_LIMIT = 50.0;
   private static final double ARRIVAL_THRESHOLD = 0.5;
 
   private final Vector3 directionNormalized;
@@ -36,7 +37,7 @@ public class ExploreTask implements Task {
   }
 
   @Override
-  public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
+  public ActiveTask executeOnTick(Citizen citizen, FullPerception perception, double dt, double walkingSpeed) {
     Vector3 currentPos = citizen.getCurrentState().getPosition();
     var biology = citizen.biology();
     double hours = dt / 3600.0;

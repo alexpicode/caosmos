@@ -11,7 +11,7 @@ import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.Status;
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.Location;
-import com.caosmos.common.domain.model.world.NearbyEntity;
+import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.WorldDate;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.Collections;
@@ -54,7 +54,6 @@ class PerceptionMonitorTest {
         new Location("New Zone", "Building", "URBAN", "Hall", Set.of(), null, "zone-abc"),
         environment,
         Collections.emptyList(),
-        Collections.emptyList(),
         Collections.emptySet()
     );
 
@@ -69,20 +68,22 @@ class PerceptionMonitorTest {
   @Test
   void shouldDetectInterestingObject() {
     // Arrange
-    NearbyEntity interestingEntity = new NearbyEntity(
+    NearbyElement interestingEntity = new NearbyElement(
         "Unique-ID",
         "Old Statue",
         "DECORATION",
+        "OBJECT",
+        null,
         5.0,
         "North",
         Set.of("INTERESTING")
     );
+    citizen.enterZone("zone-1", "Square");
     WorldPerception perception = new WorldPerception(
         date,
         new Location("Square", "Park", "NATURE", "Center", Set.of(), null, "zone-1"),
         environment,
         List.of(interestingEntity),
-        Collections.emptyList(),
         Collections.emptySet()
     );
 
@@ -101,7 +102,6 @@ class PerceptionMonitorTest {
         date,
         new Location("New Zone", "Building", "URBAN", "Hall", Set.of(), null, "zone-abc"),
         environment,
-        Collections.emptyList(),
         Collections.emptyList(),
         Collections.emptySet()
     );
@@ -127,7 +127,6 @@ class PerceptionMonitorTest {
         new Location("Unknown Territory", "EXTERIOR", "WILDERNESS", "Open Area", Set.of(), null, null),
         environment,
         Collections.emptyList(),
-        Collections.emptyList(),
         Collections.emptySet()
     );
 
@@ -148,7 +147,6 @@ class PerceptionMonitorTest {
         date,
         new Location("Unknown Territory", "EXTERIOR", "WILDERNESS", "Open Area", Set.of(), null, null),
         environment,
-        Collections.emptyList(),
         Collections.emptyList(),
         Collections.emptySet()
     );
@@ -176,7 +174,6 @@ class PerceptionMonitorTest {
         new Location("Gold Mine", "INDUSTRIAL", "MINING", "Shaft", Set.of(), null, "zone-mine"),
         environment,
         Collections.emptyList(),
-        Collections.emptyList(),
         Collections.emptySet()
     );
 
@@ -199,21 +196,23 @@ class PerceptionMonitorTest {
         )
     );
 
-    NearbyEntity toolObject = new NearbyEntity(
+    NearbyElement toolObject = new NearbyElement(
         "obj-1",
         "Iron Pickaxe",
         "TOOL",
+        "OBJECT",
+        null,
         2.0,
         "Forward",
         Set.of()
     );
 
+    citizen.enterZone("zone-ws", "Workshop");
     WorldPerception perception = new WorldPerception(
         date,
         new Location("Workshop", "WORKSHOP", "WORKSHOP", "Table", Set.of(), null, "zone-ws"),
         environment,
         List.of(toolObject),
-        Collections.emptyList(),
         Collections.emptySet()
     );
 
@@ -223,5 +222,119 @@ class PerceptionMonitorTest {
     // Assert
     assertTrue(result.isCritical());
     assertTrue(result.reason().contains("Target found: tool"));
+  }
+
+  @Test
+  void shouldCompleteSearchWhenTargetZoneIsNearby() {
+    // Arrange
+    taskRegistry.register(
+        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
+            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+            "MARKET",
+            "Looking for a market"
+        )
+    );
+
+    NearbyElement nearbyMarket = new NearbyElement(
+        "zone-mkt",
+        "Town Market",
+        "MARKET",
+        "ZONE",
+        "URBAN",
+        50.0,
+        "North-East",
+        Collections.emptySet()
+    );
+
+    citizen.enterZone("zone-1", "Square");
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Square", "Park", "NATURE", "Center", Set.of(), null, "zone-1"),
+        environment,
+        List.of(nearbyMarket),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.isCritical());
+    assertTrue(result.reason().contains("Target found: market"));
+  }
+
+  @Test
+  void shouldPrioritizeSearchTargetOverNovelty() {
+    // Arrange: Enter a NEW zone that is also the target category
+    taskRegistry.register(
+        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
+            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+            "MINING",
+            "Looking for gold"
+        )
+    );
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Gold Mine", "INDUSTRIAL", "MINING", "Shaft", Set.of(), null, "zone-mine"),
+        environment,
+        Collections.emptyList(),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.isCritical());
+    assertTrue(result.reason().contains("Target found: mining"), "Search success should override Novelty");
+    assertFalse(
+        result.reason().toLowerCase().contains("discovery"),
+        "Novelty should be suppressed when target is found"
+    );
+  }
+
+  @Test
+  void shouldPrioritizeSearchTargetOverInterestingObject() {
+    // Arrange: See an interesting object AND the target object
+    taskRegistry.register(
+        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
+            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+            "TOOL",
+            "Looking for a pickaxe"
+        )
+    );
+
+    NearbyElement interestingObject = new NearbyElement(
+        "id-1",
+        "Statue",
+        "DECOR",
+        "OBJECT",
+        null,
+        2.0,
+        "F",
+        Set.of("INTERESTING")
+    );
+    NearbyElement targetObject = new NearbyElement("id-2", "Pickaxe", "TOOL", "OBJECT", null, 5.0, "F", Set.of());
+
+    citizen.enterZone("zone-1", "Square");
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Square", "PARK", "NATURE", "Center", Set.of(), null, "zone-1"),
+        environment,
+        List.of(interestingObject, targetObject),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.isCritical());
+    assertTrue(result.reason().contains("Target found: tool"), "Search success should override Distractions");
+    assertFalse(
+        result.reason().toLowerCase().contains("interest"),
+        "Distractions should be suppressed when target is found"
+    );
   }
 }

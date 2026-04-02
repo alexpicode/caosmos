@@ -10,13 +10,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
-import com.caosmos.citizens.application.model.FullPerception;
 import com.caosmos.citizens.application.model.PhysiologicalReflex;
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
+import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
 import java.util.List;
 import java.util.Optional;
@@ -100,6 +100,6 @@ class CitizenPulseTimeoutTest {
     // Wait, cancelTask arguments depend on what handleInterruption sends.
     verify(decisionMaker, times(1)).makeDecision(any(), any(), any());
     // Also verify taskManager execution is NEVER called because physiological crisis aborts execution
-    verify(taskManager, never()).executeActiveTask(any());
+    verify(taskManager, never()).executeActiveTask(any(), any());
   }
 }

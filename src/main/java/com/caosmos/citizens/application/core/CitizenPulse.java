@@ -1,13 +1,13 @@
 package com.caosmos.citizens.application.core;
 
 import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
-import com.caosmos.citizens.application.model.FullPerception;
 import com.caosmos.citizens.application.model.PhysiologicalReflex;
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.application.model.PulseContext;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.InterruptType;
+import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.common.application.telemetry.BiometricsEntry;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
@@ -74,10 +74,7 @@ public class CitizenPulse implements AgentPulse {
       return;
     }
 
-    // 3. Execute Active Task
-    taskManager.executeActiveTask(citizen);
-
-    // 4. Handle Perception & Create Context
+    // 3. Handle Perception & Create Context
     boolean allowsRoutine = false;
     if (citizen.getActiveTask() != null) {
       allowsRoutine = citizen.getActiveTask().allowsRoutineInterruptions();
@@ -85,7 +82,7 @@ public class CitizenPulse implements AgentPulse {
 
     var fullPerception = perceptionHandler.handlePerception(citizen, eventBuffer.snapshot(), allowsRoutine);
 
-    // 5. Check Perception-based interruptions
+    // 4. Check Perception-based interruptions
     if (fullPerception.reflex().critical() && citizen.getLastAction() != null) {
       InterruptType type = allowsRoutine && !fullPerception.reflex().reason().contains("Threat")
           ? InterruptType.ROUTINE
@@ -103,6 +100,9 @@ public class CitizenPulse implements AgentPulse {
       );
       return;
     }
+
+    // 5. Execute Active Task
+    taskManager.executeActiveTask(citizen, fullPerception);
 
     // 6. Decision Phase
     if (CitizenState.IDLE.equals(citizen.getState())) {

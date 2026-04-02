@@ -8,9 +8,8 @@ import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.common.domain.model.world.Vector3;
-import com.caosmos.common.domain.model.world.WorldEntity;
+import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -21,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * Pure domain entity representing a citizen's mental state and profile.
  */
 @Slf4j
-public class Citizen implements WorldEntity {
+public class Citizen implements WorldElement {
 
   @Getter
   private final UUID uuid;
@@ -83,7 +82,7 @@ public class Citizen implements WorldEntity {
     return currentState.getLastAction();
   }
 
-  // --- WorldEntity Methods ---
+  // --- WorldElement Methods ---
 
   @Override
   public String getId() {
@@ -108,17 +107,6 @@ public class Citizen implements WorldEntity {
   @Override
   public String getCategory() {
     return "CITIZEN";
-  }
-
-  @Override
-  public Map<String, Object> getProperties() {
-    return Map.of(
-        "tags", citizenProfile.identity().traits(),
-        "activeTask",
-        currentState.getActiveTask() != null
-            ? Map.of("type", currentState.getActiveTask().type(), "goal", currentState.getActiveTask().goal())
-            : Map.of()
-    );
   }
 
   // --- State Transition Methods ---

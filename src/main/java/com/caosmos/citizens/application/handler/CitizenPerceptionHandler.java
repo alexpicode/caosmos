@@ -1,8 +1,8 @@
 package com.caosmos.citizens.application.handler;
 
-import com.caosmos.citizens.application.model.FullPerception;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.perception.CitizenPerception;
+import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;

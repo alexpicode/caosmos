@@ -3,17 +3,17 @@ package com.caosmos.world.infrastructure;
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.Location;
-import com.caosmos.common.domain.model.world.NearbyEntity;
+import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldDate;
-import com.caosmos.common.domain.model.world.WorldEntity;
+import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import com.caosmos.world.application.WorldObjectInitializer;
+import com.caosmos.world.domain.model.PeripheralPerception;
 import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.model.Zone;
 import com.caosmos.world.domain.service.EnvironmentService;
-import com.caosmos.world.domain.service.NearbyEntityService;
-import com.caosmos.world.domain.service.NearbyZoneService;
+import com.caosmos.world.domain.service.NearbyPerceptionService;
 import com.caosmos.world.domain.service.SpatialHash;
 import com.caosmos.world.domain.service.WorldTimeService;
 import com.caosmos.world.domain.service.ZoneManager;
@@ -37,8 +37,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   private final ZoneManager zoneManager;
   private final WorldTimeService worldTimeService;
   private final EnvironmentService environmentService;
-  private final NearbyEntityService nearbyEntityService;
-  private final NearbyZoneService nearbyZoneService;
+  private final NearbyPerceptionService nearbyPerceptionService;
   private final WorldObjectInitializer worldObjectInitializer;
 
   @Value("${caosmos.world.max-vision-distance}")
@@ -53,10 +52,10 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   }
 
   @Override
-  public WorldPerception getPerceptionAt(Vector3 position, String currentZoneId, Predicate<WorldEntity> filter) {
+  public WorldPerception getPerceptionAt(Vector3 position, String currentZoneId, Predicate<WorldElement> filter) {
     Optional<Zone> zoneOpt = zoneManager.findZoneAt(position, currentZoneId);
     String zoneName = zoneOpt.map(Zone::getName).orElse("Unknown Territory");
-    String zoneType = zoneOpt.map(Zone::getType).orElse("EXTERIOR");
+    String zoneType = zoneOpt.map(Zone::getZoneType).orElse("EXTERIOR");
 
     Map<String, Zone> allZones = zoneManager.getZoneMap();
     Set<String> tags = zoneOpt.map(z -> z.getEffectiveTags(allZones)).orElse(Set.of());
@@ -84,21 +83,17 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
       finalTags.addAll(effectiveEnvTags);
     }
 
-    var nearbyEntities = nearbyEntityService.getNearbyEntitiesOrdered(
+    PeripheralPerception peripheralPerception = nearbyPerceptionService.getPeripheralPerception(
         position,
         maxVisionDistance,
         zoneOpt.map(Zone::getId).orElse(null),
         filter
     );
-    var nearbyZones = nearbyZoneService.getNearbyZones(
-        position,
-        zoneOpt.map(Zone::getId).orElse(null),
-        maxVisionDistance
-    );
+    var nearbyElements = peripheralPerception.elements();
 
     Set<String> categoriesForExplore = getCategoriesInRadius(position, exploreSearchRadius);
 
-    String currentLocation = getCurrentLocation(nearbyEntities);
+    String currentLocation = getCurrentLocation(nearbyElements);
 
     Location location = new Location(
         zoneName,
@@ -110,22 +105,13 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         zoneOpt.map(Zone::getId).orElse(null)
     );
 
-    return new WorldPerception(worldDate, location, perceivedEnv, nearbyEntities, nearbyZones, categoriesForExplore);
+    return new WorldPerception(worldDate, location, perceivedEnv, nearbyElements, categoriesForExplore);
   }
 
   private Set<String> getCategoriesInRadius(Vector3 position, double radius) {
     Set<String> categories = new java.util.HashSet<>();
 
-    // 1. Categories from Zones
-    zoneManager.getAllZones().stream()
-        .filter(z -> position.distanceTo2D(z.getCenter()) <= radius)
-        .forEach(z -> {
-          if (z.getCategory() != null) {
-            categories.add(z.getCategory());
-          }
-        });
-
-    // 2. Categories from WorldObjects
+    // We only need to consult SpatialHash as it now contains both WorldObjects and Zones
     spatialHash.getNearbyEntities(position, radius).stream()
         .forEach(e -> {
           if (e.getCategory() != null) {
@@ -136,13 +122,16 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     return categories;
   }
 
-  private static String getCurrentLocation(List<NearbyEntity> nearbyEntities) {
-    if (CollectionUtils.isNotEmpty(nearbyEntities)) {
-      var closest = nearbyEntities.getFirst();
-      if (closest.distance() <= 2.0) {
-        // Remove the current location entity from nearbyEntities
-        nearbyEntities.removeFirst();
-        return closest.name();
+  private static String getCurrentLocation(List<NearbyElement> nearbyElements) {
+    if (CollectionUtils.isNotEmpty(nearbyElements)) {
+      var closest = nearbyElements.stream()
+          .filter(e -> "OBJECT".equals(e.type()))
+          .findFirst();
+
+      if (closest.isPresent() && closest.get().distance() <= 2.0) {
+        // Remove the current location entity from nearbyElements
+        nearbyElements.remove(closest.get());
+        return closest.get().name();
       }
     }
     return "Open Area";
@@ -153,10 +142,10 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   }
 
   public void removeWorldObject(String objectId) {
-    WorldEntity toRemove = null;
-    Set<WorldEntity> allObjects = spatialHash.getNearbyEntities(new Vector3(0, 0, 0), Double.MAX_VALUE);
+    WorldElement toRemove = null;
+    Set<WorldElement> allObjects = spatialHash.getNearbyEntities(new Vector3(0, 0, 0), Double.MAX_VALUE);
 
-    for (WorldEntity obj : allObjects) {
+    for (WorldElement obj : allObjects) {
       if (obj.getId().equals(objectId)) {
         toRemove = obj;
         break;

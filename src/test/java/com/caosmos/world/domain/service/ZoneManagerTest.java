@@ -13,10 +13,12 @@ import org.junit.jupiter.api.Test;
 class ZoneManagerTest {
 
   private ZoneManager zoneManager;
+  private SpatialHash spatialHash;
 
   @BeforeEach
   void setUp() {
-    zoneManager = new ZoneManager();
+    spatialHash = new SpatialHash();
+    zoneManager = new ZoneManager(spatialHash);
   }
 
   @Test

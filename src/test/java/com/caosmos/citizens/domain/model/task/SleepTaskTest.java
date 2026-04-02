@@ -32,7 +32,7 @@ class SleepTaskTest {
   @Test
   void testSleepRecoversEnergyAndReducesStress() {
     double dt = 3600.0; // 1 hour
-    task.executeOnTick(citizen, dt, 0.0);
+    task.executeOnTick(citizen, null, dt, 0.0);
 
     Status status = citizen.getPerception().status();
 
@@ -49,7 +49,7 @@ class SleepTaskTest {
     // Almost full energy
     citizen.biology().increaseEnergy(79.5); // Energy = 99.5
 
-    var result = task.executeOnTick(citizen, 360.0, 0.0); // 6 mins = 1.0 energy recovery
+    var result = task.executeOnTick(citizen, null, 360.0, 0.0); // 6 mins = 1.0 energy recovery
 
     assertTrue(result.completed());
     assertTrue(citizen.getPerception().status().energy() >= 100.0);

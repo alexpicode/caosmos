@@ -34,7 +34,7 @@ class TravelToTaskTest {
   @Test
   void testMovementConsumesEnergyAndHunger() {
     double dt = 3600.0; // 1 hour
-    task.executeOnTick(citizen, dt, 1.0);
+    task.executeOnTick(citizen, null, dt, 1.0);
 
     Status status = citizen.getPerception().status();
 
@@ -50,7 +50,7 @@ class TravelToTaskTest {
     citizen.biology().decreaseEnergy(90.0); // Energy = 10.0 (< 15.0 EXTREME_FATIGUE)
 
     Vector3 startPos = citizen.getPosition();
-    task.executeOnTick(citizen, 10.0, 1.0); // Move for 10 seconds at 1.0 m/s
+    task.executeOnTick(citizen, null, 10.0, 1.0); // Move for 10 seconds at 1.0 m/s
 
     Vector3 endPos = citizen.getPosition();
     double movedDistance = startPos.distanceTo(endPos);

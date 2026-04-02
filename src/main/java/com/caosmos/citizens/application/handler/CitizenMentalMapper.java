@@ -5,8 +5,8 @@ import com.caosmos.citizens.domain.model.perception.CognitiveAnchor;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.world.domain.service.DirectionCalculator;
-import com.caosmos.world.domain.service.NearbyZoneService;
 import com.caosmos.world.domain.service.SemanticDistanceMapper;
+import com.caosmos.world.domain.service.ZoneManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CitizenMentalMapper {
 
-  private final NearbyZoneService nearbyZoneService;
+  private final ZoneManager zoneManager;
   private final DirectionCalculator directionCalculator;
   private final SemanticDistanceMapper distanceMapper;
 
@@ -47,7 +47,7 @@ public class CitizenMentalMapper {
 
     // 2. Nearest City Anchor
     CognitiveAnchor cityAnchor = null;
-    var nearestCityOpt = nearbyZoneService.findNearestCity(currentPosition);
+    var nearestCityOpt = zoneManager.findNearestCity(currentPosition);
     if (nearestCityOpt.isPresent()) {
       var city = nearestCityOpt.get();
       double distance = currentPosition.distanceTo2D(city.getCenter());

@@ -3,6 +3,7 @@ package com.caosmos.citizens.domain.task;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
+import com.caosmos.citizens.domain.model.perception.FullPerception;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,7 +20,7 @@ public class WaitTask implements Task {
   }
 
   @Override
-  public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
+  public ActiveTask executeOnTick(Citizen citizen, FullPerception perception, double dt, double walkingSpeed) {
     elapsedSeconds += dt;
     double hours = dt / 3600.0;
     var biology = citizen.biology();

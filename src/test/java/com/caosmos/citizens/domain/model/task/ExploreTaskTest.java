@@ -35,7 +35,7 @@ class ExploreTaskTest {
 
   @Test
   void shouldInitializeTargetOnFirstTick() {
-    task.executeOnTick(citizen, 1.0, 1.0);
+    task.executeOnTick(citizen, null, 1.0, 1.0);
     // Should move north
     assertTrue(citizen.getPosition().z() > 0);
   }
@@ -43,13 +43,13 @@ class ExploreTaskTest {
   @Test
   void shouldCompleteWhenDistanceReached() {
     // 1. Initial tick to set startPos at current position (0,0,0)
-    task.executeOnTick(citizen, 1.0, 1.0);
+    task.executeOnTick(citizen, null, 1.0, 1.0);
 
     // 2. Set position near the 50m limit
     citizen.getCurrentState().setPosition(new Vector3(0, 0, 49.9));
 
     // 3. One more tick should complete it
-    ActiveTask result = task.executeOnTick(citizen, 1.0, 1.0);
+    ActiveTask result = task.executeOnTick(citizen, null, 1.0, 1.0);
 
     assertTrue(result.completed());
     assertEquals("Exploration reached limit", result.goal());

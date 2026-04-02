@@ -4,6 +4,7 @@ import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
+import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.common.domain.model.world.Vector3;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +30,7 @@ public class TravelToTask implements Task {
   }
 
   @Override
-  public ActiveTask executeOnTick(Citizen citizen, double dt, double walkingSpeed) {
+  public ActiveTask executeOnTick(Citizen citizen, FullPerception perception, double dt, double walkingSpeed) {
     Vector3 currentPos = citizen.getCurrentState().getPosition();
     double distance = currentPos.distanceTo(target);
     var biology = citizen.biology();

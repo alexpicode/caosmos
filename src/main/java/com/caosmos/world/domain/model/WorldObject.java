@@ -1,14 +1,14 @@
 package com.caosmos.world.domain.model;
 
 import com.caosmos.common.domain.model.world.Vector3;
-import com.caosmos.common.domain.model.world.WorldEntity;
+import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WorldObject implements WorldEntity {
+public class WorldObject implements WorldElement {
 
   public WorldObject(
       String id,

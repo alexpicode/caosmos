@@ -6,7 +6,7 @@ import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
 import com.caosmos.citizens.domain.task.ExploreTask;
-import com.caosmos.common.domain.model.world.NearbyEntity;
+import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,91 +38,80 @@ public class PerceptionMonitor {
     var status = citizen.getPerception().status();
     List<String> informativeEvents = new ArrayList<>();
 
-    // 1. Check for zone changes
+    // --- 0. Prepare Zone Context ---
     String previousZoneId = currentState.getCurrentZoneId();
     String newZoneId = perception.location().zoneId();
     String newZoneName = perception.location().zone();
-
     boolean zoneChanged = !Objects.equals(previousZoneId, newZoneId);
-    String pendingZoneId = null;
-    String pendingZoneName = null;
+    String pendingZoneId = zoneChanged ? newZoneId : null;
+    String pendingZoneName = zoneChanged ? newZoneName : null;
 
-    if (zoneChanged) {
-      pendingZoneId = newZoneId;
-      pendingZoneName = newZoneName;
-
-      // Only handle valid zones (ignore Unknown Territory for reflexes/events)
-      if (newZoneId != null) {
-        boolean isNewZone = !citizen.isZoneVisited(newZoneId);
-
-        if (allowsRoutineInterruptions) {
-          // Check for specific search target in ExploreTask (Zone category)
-          String targetFound = checkSearchTarget(citizen.getUuid(), perception.location().category());
-
-          if (targetFound != null) {
-            informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + " in " + newZoneName);
-            return new PerceptionEvaluation(
-                new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
-                pendingZoneId, pendingZoneName, true
-            );
-          }
-
-          if (isNewZone) {
-            informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
-            return new PerceptionEvaluation(
-                new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents),
-                pendingZoneId, pendingZoneName, true
-            );
-          }
-        }
-
-        informativeEvents.add("You've entered the zone: " + newZoneName);
+    // --- 1. Critical Reflexes (Survival First) ---
+    for (NearbyElement element : perception.nearbyElements()) {
+      if (!"OBJECT".equals(element.type())) {
+        continue;
       }
-    }
-
-    // 2. Check for critical threats or immediate social interactions
-    for (NearbyEntity entity : perception.nearbyEntities()) {
-      if (entity.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE ||
-          hasTag(entity, "hostile")) {
+      if (element.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE || hasTag(element, "hostile")) {
         return new PerceptionEvaluation(
-            new ReflexResult(true, "Threat detected: " + entity.name(), informativeEvents),
+            new ReflexResult(true, "Threat detected: " + element.name(), informativeEvents),
             pendingZoneId, pendingZoneName, zoneChanged
         );
       }
+    }
 
-      if (allowsRoutineInterruptions) {
-        if (hasTag(entity, "interesting")) {
-          informativeEvents.add("INTERESTING! You've spotted: " + entity.name());
-          return new PerceptionEvaluation(
-              new ReflexResult(true, "Object of interest: " + entity.name(), informativeEvents),
-              pendingZoneId, pendingZoneName, zoneChanged
-          );
-        }
-
-        if (hasTag(entity, "resource")) {
-          informativeEvents.add(
-              "You've seen a resource: " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
-          return new PerceptionEvaluation(
-              new ReflexResult(true, "Resource detected: " + entity.name(), informativeEvents),
-              pendingZoneId, pendingZoneName, zoneChanged
-          );
-        }
-
-        // Check for specific search target in ExploreTask (NearbyEntity category)
-        String targetFound = checkSearchTarget(citizen.getUuid(), entity.category());
-        if (targetFound != null) {
-          informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + ": " + entity.name());
-          return new PerceptionEvaluation(
-              new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
-              pendingZoneId, pendingZoneName, zoneChanged
-          );
-        }
-
-        informativeEvents.add("Seen " + entity.name() + " at " + String.format("%.1fm", entity.distance()));
+    // --- 2. Search Target Discovery (Objective Priority) ---
+    if (allowsRoutineInterruptions) {
+      PerceptionEvaluation searchResult = checkSearchSuccess(
+          citizen,
+          perception,
+          informativeEvents,
+          pendingZoneId,
+          pendingZoneName,
+          zoneChanged
+      );
+      if (searchResult != null) {
+        return searchResult;
       }
     }
 
-    // 3. Physiological Alerts (Narrative)
+    // --- 3. Zone Changes and Progress ---
+    if (zoneChanged && newZoneId != null) {
+      boolean isNewZone = !citizen.isZoneVisited(newZoneId);
+      if (allowsRoutineInterruptions && isNewZone) {
+        informativeEvents.add("NOVELTY! You've entered an unexplored zone: " + newZoneName);
+        return new PerceptionEvaluation(
+            new ReflexResult(true, "Zone discovery: " + newZoneName, informativeEvents),
+            pendingZoneId, pendingZoneName, true
+        );
+      }
+      informativeEvents.add("You've entered the zone: " + newZoneName);
+    }
+
+    // --- 4. Content Interruptions (Interests/Resources) ---
+    if (allowsRoutineInterruptions) {
+      for (NearbyElement element : perception.nearbyElements()) {
+        if (!"OBJECT".equals(element.type())) {
+          continue;
+        }
+        if (hasTag(element, "interesting")) {
+          informativeEvents.add("INTERESTING! You've spotted: " + element.name());
+          return new PerceptionEvaluation(
+              new ReflexResult(true, "Object of interest: " + element.name(), informativeEvents),
+              pendingZoneId, pendingZoneName, zoneChanged
+          );
+        }
+
+        if (hasTag(element, "resource")) {
+          informativeEvents.add("You've seen a resource: " + element.name());
+          return new PerceptionEvaluation(
+              new ReflexResult(true, "Resource detected: " + element.name(), informativeEvents),
+              pendingZoneId, pendingZoneName, zoneChanged
+          );
+        }
+      }
+    }
+
+    // --- 5. Physiological Alerts (Narrative) ---
     if (status.vitality() < PhysiologicalThresholds.VITALITY_CRITICAL) {
       informativeEvents.add("Your body is severely injured.");
     }
@@ -142,6 +131,40 @@ public class PerceptionMonitor {
     );
   }
 
+  private PerceptionEvaluation checkSearchSuccess(
+      Citizen citizen,
+      WorldPerception perception,
+      List<String> informativeEvents,
+      String pendingZoneId,
+      String pendingZoneName,
+      boolean zoneChanged
+  ) {
+    // 1. Current location
+    String targetFound = checkSearchTarget(citizen.getUuid(), perception.location().category());
+    if (targetFound != null) {
+      informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + " in " + perception.location().zone());
+      return new PerceptionEvaluation(
+          new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
+          pendingZoneId, pendingZoneName, zoneChanged
+      );
+    }
+
+    // 2. Nearby elements (Entities and Zones)
+    for (var element : perception.nearbyElements()) {
+      targetFound = checkSearchTarget(citizen.getUuid(), element.category());
+      if (targetFound != null) {
+        String prefix = "ZONE".equals(element.type()) ? "the " : "";
+        informativeEvents.add("SEARCH COMPLETE! You've found " + prefix + targetFound + ": " + element.name());
+        return new PerceptionEvaluation(
+            new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
+            pendingZoneId, pendingZoneName, zoneChanged
+        );
+      }
+    }
+
+    return null;
+  }
+
   private String checkSearchTarget(UUID citizenId, String currentCategory) {
     if (currentCategory == null) {
       return null;
@@ -154,8 +177,8 @@ public class PerceptionMonitor {
         .orElse(null);
   }
 
-  private boolean hasTag(NearbyEntity entity, String tag) {
-    return entity.tags() != null &&
-        entity.tags().stream().anyMatch(tag::equalsIgnoreCase);
+  private boolean hasTag(NearbyElement element, String tag) {
+    return element.tags() != null &&
+        element.tags().stream().anyMatch(tag::equalsIgnoreCase);
   }
 }

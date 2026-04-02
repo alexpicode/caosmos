@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.world.domain.model.WorldObject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,7 +27,7 @@ class SpatialHashConcurrentTest {
             WorldObject obj = new WorldObject();
             obj.setId(id);
             obj.setPosition(new Vector3(Math.random() * 100, 0, Math.random() * 100));
-            
+
             // Randomly perform different operations
             double choice = Math.random();
             if (choice < 0.4) {

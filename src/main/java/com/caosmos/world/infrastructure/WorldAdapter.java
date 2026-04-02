@@ -3,7 +3,7 @@ package com.caosmos.world.infrastructure;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
-import com.caosmos.common.domain.model.world.WorldEntity;
+import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.service.SpatialHash;
 import com.caosmos.world.domain.service.ZoneManager;
@@ -75,7 +75,7 @@ public class WorldAdapter implements WorldPort {
 
   @Override
   public Optional<Vector3> getObjectPosition(String objectId) {
-    return spatialHash.getById(objectId).map(WorldEntity::getPosition);
+    return spatialHash.getById(objectId).map(WorldElement::getPosition);
   }
 
   @Override
