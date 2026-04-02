@@ -3,10 +3,8 @@ package com.caosmos.citizens.application.handler;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.perception.CognitiveAnchor;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
+import com.caosmos.common.domain.contracts.world.SpatialNarrativePort;
 import com.caosmos.common.domain.model.world.Vector3;
-import com.caosmos.world.domain.service.DirectionCalculator;
-import com.caosmos.world.domain.service.SemanticDistanceMapper;
-import com.caosmos.world.domain.service.ZoneManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,9 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CitizenMentalMapper {
 
-  private final ZoneManager zoneManager;
-  private final DirectionCalculator directionCalculator;
-  private final SemanticDistanceMapper distanceMapper;
+  private final SpatialNarrativePort spatialNarrativePort;
 
   /**
    * Calculates the mental map for a citizen based on their current position and profile.
@@ -40,22 +36,22 @@ public class CitizenMentalMapper {
       homeAnchor = new CognitiveAnchor(
           "Home",
           Math.round(distance * 100.0) / 100.0,
-          distanceMapper.mapDistance(distance),
-          directionCalculator.getCardinalDirection(currentPosition, homePos)
+          spatialNarrativePort.getSemanticDistance(distance),
+          spatialNarrativePort.getCardinalDirection(currentPosition, homePos)
       );
     }
 
     // 2. Nearest City Anchor
     CognitiveAnchor cityAnchor = null;
-    var nearestCityOpt = zoneManager.findNearestCity(currentPosition);
+    var nearestCityOpt = spatialNarrativePort.findNearestCity(currentPosition);
     if (nearestCityOpt.isPresent()) {
       var city = nearestCityOpt.get();
-      double distance = currentPosition.distanceTo2D(city.getCenter());
+      double distance = currentPosition.distanceTo2D(city.center());
       cityAnchor = new CognitiveAnchor(
-          city.getName(),
+          city.name(),
           Math.round(distance * 100.0) / 100.0,
-          distanceMapper.mapDistance(distance),
-          directionCalculator.getCardinalDirection(currentPosition, city.getCenter())
+          spatialNarrativePort.getSemanticDistance(distance),
+          spatialNarrativePort.getCardinalDirection(currentPosition, city.center())
       );
     }
 
