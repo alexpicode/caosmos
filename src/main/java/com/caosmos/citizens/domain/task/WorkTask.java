@@ -46,13 +46,25 @@ public class WorkTask implements Task {
 
     boolean shiftComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WORK_DURATION_HOURS;
 
+    return toActiveTask(citizen).withCompleted(shiftComplete);
+  }
+
+  @Override
+  public ActiveTask toActiveTask(Citizen citizen) {
     return new ActiveTask(
         "WORK",
-        "Working in " + workplaceType,
+        "Working at " + workplaceType,
+        null,
         workplaceType,
-        shiftComplete,
+        null,
+        false,
         allowsRoutineInterruptions()
     );
+  }
+
+  @Override
+  public boolean allowsRoutineInterruptions() {
+    return false;
   }
 
   @Override

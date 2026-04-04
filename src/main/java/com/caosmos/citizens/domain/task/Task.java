@@ -35,6 +35,11 @@ public interface Task {
   }
 
   /**
+   * Returns a snapshot of the current task status without performing any computation or state change.
+   */
+  ActiveTask toActiveTask(Citizen citizen);
+
+  /**
    * Indicates if the citizen's attention is low enough to be interrupted by routine events (e.g. noticing resources,
    * crossing zones).
    */

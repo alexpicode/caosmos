@@ -37,7 +37,17 @@ public class SleepTask implements Task {
       log.info("Citizen {} is fully rested.", citizen.getUuid());
     }
 
-    return new ActiveTask("SLEEP", "Sleeping and recovering", null, isComplete, allowsRoutineInterruptions());
+    return toActiveTask(citizen).withCompleted(isComplete);
+  }
+
+  @Override
+  public ActiveTask toActiveTask(Citizen citizen) {
+    return new ActiveTask("SLEEP", "Sleeping (Full recovery)", null, null, null, false, allowsRoutineInterruptions());
+  }
+
+  @Override
+  public boolean allowsRoutineInterruptions() {
+    return false;
   }
 
   @Override

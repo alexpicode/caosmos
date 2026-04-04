@@ -1,5 +1,6 @@
 package com.caosmos.citizens.application.core;
 
+import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.registry.TaskRegistry;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
@@ -28,6 +29,7 @@ public class CitizenTaskManager {
   private final TaskRegistry taskRegistry;
   private final WorldRegistry spatialRegistry;
   private final SimulationClock worldTimeService;
+  private final CitizenPerceptionHandler perceptionHandler;
 
   public void executeActiveTask(Citizen citizen, FullPerception perception) {
     Optional<Task> task = taskRegistry.get(citizen.getUuid());
@@ -50,6 +52,9 @@ public class CitizenTaskManager {
       Vector3 newPosition = citizen.getPosition();
       if (!initialPosition.equals(newPosition)) {
         spatialRegistry.updatePosition(citizen, newPosition);
+
+        // Immediate Zone and MentalMap update for real-time monitoring
+        perceptionHandler.synchronizeSpatialContext(citizen, newPosition);
       }
 
       citizen.updateTask(activeTask);

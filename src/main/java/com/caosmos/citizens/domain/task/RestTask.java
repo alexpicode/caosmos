@@ -23,9 +23,12 @@ public class RestTask implements Task {
     // 2. Reduce Stress
     biology.decreaseStress(PhysiologicalThresholds.REST_STRESS_REDUCTION_RATE * hours);
 
-    boolean isComplete = biology.getEnergy() >= 100.0;
+    return toActiveTask(citizen).withCompleted(biology.getEnergy() >= 100.0);
+  }
 
-    return new ActiveTask("REST", "Resting and relaxing", null, isComplete, allowsRoutineInterruptions());
+  @Override
+  public ActiveTask toActiveTask(Citizen citizen) {
+    return new ActiveTask("REST", "Resting and recovering", null, null, null, false, allowsRoutineInterruptions());
   }
 
   @Override

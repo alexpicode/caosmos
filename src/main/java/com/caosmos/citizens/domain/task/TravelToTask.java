@@ -39,7 +39,7 @@ public class TravelToTask implements Task {
     if (distance <= ARRIVAL_THRESHOLD) {
       log.info("Citizen {} reached target {}", citizen.getUuid(), target);
       citizen.getCurrentState().setPosition(target); // Snap to target
-      return new ActiveTask("TravelTo", "Reached target", targetId, true, allowsRoutineInterruptions());
+      return toActiveTask(citizen).withCompleted(true).withGoal("Reached target");
     }
 
     // --- Physiological Costs ---
@@ -73,7 +73,13 @@ public class TravelToTask implements Task {
     log.debug("Citizen {} moved towards {}. New pos: {}", citizen.getUuid(), target, newPos);
 
     boolean isComplete = moveDistance >= distance; // Complete if we reached or overshot
-    return new ActiveTask("TravelTo", "Traveling to target", targetId, isComplete, allowsRoutineInterruptions());
+    ActiveTask status = toActiveTask(citizen).withCompleted(isComplete);
+    return isComplete ? status.withGoal("Reached target") : status;
+  }
+
+  @Override
+  public ActiveTask toActiveTask(Citizen citizen) {
+    return new ActiveTask("TravelTo", "Traveling to target", targetId, null, null, false, allowsRoutineInterruptions());
   }
 
   @Override

@@ -34,7 +34,21 @@ public class WaitTask implements Task {
     }
 
     boolean isComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WAIT_DURATION_HOURS;
-    return new ActiveTask("WAIT", "Waiting in repose", null, isComplete, allowsRoutineInterruptions());
+    return toActiveTask(citizen).withCompleted(isComplete);
+  }
+
+  @Override
+  public ActiveTask toActiveTask(Citizen citizen) {
+    String statusDetails = inSafeZone ? "In Safe Zone" : "In Danger Zone";
+    return new ActiveTask(
+        "WAIT",
+        "Waiting/Standing by",
+        null,
+        null,
+        statusDetails,
+        false,
+        allowsRoutineInterruptions()
+    );
   }
 
   @Override

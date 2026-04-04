@@ -14,8 +14,8 @@ public class GetWorldEntitiesUseCase {
 
   private final SpatialHash spatialHash;
 
-  public List<WorldEntitySummaryDTO> executeSummary(Double minX, Double minZ, Double maxX, Double maxZ, String type) {
-    Collection<WorldElement> entities = getFilteredEntities(minX, minZ, maxX, maxZ, type);
+  public List<WorldEntitySummaryDTO> executeSummary(Double minX, Double minZ, Double maxX, Double maxZ) {
+    Collection<WorldElement> entities = getFilteredEntities(minX, minZ, maxX, maxZ);
 
     return entities.stream()
         .map(e -> new WorldEntitySummaryDTO(
@@ -33,8 +33,7 @@ public class GetWorldEntitiesUseCase {
       Double minX,
       Double minZ,
       Double maxX,
-      Double maxZ,
-      String type
+      Double maxZ
   ) {
     Collection<WorldElement> entities;
     if (minX != null && minZ != null && maxX != null && maxZ != null) {
@@ -43,15 +42,9 @@ public class GetWorldEntitiesUseCase {
       entities = spatialHash.getAllEntities();
     }
 
-    if (type != null && !type.isEmpty()) {
-      return entities.stream()
-          .filter(e -> e.getType().equalsIgnoreCase(type))
-          .toList();
-    }
-
-    // Default: filter out Zones to avoid duplication with /zones endpoint
+    // Only return objects of type "OBJECT"
     return entities.stream()
-        .filter(e -> !"ZONE".equalsIgnoreCase(e.getType()))
+        .filter(e -> "OBJECT".equalsIgnoreCase(e.getType()))
         .toList();
   }
 }

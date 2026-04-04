@@ -55,7 +55,7 @@ class CitizenPulseTimeoutTest {
     when(perception.status().stress()).thenReturn(0.0);
     when(citizen.getCurrentState()).thenReturn(new CurrentState(null, null, null, CitizenState.BUSY, null, null, null));
     when(citizen.getState()).thenReturn(CitizenState.BUSY);
-    when(citizen.getActiveTask()).thenReturn(new ActiveTask("T", "G", "TG", false, false));
+    when(citizen.getActiveTask()).thenReturn(new ActiveTask("T", "G", null, null, "TG", false, false));
 
     FullPerception fullPerception = mock(FullPerception.class, RETURNS_DEEP_STUBS);
     when(perceptionHandler.handlePerception(any(), any(), anyBoolean())).thenReturn(fullPerception);

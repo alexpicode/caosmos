@@ -45,30 +45,29 @@ public class WorldMonitorController {
   })
   public ResponseEntity<List<Zone>> getAllZones() {
     return ResponseEntity.ok()
-                         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-                         .body(getWorldZonesUseCase.execute());
+        .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
+        .body(getWorldZonesUseCase.execute());
   }
 
-  @GetMapping("/entities")
-  @Operation(summary = "Get world entities summary")
+  @GetMapping("/objects")
+  @Operation(summary = "Get world objects summary")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Successfully retrieved entities summary",
+      @ApiResponse(responseCode = "200", description = "Successfully retrieved objects summary",
           headers = {@Header(
               name = "X-Sim-Tick",
               description = "Current simulation tick",
               schema = @Schema(type = "integer")
           )})
   })
-  public ResponseEntity<List<WorldEntitySummaryDTO>> getEntities(
+  public ResponseEntity<List<WorldEntitySummaryDTO>> getObjects(
       @RequestParam(required = false) Double minX,
       @RequestParam(required = false) Double minZ,
       @RequestParam(required = false) Double maxX,
-      @RequestParam(required = false) Double maxZ,
-      @RequestParam(required = false) String type
+      @RequestParam(required = false) Double maxZ
   ) {
     return ResponseEntity.ok()
-                         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-                         .body(getWorldEntitiesUseCase.executeSummary(minX, minZ, maxX, maxZ, type));
+        .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
+        .body(getWorldEntitiesUseCase.executeSummary(minX, minZ, maxX, maxZ));
   }
 
   @GetMapping("/chunks")
@@ -88,8 +87,8 @@ public class WorldMonitorController {
       @RequestParam double maxZ
   ) {
     return ResponseEntity.ok()
-                         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-                         .body(getWorldChunksUseCase.execute(minX, minZ, maxX, maxZ));
+        .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
+        .body(getWorldChunksUseCase.execute(minX, minZ, maxX, maxZ));
   }
 
   @GetMapping("/environment")
@@ -104,7 +103,7 @@ public class WorldMonitorController {
   })
   public ResponseEntity<WorldEnvironmentResponse> getEnvironment() {
     return ResponseEntity.ok()
-                         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-                         .body(getWorldEnvironmentUseCase.execute());
+        .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
+        .body(getWorldEnvironmentUseCase.execute());
   }
 }

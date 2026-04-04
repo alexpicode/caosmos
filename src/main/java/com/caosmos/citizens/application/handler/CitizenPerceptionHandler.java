@@ -1,7 +1,6 @@
 package com.caosmos.citizens.application.handler;
 
 import com.caosmos.citizens.domain.Citizen;
-import com.caosmos.citizens.domain.model.perception.CitizenPerception;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
@@ -37,7 +36,7 @@ public class CitizenPerceptionHandler {
   ) {
     String citizenName = citizen.getCitizenProfile().identity().name();
 
-    // Get current position and world perception with filter to exclude self
+    // 1. Get current position and world perception with filter to exclude self
     Vector3 currentPosition = citizen.getCurrentState().getPosition();
     String currentZoneId = citizen.getCurrentState().getCurrentZoneId();
     WorldPerception worldPerception = worldPerceptionProvider.getPerceptionAt(
@@ -47,36 +46,50 @@ public class CitizenPerceptionHandler {
     );
     log.debug("[CITIZEN:{}] WorldPerception at position {}: {}", citizenName, currentPosition, worldPerception);
 
-    // Evaluate reflexes (pure evaluation)
+    // 2. Synchronize Spatial Context (Zone & Mental Map)
+    // We pass the already fetched worldPerception to avoid redundant calls
+    synchronizeSpatialContext(citizen, currentPosition, worldPerception);
+
+    // 3. Evaluate reflexes (pure evaluation)
     PerceptionEvaluation eval = perceptionMonitor.evaluate(
         citizen,
         worldPerception,
         allowsRoutineInterruptions
     );
 
-    // Apply state changes recommended by the evaluation
-    if (eval.hasEnteredNewZone()) {
-      citizen.enterZone(eval.newZoneId(), eval.newZoneName());
-    }
-
     ReflexResult reflex = eval.reflex();
 
-    // Add informative events to the provided list without duplicates
+    // 4. Add informative events to the provided list without duplicates
     reflex.informativeEvents().forEach(e -> {
       if (!unprocessedEvents.contains(e)) {
         unprocessedEvents.add(e);
       }
     });
 
-    // Calculate Mental Map
-    MentalMap mentalMap = mentalMapper.calculate(citizen, currentPosition);
-
-    // Update citizen's mental map and get perception
-    citizen.updateMentalMap(mentalMap);
-    CitizenPerception citizenPerception = citizen.getPerception();
-
-    return new FullPerception(citizenPerception, worldPerception, reflex);
+    return new FullPerception(citizen.getPerception(), worldPerception, reflex);
   }
 
+  /**
+   * Synchronizes the citizen's spatial context (Zone and Mental Map) with their current physical position. Useful for
+   * immediate updates outside the normal pulse cycle.
+   */
+  public void synchronizeSpatialContext(Citizen citizen, Vector3 position) {
+    String currentZoneId = citizen.getCurrentState().getCurrentZoneId();
+    WorldPerception perception = worldPerceptionProvider.getPerceptionAt(
+        position,
+        currentZoneId,
+        e -> !e.getId().equals(citizen.getId())
+    );
+    synchronizeSpatialContext(citizen, position, perception);
+  }
+
+  private void synchronizeSpatialContext(Citizen citizen, Vector3 position, WorldPerception perception) {
+    if (perception != null && perception.location() != null) {
+      citizen.enterZone(perception.location().zoneId(), perception.location().zone());
+    }
+
+    MentalMap mentalMap = mentalMapper.calculate(citizen, position);
+    citizen.updateMentalMap(mentalMap);
+  }
 }
 

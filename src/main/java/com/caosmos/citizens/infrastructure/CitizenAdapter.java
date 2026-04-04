@@ -1,11 +1,14 @@
 package com.caosmos.citizens.infrastructure;
 
+import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.registry.CitizenRegistry;
 import com.caosmos.citizens.application.registry.TaskRegistry;
 import com.caosmos.citizens.domain.model.Hand;
+import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.task.ExploreTask;
 import com.caosmos.citizens.domain.task.RestTask;
 import com.caosmos.citizens.domain.task.SleepTask;
+import com.caosmos.citizens.domain.task.Task;
 import com.caosmos.citizens.domain.task.TravelToTask;
 import com.caosmos.citizens.domain.task.WaitTask;
 import com.caosmos.citizens.domain.task.WorkTask;
@@ -30,6 +33,7 @@ public class CitizenAdapter implements CitizenPort {
   private final TaskRegistry taskRegistry;
   private final WorldRegistry spatialRegistry;
   private final WorldPort worldPort;
+  private final CitizenPerceptionHandler perceptionHandler;
 
   @Override
   public boolean isNear(UUID citizenId, String targetId, double maxDistance) {
@@ -69,6 +73,9 @@ public class CitizenAdapter implements CitizenPort {
     citizenRegistry.get(citizenId).ifPresent(citizen -> {
       citizen.getCurrentState().setPosition(newPos);
       spatialRegistry.updatePosition(citizen, newPos);
+
+      // Immediate Zone and MentalMap update for real-time monitoring
+      perceptionHandler.synchronizeSpatialContext(citizen, newPos);
     });
   }
 
@@ -181,31 +188,31 @@ public class CitizenAdapter implements CitizenPort {
   @Override
   public void assignSleepTask(UUID citizenId) {
     log.debug("Assigning SleepTask for citizen {}", citizenId);
-    taskRegistry.register(citizenId, new SleepTask());
+    registerAndSyncTask(citizenId, new SleepTask());
   }
 
   @Override
   public void assignWorkTask(UUID citizenId, String workplaceType) {
     log.debug("Assigning WorkTask ({}) for citizen {}", workplaceType, citizenId);
-    taskRegistry.register(citizenId, new WorkTask(workplaceType));
+    registerAndSyncTask(citizenId, new WorkTask(workplaceType));
   }
 
   @Override
   public void assignWaitTask(UUID citizenId, boolean inSafeZone) {
     log.debug("Assigning WaitTask (safe={}) for citizen {}", inSafeZone, citizenId);
-    taskRegistry.register(citizenId, new WaitTask(inSafeZone));
+    registerAndSyncTask(citizenId, new WaitTask(inSafeZone));
   }
 
   @Override
   public void assignRestTask(UUID citizenId) {
     log.debug("Assigning RestTask for citizen {}", citizenId);
-    taskRegistry.register(citizenId, new RestTask());
+    registerAndSyncTask(citizenId, new RestTask());
   }
 
   @Override
   public void assignTravelToTask(UUID citizenId, Vector3 target, String targetId) {
     log.debug("Setting TravelTo task for citizen {} to {}", citizenId, target);
-    taskRegistry.register(citizenId, new TravelToTask(target, targetId));
+    registerAndSyncTask(citizenId, new TravelToTask(target, targetId));
   }
 
   @Override
@@ -217,7 +224,22 @@ public class CitizenAdapter implements CitizenPort {
         targetCategory,
         reason
     );
-    taskRegistry.register(citizenId, new ExploreTask(direction, targetCategory, reason));
+    registerAndSyncTask(citizenId, new ExploreTask(direction, targetCategory, reason));
+  }
+
+  private void registerAndSyncTask(UUID citizenId, Task task) {
+    taskRegistry.register(citizenId, task);
+    citizenRegistry.get(citizenId).ifPresent(citizen -> {
+      LastAction assignmentAction = new LastAction(
+          "Task Assigned",
+          "SUCCESS",
+          "Assigned external task: " + task.getClass().getSimpleName(),
+          "Task received and accepted",
+          java.util.Map.of()
+      );
+      citizen.updateTask(task.toActiveTask(citizen));
+      citizen.transitionTo(task.getCitizenState(), assignmentAction);
+    });
   }
 
   @Override

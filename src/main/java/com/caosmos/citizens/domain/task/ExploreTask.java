@@ -58,7 +58,7 @@ public class ExploreTask implements Task {
 
     if (distanceTraveled >= EXPLORATION_LIMIT || distanceToTarget <= ARRIVAL_THRESHOLD) {
       log.info("Citizen {} completed exploration distance limit.", citizen.getUuid());
-      return new ActiveTask("EXPLORE", "Exploration reached limit", null, true, allowsRoutineInterruptions());
+      return toActiveTask(citizen).withCompleted(true).withGoal("Exploration reached limit");
     }
 
     // --- Physiological Costs ---
@@ -80,11 +80,20 @@ public class ExploreTask implements Task {
     Vector3 newPos = new Vector3(newX, newY, newZ);
     citizen.getCurrentState().setPosition(newPos);
 
-    String taskTarget = targetCategory != null ? "Search: " + targetCategory : null;
-    if (reason != null) {
-      taskTarget = taskTarget != null ? taskTarget + " (" + reason + ")" : reason;
-    }
-    return new ActiveTask("EXPLORE", "Exploring environment", taskTarget, false, allowsRoutineInterruptions());
+    return toActiveTask(citizen);
+  }
+
+  @Override
+  public ActiveTask toActiveTask(Citizen citizen) {
+    return new ActiveTask(
+        "EXPLORE",
+        "Exploring environment",
+        null,
+        targetCategory,
+        reason,
+        false,
+        allowsRoutineInterruptions()
+    );
   }
 
   @Override
