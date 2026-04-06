@@ -1,6 +1,7 @@
 package com.caosmos.world.domain.service;
 
 import com.caosmos.common.domain.model.world.NearbyElement;
+import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.world.domain.model.PeripheralPerception;
@@ -44,8 +45,16 @@ public class NearbyPerceptionService {
         continue;
       }
 
-      if (!isElementVisible(element, currentZone, zoneMap)) {
-        continue;
+      // 1. Zone filtering for speech (Simple rule: same zone only)
+      if (element instanceof SpeechElement) {
+        if (!Objects.equals(element.getZoneId(), currentZoneId)) {
+          continue;
+        }
+      } else {
+        // 2. Normal visibility rules for other elements
+        if (!isElementVisible(element, currentZone, zoneMap)) {
+          continue;
+        }
       }
 
       double distance = position.distanceTo2D(element.getPosition());
@@ -55,16 +64,31 @@ public class NearbyPerceptionService {
         if (!zone.getId().equals(currentZoneId)) {
           elements.add(mapToNearbyElement(zone, distance, direction));
         }
+      } else if (element instanceof SpeechElement speech) {
+        elements.add(new NearbyElement(
+            speech.getId(),
+            speech.getName(),
+            speech.getCategory(),
+            "MESSAGE",
+            null,
+            Math.round(distance * 100.0) / 100.0,
+            direction,
+            Set.of(speech.getTone().getValue()),
+            speech.getSourceId(),
+            speech.getTargetId(),
+            speech.getMessage()
+        ));
       } else {
         elements.add(new NearbyElement(
             element.getId(),
             element.getName(),
             element.getCategory(),
-            "OBJECT",
+            element.getType(),
             null,
             Math.round(distance * 100.0) / 100.0,
             direction,
-            (element instanceof WorldObject wo) ? wo.getTags() : Set.of()
+            element.getTags(),
+            null, null, null
         ));
       }
     }
@@ -74,7 +98,7 @@ public class NearbyPerceptionService {
         .filter(e -> "ZONE".equals(e.type()))
         .toList();
     List<NearbyElement> objectElements = elements.stream()
-        .filter(e -> "OBJECT".equals(e.type()))
+        .filter(e -> ("OBJECT".equals(e.type()) || "MESSAGE".equals(e.type()) || "CITIZEN".equals(e.type())))
         .toList();
 
     List<NearbyElement> processedZones = processZones(zoneElements);
@@ -204,7 +228,8 @@ public class NearbyPerceptionService {
         zone.getZoneType(),
         Math.round(distance * 100.0) / 100.0,
         direction,
-        zone.getTags()
+        zone.getTags(),
+        null, null, null
     );
   }
 }

@@ -1,8 +1,10 @@
 package com.caosmos.common.domain.contracts;
 
 import com.caosmos.common.domain.model.items.ItemData;
+import com.caosmos.common.domain.model.world.GatewayTransition;
+import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
-import com.caosmos.world.domain.model.WorldObject;
+import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +24,9 @@ public interface WorldPort {
 
   Optional<Vector3> getObjectPosition(String objectId);
 
-  Optional<WorldObject> getObject(String objectId);
+  Optional<WorldElement> getObject(String objectId);
+
+  Optional<GatewayTransition> getGatewayTransition(String gatewayId, String currentZoneId);
 
   String getZoneName(String zoneId);
 
@@ -33,4 +37,8 @@ public interface WorldPort {
   List<String> getZoneTagsAt(Vector3 position);
 
   boolean isNearObject(Vector3 position, String objectId, double maxDistance);
+
+  void spawnSpeech(SpeechElement speech);
+
+  void consumeSpeech(String speechId);
 }

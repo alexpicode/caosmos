@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.caosmos.citizens.application.registry.TaskRegistry;
+import com.caosmos.citizens.application.social.SocialHeuristicsEngine;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
@@ -29,11 +30,15 @@ class PerceptionMonitorTest {
   private Environment environment;
 
   private TaskRegistry taskRegistry;
+  private SocialHeuristicsEngine socialHeuristicsEngine;
 
   @BeforeEach
   void setUp() {
     taskRegistry = new TaskRegistry();
-    monitor = new PerceptionMonitor(taskRegistry);
+    socialHeuristicsEngine = new SocialHeuristicsEngine();
+    socialHeuristicsEngine.init();
+    monitor = new PerceptionMonitor(taskRegistry, socialHeuristicsEngine);
+
     CitizenProfile profile = new CitizenProfile(
         new Identity("Tester", null, null, Collections.emptyList(), Collections.emptyMap()),
         new Status(100.0, 0.0, 100.0, 0.0),
@@ -76,7 +81,8 @@ class PerceptionMonitorTest {
         null,
         5.0,
         "North",
-        Set.of("INTERESTING")
+        Set.of("INTERESTING"),
+        null, null, null
     );
     citizen.enterZone("zone-1", "Square");
     WorldPerception perception = new WorldPerception(
@@ -204,7 +210,8 @@ class PerceptionMonitorTest {
         null,
         2.0,
         "Forward",
-        Set.of()
+        Set.of(),
+        null, null, null
     );
 
     citizen.enterZone("zone-ws", "Workshop");
@@ -243,7 +250,8 @@ class PerceptionMonitorTest {
         "URBAN",
         50.0,
         "North-East",
-        Collections.emptySet()
+        Collections.emptySet(),
+        null, null, null
     );
 
     citizen.enterZone("zone-1", "Square");
@@ -313,9 +321,22 @@ class PerceptionMonitorTest {
         null,
         2.0,
         "F",
-        Set.of("INTERESTING")
+        Set.of("INTERESTING"),
+        null, null, null
     );
-    NearbyElement targetObject = new NearbyElement("id-2", "Pickaxe", "TOOL", "OBJECT", null, 5.0, "F", Set.of());
+    NearbyElement targetObject = new NearbyElement(
+        "id-2",
+        "Pickaxe",
+        "TOOL",
+        "OBJECT",
+        null,
+        5.0,
+        "F",
+        Set.of(),
+        null,
+        null,
+        null
+    );
 
     citizen.enterZone("zone-1", "Square");
     WorldPerception perception = new WorldPerception(
@@ -336,5 +357,101 @@ class PerceptionMonitorTest {
         result.reason().toLowerCase().contains("interest"),
         "Distractions should be suppressed when target is found"
     );
+  }
+
+  @Test
+  void shouldNotTriggerThreatForNonHostileProximity() {
+    // Arrange
+    citizen.enterZone("zone-1", "Square"); // Ensure we don't trigger zone discovery
+
+    NearbyElement closeCitizen = new NearbyElement(
+        "id-1",
+        "Greg",
+        "HUMAN",
+        "CITIZEN",
+        null,
+        0.5, // Well below proximity threshold
+        "F",
+        Set.of(),
+        null, null, null
+    );
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Square", "PARK", "NATURE", "Center", Set.of(), null, "zone-1"),
+        environment,
+        List.of(closeCitizen),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertFalse(result.isCritical(), "Close non-hostile citizen should not be a threat. Got: " + result.reason());
+  }
+
+  @Test
+  void shouldTriggerThreatForHostileEntity() {
+    // Arrange
+    NearbyElement hostileEntity = new NearbyElement(
+        "id-1",
+        "Enemy",
+        "MONSTER",
+        "CITIZEN",
+        null,
+        10.0, // Far away
+        "F",
+        Set.of("HOSTILE"),
+        null, null, null
+    );
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Square", "PARK", "NATURE", "Center", Set.of(), null, "zone-1"),
+        environment,
+        List.of(hostileEntity),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.isCritical());
+    assertTrue(result.reason().contains("Threat detected: Enemy"));
+  }
+
+  @Test
+  void shouldTriggerNearbyObjectForCloseObject() {
+    // Arrange
+    citizen.enterZone("zone-1", "Square");
+
+    NearbyElement closeObject = new NearbyElement(
+        "id-obj",
+        "Iron Ore",
+        "RESOURCE",
+        "OBJECT",
+        null,
+        0.5, // Close
+        "F",
+        Set.of(),
+        null, null, null
+    );
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Square", "PARK", "NATURE", "Center", Set.of(), null, "zone-1"),
+        environment,
+        List.of(closeObject),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertTrue(result.isCritical(), "Close object should trigger critical reflex");
+    assertTrue(result.reason().contains("Nearby object: Iron Ore"));
   }
 }

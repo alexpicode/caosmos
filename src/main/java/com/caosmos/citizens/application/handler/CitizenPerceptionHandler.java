@@ -5,7 +5,10 @@ import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
+import com.caosmos.citizens.domain.model.perception.SpeechMessage;
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
+import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.model.world.SpeechTone;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.List;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Component;
 public class CitizenPerceptionHandler {
 
   private final WorldPerceptionProvider worldPerceptionProvider;
+  private final WorldPort worldPort;
   private final PerceptionMonitor perceptionMonitor;
   private final CitizenMentalMapper mentalMapper;
 
@@ -47,10 +51,26 @@ public class CitizenPerceptionHandler {
     log.debug("[CITIZEN:{}] WorldPerception at position {}: {}", citizenName, currentPosition, worldPerception);
 
     // 2. Synchronize Spatial Context (Zone & Mental Map)
-    // We pass the already fetched worldPerception to avoid redundant calls
     synchronizeSpatialContext(citizen, currentPosition, worldPerception);
 
-    // 3. Evaluate reflexes (pure evaluation)
+    // 3. Extract Speech Messages
+    List<SpeechMessage> messages = worldPerception.nearbyElements().stream()
+        .filter(e -> "MESSAGE".equals(e.type()))
+        .map(e -> {
+          SpeechTone tone = e.tags().isEmpty() ? SpeechTone.NEUTRAL : SpeechTone.fromString(e.tags().iterator().next());
+          return new SpeechMessage(e.id(), e.sourceId(), e.name(), e.targetId(), e.message(), tone);
+        })
+        .toList();
+
+    // 4. Auto-consume direct messages
+    for (SpeechMessage msg : messages) {
+      if (citizen.getId().equals(msg.targetId())) {
+        worldPort.consumeSpeech(msg.id());
+        log.debug("Citizen {} consumed direct message from {}", citizen.getId(), msg.sourceName());
+      }
+    }
+
+    // 5. Evaluate reflexes (pure evaluation)
     PerceptionEvaluation eval = perceptionMonitor.evaluate(
         citizen,
         worldPerception,
@@ -59,14 +79,14 @@ public class CitizenPerceptionHandler {
 
     ReflexResult reflex = eval.reflex();
 
-    // 4. Add informative events to the provided list without duplicates
+    // 6. Add informative events to the provided list without duplicates
     reflex.informativeEvents().forEach(e -> {
       if (!unprocessedEvents.contains(e)) {
         unprocessedEvents.add(e);
       }
     });
 
-    return new FullPerception(citizen.getPerception(), worldPerception, reflex);
+    return new FullPerception(citizen.getPerception(), worldPerception, reflex, messages);
   }
 
   /**
@@ -92,4 +112,3 @@ public class CitizenPerceptionHandler {
     citizen.updateMentalMap(mentalMap);
   }
 }
-

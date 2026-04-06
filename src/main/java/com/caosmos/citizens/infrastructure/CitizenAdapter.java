@@ -5,6 +5,7 @@ import com.caosmos.citizens.application.registry.CitizenRegistry;
 import com.caosmos.citizens.application.registry.TaskRegistry;
 import com.caosmos.citizens.domain.model.Hand;
 import com.caosmos.citizens.domain.model.perception.LastAction;
+import com.caosmos.citizens.domain.task.ConversationTask;
 import com.caosmos.citizens.domain.task.ExploreTask;
 import com.caosmos.citizens.domain.task.RestTask;
 import com.caosmos.citizens.domain.task.SleepTask;
@@ -227,6 +228,12 @@ public class CitizenAdapter implements CitizenPort {
     registerAndSyncTask(citizenId, new ExploreTask(direction, targetCategory, reason));
   }
 
+  @Override
+  public void assignConversationTask(UUID citizenId, String targetId, Vector3 targetPosition) {
+    log.debug("Setting Conversation task for citizen {} with {}", citizenId, targetId);
+    registerAndSyncTask(citizenId, new ConversationTask(targetId, targetPosition));
+  }
+
   private void registerAndSyncTask(UUID citizenId, Task task) {
     taskRegistry.register(citizenId, task);
     citizenRegistry.get(citizenId).ifPresent(citizen -> {
@@ -258,6 +265,13 @@ public class CitizenAdapter implements CitizenPort {
   public String getWorkplaceTag(UUID citizenId) {
     return citizenRegistry.get(citizenId)
         .map(citizen -> citizen.getCitizenProfile().identity().workplaceTag())
+        .orElse(null);
+  }
+
+  @Override
+  public String getName(UUID citizenId) {
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> citizen.getCitizenProfile().identity().name())
         .orElse(null);
   }
 }

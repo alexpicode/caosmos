@@ -2,14 +2,18 @@ package com.caosmos.world.infrastructure;
 
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.items.ItemData;
+import com.caosmos.common.domain.model.world.GatewayTransition;
+import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.service.SpatialHash;
+import com.caosmos.world.domain.service.SpeechManager;
 import com.caosmos.world.domain.service.ZoneManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +26,7 @@ public class WorldAdapter implements WorldPort {
 
   private final SpatialHash spatialHash;
   private final ZoneManager zoneManager;
+  private final SpeechManager speechManager;
 
   @Override
   public boolean isNearObjectWithTag(Vector3 position, String tag, double maxDistance) {
@@ -30,9 +35,8 @@ public class WorldAdapter implements WorldPort {
     }
     String normalizedTag = tag.toLowerCase();
     return spatialHash.getNearbyEntities(position, maxDistance).stream()
-        .filter(entity -> entity instanceof WorldObject)
-        .map(entity -> (WorldObject) entity)
-        .anyMatch(obj -> obj.getTags().contains(normalizedTag));
+        .filter(entity -> "OBJECT".equals(entity.getType()) || "CITIZEN".equals(entity.getType()))
+        .anyMatch(entity -> entity.getTags().contains(normalizedTag));
   }
 
   @Override
@@ -54,21 +58,23 @@ public class WorldAdapter implements WorldPort {
   @Override
   public boolean isNearObject(Vector3 position, String objectId, double maxDistance) {
     return spatialHash.getById(objectId)
-        .filter(entity -> entity instanceof WorldObject)
-        .map(entity -> (WorldObject) entity)
-        .map(obj -> {
-          if (obj.intersects(position)) {
-            return true;
+        .filter(entity -> "OBJECT".equals(entity.getType()) || "CITIZEN".equals(entity.getType()))
+        .map(entity -> {
+          if (entity instanceof WorldObject obj) {
+            if (obj.intersects(position)) {
+              return true;
+            }
+            double dist = obj.getPosition().distanceTo2D(position);
+            double sizeOffset = 0;
+            if (obj.getRadius() != null) {
+              sizeOffset = obj.getRadius();
+            } else if (obj.getWidth() != null && obj.getLength() != null) {
+              sizeOffset = Math.max(obj.getWidth(), obj.getLength()) / 2.0;
+            }
+            return dist <= (maxDistance + sizeOffset);
           }
-
-          double dist = obj.getPosition().distanceTo2D(position);
-          double sizeOffset = 0;
-          if (obj.getRadius() != null) {
-            sizeOffset = obj.getRadius();
-          } else if (obj.getWidth() != null && obj.getLength() != null) {
-            sizeOffset = Math.max(obj.getWidth(), obj.getLength()) / 2.0;
-          }
-          return dist <= (maxDistance + sizeOffset);
+          // Generic distance check for non-WorldObjects (like Citizens)
+          return entity.getPosition().distanceTo2D(position) <= maxDistance;
         })
         .orElse(false);
   }
@@ -79,10 +85,28 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
-  public Optional<WorldObject> getObject(String objectId) {
+  public Optional<WorldElement> getObject(String objectId) {
     return spatialHash.getById(objectId)
-        .filter(e -> e instanceof WorldObject)
-        .map(e -> (WorldObject) e);
+        .filter(entity -> "OBJECT".equals(entity.getType()) || "CITIZEN".equals(entity.getType()));
+  }
+
+  @Override
+  public Optional<GatewayTransition> getGatewayTransition(String gatewayId, String currentZoneId) {
+    return spatialHash.getById(gatewayId)
+        .filter(entity -> entity instanceof WorldObject)
+        .map(entity -> (WorldObject) entity)
+        .map(obj -> {
+          if (obj.getTargetZoneId() == null) {
+            return null;
+          }
+          if (Objects.equals(currentZoneId, obj.getParentZoneId())) {
+            return new GatewayTransition(obj.getTargetZoneId());
+          } else if (Objects.equals(currentZoneId, obj.getTargetZoneId())) {
+            return new GatewayTransition(obj.getParentZoneId());
+          }
+          return null;
+        })
+        .filter(Objects::nonNull);
   }
 
   @Override
@@ -137,5 +161,15 @@ public class WorldAdapter implements WorldPort {
   public void interactWithObject(String objectId) {
     // TODO Interact with object in the world
     log.info("Interacting with object {}", objectId);
+  }
+
+  @Override
+  public void spawnSpeech(SpeechElement speech) {
+    speechManager.register(speech);
+  }
+
+  @Override
+  public void consumeSpeech(String speechId) {
+    speechManager.consumeEarly(speechId);
   }
 }

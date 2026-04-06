@@ -2,6 +2,7 @@ package com.caosmos.common.infrastructure;
 
 import com.caosmos.common.application.startup.Ticker;
 import com.caosmos.common.domain.contracts.SimulationClock;
+import com.caosmos.common.domain.contracts.TemporalElementManager;
 import com.caosmos.common.domain.service.core.MasterClock;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class MasterTicker implements Ticker {
 
   private final MasterClock clock;
   private final SimulationClock simulationClock;
+  private final TemporalElementManager temporalElementManager;
   private boolean running = true;
 
   public void start() {
@@ -35,6 +37,9 @@ public class MasterTicker implements Ticker {
 
       // Advance discrete physical clock
       clock.advance();
+
+      // Clean up temporal world elements (Speech, etc)
+      temporalElementManager.cleanup(nextTick);
 
       waitForMaintenance(startTime);
     }

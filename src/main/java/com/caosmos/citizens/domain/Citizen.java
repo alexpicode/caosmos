@@ -7,9 +7,12 @@ import com.caosmos.citizens.domain.model.perception.CitizenPerception;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
+import com.caosmos.citizens.domain.model.perception.SpeechMessage;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
@@ -21,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class Citizen implements WorldElement {
+
+  private static final int MAX_RECENT_MESSAGES = 10;
 
   @Getter
   private final UUID uuid;
@@ -51,7 +56,16 @@ public class Citizen implements WorldElement {
       initialPosition = new Vector3(base.x(), base.y(), base.z());
     }
 
-    this.currentState = new CurrentState(initialPosition, null, null, CitizenState.IDLE, null, null, null);
+    this.currentState = new CurrentState(
+        initialPosition,
+        null,
+        null,
+        CitizenState.IDLE,
+        null,
+        null,
+        null,
+        new ArrayList<>()
+    );
   }
 
   // --- Manager Accessors ---
@@ -106,7 +120,16 @@ public class Citizen implements WorldElement {
 
   @Override
   public String getCategory() {
-    return "CITIZEN";
+    return "HUMAN";
+  }
+
+  @Override
+  public Set<String> getTags() {
+    Set<String> tags = new HashSet<>(citizenProfile.identity().traits());
+    if (citizenProfile.identity().job() != null) {
+      tags.add(citizenProfile.identity().job().toLowerCase());
+    }
+    return tags;
   }
 
   // --- State Transition Methods ---
@@ -164,6 +187,32 @@ public class Citizen implements WorldElement {
     currentState.setMentalMap(mentalMap);
   }
 
+  public void updateRecentMessages(List<SpeechMessage> newMessages) {
+    if (newMessages == null || newMessages.isEmpty()) {
+      return;
+    }
+
+    List<SpeechMessage> current = currentState.getRecentMessages();
+    if (current == null) {
+      current = new ArrayList<>();
+    }
+
+    // Dedup and append new messages
+    for (SpeechMessage msg : newMessages) {
+      boolean exists = current.stream().anyMatch(m -> m.id().equals(msg.id()));
+      if (!exists) {
+        current.add(msg);
+      }
+    }
+
+    // Limit to MAX_RECENT_MESSAGES (FIFO)
+    if (current.size() > MAX_RECENT_MESSAGES) {
+      current = new ArrayList<>(current.subList(current.size() - MAX_RECENT_MESSAGES, current.size()));
+    }
+
+    currentState.setRecentMessages(current);
+  }
+
   public CitizenPerception getPerception() {
     return new CitizenPerception(
         citizenProfile.identity(),
@@ -174,7 +223,8 @@ public class Citizen implements WorldElement {
         currentState.getLastAction(),
         currentState.getActiveTask(),
         currentState.getPosition(),
-        currentState.getMentalMap()
+        currentState.getMentalMap(),
+        currentState.getRecentMessages()
     );
   }
 

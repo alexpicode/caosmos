@@ -18,6 +18,7 @@ import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,7 +54,16 @@ class CitizenPulseTimeoutTest {
     when(perception.status().vitality()).thenReturn(100.0);
     when(perception.status().energy()).thenReturn(100.0);
     when(perception.status().stress()).thenReturn(0.0);
-    when(citizen.getCurrentState()).thenReturn(new CurrentState(null, null, null, CitizenState.BUSY, null, null, null));
+    when(citizen.getCurrentState()).thenReturn(new CurrentState(
+        null,
+        null,
+        null,
+        CitizenState.BUSY,
+        null,
+        null,
+        null,
+        new ArrayList<>()
+    ));
     when(citizen.getState()).thenReturn(CitizenState.BUSY);
     when(citizen.getActiveTask()).thenReturn(new ActiveTask("T", "G", null, null, "TG", false, false));
 

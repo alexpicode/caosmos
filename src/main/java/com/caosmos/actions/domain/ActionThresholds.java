@@ -13,6 +13,7 @@ public final class ActionThresholds {
   // Proximity Distances (meters)
   public static final double PROXIMITY_PICKUP = 2.0;
   public static final double PROXIMITY_TALK = 3.0;
+  public static final double AUDIBLE_RANGE = 20.0;
   public static final double PROXIMITY_USE = 2.5;
   public static final double PROXIMITY_EXAMINE = 4.0;
   public static final double DISTANT_NAVIGATION_STEP = 50.0;

@@ -1,16 +1,20 @@
 package com.caosmos.citizens.application.handler;
 
 import com.caosmos.citizens.application.registry.TaskRegistry;
+import com.caosmos.citizens.application.social.SocialHeuristicsEngine;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
+import com.caosmos.citizens.domain.model.perception.SpeechMessage;
 import com.caosmos.citizens.domain.task.ExploreTask;
 import com.caosmos.common.domain.model.world.NearbyElement;
+import com.caosmos.common.domain.model.world.SpeechTone;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,6 +28,7 @@ import org.springframework.stereotype.Component;
 public class PerceptionMonitor {
 
   private final TaskRegistry taskRegistry;
+  private final SocialHeuristicsEngine socialHeuristicsEngine;
 
   /**
    * Evaluates perception to determine if there's a critical reason to stop the current task. Returns a
@@ -48,15 +53,40 @@ public class PerceptionMonitor {
 
     // --- 1. Critical Reflexes (Survival First) ---
     for (NearbyElement element : perception.nearbyElements()) {
-      if (!"OBJECT".equals(element.type())) {
+      if (!"OBJECT".equals(element.type()) && !"CITIZEN".equals(element.type())) {
         continue;
       }
-      if (element.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE || hasTag(element, "hostile")) {
+
+      boolean isHostile = hasTag(element, "hostile");
+      boolean isCloseObject = "OBJECT".equals(element.type()) &&
+          element.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE;
+
+      if (isHostile || isCloseObject) {
+        String messagePrefix = isHostile ? "Threat detected: " : "Nearby object: ";
         return new PerceptionEvaluation(
-            new ReflexResult(true, "Threat detected: " + element.name(), informativeEvents),
+            new ReflexResult(true, messagePrefix + element.name(), informativeEvents),
             pendingZoneId, pendingZoneName, zoneChanged
         );
       }
+    }
+
+    // --- 1.5 Social Interruptions (Communication) ---
+    List<SpeechMessage> messages = perception.nearbyElements().stream()
+        .filter(e -> "MESSAGE".equals(e.type()))
+        .map(e -> {
+          SpeechTone tone = e.tags().isEmpty() ? SpeechTone.NEUTRAL : SpeechTone.fromString(e.tags().iterator().next());
+          return new SpeechMessage(e.id(), e.sourceId(), e.name(), e.targetId(), e.message(), tone);
+        })
+        .toList();
+
+    Optional<SpeechMessage> socialStimulus = socialHeuristicsEngine.evaluate(citizen, messages);
+    if (socialStimulus.isPresent()) {
+      SpeechMessage trigger = socialStimulus.get();
+      informativeEvents.add("SOCIAL INTERRUPTION! " + trigger.sourceName() + " says: " + trigger.message());
+      return new PerceptionEvaluation(
+          new ReflexResult(true, "Social interruption: " + trigger.sourceName(), informativeEvents),
+          pendingZoneId, pendingZoneName, zoneChanged
+      );
     }
 
     // --- 2. Search Target Discovery (Objective Priority) ---
@@ -90,7 +120,7 @@ public class PerceptionMonitor {
     // --- 4. Content Interruptions (Interests/Resources) ---
     if (allowsRoutineInterruptions) {
       for (NearbyElement element : perception.nearbyElements()) {
-        if (!"OBJECT".equals(element.type())) {
+        if (!"OBJECT".equals(element.type()) && !"CITIZEN".equals(element.type())) {
           continue;
         }
         if (hasTag(element, "interesting")) {

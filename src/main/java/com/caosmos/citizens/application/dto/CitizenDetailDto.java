@@ -2,6 +2,7 @@ package com.caosmos.citizens.application.dto;
 
 import com.caosmos.citizens.domain.model.perception.CitizenPerception;
 import com.caosmos.citizens.domain.model.perception.LastAction;
+import java.util.List;
 import java.util.Set;
 
 public record CitizenDetailDto(
@@ -9,7 +10,8 @@ public record CitizenDetailDto(
     CitizenPerception perception,
     LastAction currentAction,
     String currentZone,
-    Set<String> visitedZoneIds
+    Set<String> visitedZoneIds,
+    List<SpeechMessageDto> recentMessages
 ) {
 
 }

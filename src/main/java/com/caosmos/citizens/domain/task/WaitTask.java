@@ -33,7 +33,7 @@ public class WaitTask implements Task {
       biology.decreaseStress(Math.abs(PhysiologicalThresholds.SAFE_ZONE_STRESS_REDUCTION_RATE) * hours);
     }
 
-    boolean isComplete = (elapsedSeconds / 3600.0) >= PhysiologicalThresholds.DEFAULT_WAIT_DURATION_HOURS;
+    boolean isComplete = (elapsedSeconds / 60.0) >= PhysiologicalThresholds.DEFAULT_WAIT_DURATION_MINUTES;
     return toActiveTask(citizen).withCompleted(isComplete);
   }
 

@@ -51,6 +51,8 @@ public interface CitizenPort {
 
   void assignExploreTask(UUID citizenId, Vector3 direction, String targetCategory, String reason);
 
+  void assignConversationTask(UUID citizenId, String targetId, Vector3 targetPosition);
+
   void continueTask(UUID citizenId);
 
   boolean isNear(UUID citizenId, String targetId, double maxDistance);
@@ -62,4 +64,6 @@ public interface CitizenPort {
   String getJob(UUID citizenId);
 
   String getWorkplaceTag(UUID citizenId);
+
+  String getName(UUID citizenId);
 }

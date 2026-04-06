@@ -7,12 +7,13 @@ public record NearbyElement(
     String name,
     String category,
     String type,
-    // "OBJECT", "ZONE"
     String zoneType,
-    // "INTERIOR", "EXTERIOR" (null for objects)
     double distance,
     String direction,
-    Set<String> tags
+    Set<String> tags,
+    String sourceId,
+    String targetId,
+    String message
 ) {
 
 }

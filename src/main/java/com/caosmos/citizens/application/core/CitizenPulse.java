@@ -61,6 +61,7 @@ public class CitizenPulse implements AgentPulse {
     if (physReflex.isPresent() && physReflex.get().critical()) {
       // Collect latest perception for the decision context
       var fullPerception = perceptionHandler.handlePerception(citizen, eventBuffer.snapshot(), false);
+      citizen.updateRecentMessages(fullPerception.recentMessages());
       handleInterruption(
           tick,
           citizenName,
@@ -81,6 +82,7 @@ public class CitizenPulse implements AgentPulse {
     }
 
     var fullPerception = perceptionHandler.handlePerception(citizen, eventBuffer.snapshot(), allowsRoutine);
+    citizen.updateRecentMessages(fullPerception.recentMessages());
 
     // 4. Check Perception-based interruptions
     if (fullPerception.reflex().critical() && citizen.getLastAction() != null) {

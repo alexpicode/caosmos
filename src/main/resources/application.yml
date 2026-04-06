@@ -32,9 +32,10 @@ caosmos:
   world:
     max-vision-distance: 30.0         # Maximum distance for searching nearby objects
     time:
-      speed: 20.0                     # 1 real second = 60 simulation seconds (1 minute)
+      speed: 10.0                     # 1 real second = 60 simulation seconds (1 minute)
       start-day: 1                    # Initial simulation day
       start-hour: 8                   # Initial simulation hour (8:00 AM)
+    speech-ttl-ticks: 2               # Number of ticks a speech element lives before auto-removal
 
 logging:
   level:

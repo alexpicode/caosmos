@@ -6,8 +6,8 @@ import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
-import com.caosmos.world.domain.model.WorldObject;
-import java.util.Objects;
+import com.caosmos.common.domain.model.world.GatewayTransition;
+import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -38,40 +38,29 @@ public class InteractActionHandler implements ActionHandler {
       return ActionResult.failure("You are too far from " + targetId + " to interact with it.", getActionType());
     }
 
-    Optional<WorldObject> objOpt = worldService.getObject(targetId);
+    Optional<WorldElement> objOpt = worldService.getObject(targetId);
     if (objOpt.isEmpty()) {
       return ActionResult.failure("Object doesn't exist.", getActionType());
     }
 
-    WorldObject obj = objOpt.get();
+    WorldElement obj = objOpt.get();
 
     // Base interaction (triggers visual effects, usage generic, etc.)
     worldService.interactWithObject(targetId);
     citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_USE);
 
     // GATEWAY LOGIC (Switching Zone)
-    if (obj.getTargetZoneId() != null) {
-      String currentZoneId = citizenService.getCurrentZoneId(citizenId);
-      String destZoneId = null;
+    String currentZoneId = citizenService.getCurrentZoneId(citizenId);
+    Optional<GatewayTransition> transitionOpt = worldService.getGatewayTransition(targetId, currentZoneId);
 
-      if (Objects.equals(currentZoneId, obj.getParentZoneId())) {
-        // Going IN
-        destZoneId = obj.getTargetZoneId();
-      } else if (Objects.equals(currentZoneId, obj.getTargetZoneId())) {
-        // Going OUT
-        destZoneId = obj.getParentZoneId();
-      }
-
-      if (destZoneId != null || (currentZoneId != null && (Objects.equals(currentZoneId, obj.getTargetZoneId())
-          || Objects.equals(currentZoneId, obj.getParentZoneId())))) {
-        // We found a transition target
-        String destName = destZoneId != null ? worldService.getZoneName(destZoneId) : "Open World";
-        citizenService.enterZone(citizenId, destZoneId, destName);
-        return ActionResult.success(
-            "You interacted with " + obj.getName() + " and entered " + destName,
-            getActionType()
-        );
-      }
+    if (transitionOpt.isPresent()) {
+      String destZoneId = transitionOpt.get().destinationZoneId();
+      String destName = worldService.getZoneName(destZoneId);
+      citizenService.enterZone(citizenId, destZoneId, destName);
+      return ActionResult.success(
+          "You interacted with " + obj.getName() + " and entered " + destName,
+          getActionType()
+      );
     }
 
     return ActionResult.success("Interacted with " + obj.getName(), getActionType());

@@ -40,12 +40,19 @@ public class SpringAiThinkingAdapter implements ThinkingProvider {
         .call()
         .entity(outputConverter);
 
-    //TODO: Refactor this to use a more robust way to get the action target
-    String actionTarget = action.params().toString();
-    if (action.params().containsKey("targetId")) {
-      actionTarget = action.params().get("targetId").toString();
-    } else if (action.params().containsKey("item")) {
-      actionTarget = action.params().get("item").toString();
+    // Determine action target safely for telemetry
+    String actionTarget = "none";
+    if (action.params() != null) {
+      Object targetId = action.params().get("targetId");
+      Object item = action.params().get("item");
+
+      if (targetId != null) {
+        actionTarget = targetId.toString();
+      } else if (item != null) {
+        actionTarget = item.toString();
+      } else {
+        actionTarget = action.params().toString();
+      }
     }
 
     telemetryService.registerThought(new CognitionEntry(
