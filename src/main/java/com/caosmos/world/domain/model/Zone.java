@@ -1,7 +1,10 @@
 package com.caosmos.world.domain.model;
 
+import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,7 +19,7 @@ public class Zone implements WorldElement {
   private String id;
   private String name;
   private String parentZoneId; // For nested zones
-  private String zoneType; // e.g. INTERIOR, EXTERIOR
+  private ZoneType zoneType; // e.g. INTERIOR, EXTERIOR
   private Set<String> physicalTags = new HashSet<>();
   private Set<String> contextualTags = new HashSet<>();
 
@@ -31,7 +34,7 @@ public class Zone implements WorldElement {
       String id,
       String name,
       String parentZoneId,
-      String zoneType,
+      ZoneType zoneType,
       String category,
       Set<String> physicalTags,
       Set<String> contextualTags,
@@ -54,8 +57,8 @@ public class Zone implements WorldElement {
   }
 
   @Override
-  public String getType() {
-    return "ZONE";
+  public EntityType getType() {
+    return EntityType.ZONE;
   }
 
   @Override
@@ -68,6 +71,29 @@ public class Zone implements WorldElement {
     return parentZoneId;
   }
 
+  @Override
+  public NearbyElement toNearbyElement(double distance, String direction) {
+    return new NearbyElement(
+        id,
+        name,
+        category,
+        EntityType.ZONE,
+        zoneType,
+        Math.round(distance * 100.0) / 100.0,
+        direction,
+        getTags(),
+        null, null, null
+    );
+  }
+
+  @Override
+  public boolean contains(Vector3 point) {
+    double halfWidth = width / 2.0;
+    double halfLength = length / 2.0;
+    return point.x() >= center.x() - halfWidth && point.x() <= center.x() + halfWidth &&
+        point.z() >= center.z() - halfLength && point.z() <= center.z() + halfLength;
+  }
+
   public void setPhysicalTags(Set<String> physicalTags) {
     this.physicalTags = normalizeTags(physicalTags);
   }
@@ -76,18 +102,11 @@ public class Zone implements WorldElement {
     this.contextualTags = normalizeTags(contextualTags);
   }
 
-  public boolean contains(Vector3 position) {
-    double halfWidth = width / 2.0;
-    double halfLength = length / 2.0;
-    return position.x() >= center.x() - halfWidth && position.x() <= center.x() + halfWidth &&
-        position.z() >= center.z() - halfLength && position.z() <= center.z() + halfLength;
-  }
-
   public Set<String> getEffectiveTags(Map<String, Zone> allZones) {
     Set<String> effectiveTags = getTags();
     if (parentZoneId != null && allZones.containsKey(parentZoneId)) {
       Zone parent = allZones.get(parentZoneId);
-      if ("INTERIOR".equals(this.zoneType)) {
+      if (ZoneType.INTERIOR == this.zoneType) {
         // In interiors, we only inherit contextual tags that pass through walls
         effectiveTags.addAll(parent.getEffectiveContextualTags(allZones));
       } else {

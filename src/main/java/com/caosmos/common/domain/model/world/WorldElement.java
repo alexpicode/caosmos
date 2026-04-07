@@ -7,7 +7,7 @@ public interface WorldElement {
 
   String getId();
 
-  String getType();
+  EntityType getType();
 
   Vector3 getPosition();
 
@@ -19,5 +19,17 @@ public interface WorldElement {
 
   default Set<String> getTags() {
     return Collections.emptySet();
+  }
+
+  NearbyElement toNearbyElement(double distance, String direction);
+
+  /** Returns true if the given point is within the physical boundaries of this element. */
+  default boolean contains(Vector3 point) {
+    return false;
+  }
+
+  /** Returns true if this element can only be perceived from within its own zone. */
+  default boolean isLimitedToZone() {
+    return false;
   }
 }

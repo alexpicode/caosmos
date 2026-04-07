@@ -8,6 +8,7 @@ import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
 import com.caosmos.citizens.domain.model.perception.SpeechMessage;
 import com.caosmos.citizens.domain.task.ExploreTask;
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.SpeechTone;
 import com.caosmos.common.domain.model.world.WorldPerception;
@@ -53,12 +54,12 @@ public class PerceptionMonitor {
 
     // --- 1. Critical Reflexes (Survival First) ---
     for (NearbyElement element : perception.nearbyElements()) {
-      if (!"OBJECT".equals(element.type()) && !"CITIZEN".equals(element.type())) {
+      if (EntityType.CITIZEN != element.type() && EntityType.OBJECT != element.type()) {
         continue;
       }
 
       boolean isHostile = hasTag(element, "hostile");
-      boolean isCloseObject = "OBJECT".equals(element.type()) &&
+      boolean isCloseObject = EntityType.OBJECT == element.type() &&
           element.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE;
 
       if (isHostile || isCloseObject) {
@@ -120,7 +121,7 @@ public class PerceptionMonitor {
     // --- 4. Content Interruptions (Interests/Resources) ---
     if (allowsRoutineInterruptions) {
       for (NearbyElement element : perception.nearbyElements()) {
-        if (!"OBJECT".equals(element.type()) && !"CITIZEN".equals(element.type())) {
+        if (EntityType.CITIZEN != element.type() && EntityType.OBJECT != element.type()) {
           continue;
         }
         if (hasTag(element, "interesting")) {

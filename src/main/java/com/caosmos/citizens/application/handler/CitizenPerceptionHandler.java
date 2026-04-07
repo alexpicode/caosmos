@@ -8,6 +8,7 @@ import com.caosmos.citizens.domain.model.perception.ReflexResult;
 import com.caosmos.citizens.domain.model.perception.SpeechMessage;
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
 import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.SpeechTone;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldPerception;
@@ -55,7 +56,7 @@ public class CitizenPerceptionHandler {
 
     // 3. Extract Speech Messages
     List<SpeechMessage> messages = worldPerception.nearbyElements().stream()
-        .filter(e -> "MESSAGE".equals(e.type()))
+        .filter(e -> EntityType.SPEECH == e.type())
         .map(e -> {
           SpeechTone tone = e.tags().isEmpty() ? SpeechTone.NEUTRAL : SpeechTone.fromString(e.tags().iterator().next());
           return new SpeechMessage(e.id(), e.sourceId(), e.name(), e.targetId(), e.message(), tone);

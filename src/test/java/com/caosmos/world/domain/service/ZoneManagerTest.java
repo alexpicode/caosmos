@@ -3,8 +3,11 @@ package com.caosmos.world.domain.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneType;
 import com.caosmos.world.domain.model.Zone;
 import java.util.Collection;
 import java.util.Optional;
@@ -29,7 +32,7 @@ class ZoneManagerTest {
         "z1",
         "Zone 1",
         null,
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of(),
@@ -51,7 +54,7 @@ class ZoneManagerTest {
         "outer",
         "Outer",
         null,
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of("outer_tag"),
@@ -64,7 +67,7 @@ class ZoneManagerTest {
         "inner",
         "Inner",
         "outer",
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of("inner_tag"),
@@ -89,7 +92,7 @@ class ZoneManagerTest {
         "outer",
         "Outer",
         null,
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of(),
@@ -102,7 +105,7 @@ class ZoneManagerTest {
         "restricted",
         "Restricted",
         "outer",
-        "INTERIOR",
+        ZoneType.INTERIOR,
         "TEST",
         Set.of(),
         Set.of(),
@@ -132,7 +135,7 @@ class ZoneManagerTest {
         "root",
         "Root",
         null,
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of("a"),
@@ -145,7 +148,7 @@ class ZoneManagerTest {
         "child",
         "Child",
         "root",
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of("b"),
@@ -158,7 +161,7 @@ class ZoneManagerTest {
         "grandchild",
         "Grandchild",
         "child",
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of("c"),
@@ -185,7 +188,7 @@ class ZoneManagerTest {
         "root",
         "Root",
         null,
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of(),
@@ -198,7 +201,7 @@ class ZoneManagerTest {
         "child",
         "Child",
         "root",
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of(),
@@ -225,8 +228,8 @@ class ZoneManagerTest {
       }
 
       @Override
-      public String getType() {
-        return "OBJECT";
+      public EntityType getType() {
+        return EntityType.OBJECT;
       }
 
       @Override
@@ -248,6 +251,11 @@ class ZoneManagerTest {
       public String getCategory() {
         return "DECOR";
       }
+
+      @Override
+      public NearbyElement toNearbyElement(double distance, String direction) {
+        return null;
+      }
     };
     spatialHash.register(entity);
 
@@ -256,7 +264,7 @@ class ZoneManagerTest {
         "z1",
         "Zone 1",
         null,
-        "EXTERIOR",
+        ZoneType.EXTERIOR,
         "TEST",
         Set.of(),
         Set.of(),

@@ -1,5 +1,7 @@
 package com.caosmos.world.domain.model;
 
+import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.Set;
@@ -60,13 +62,33 @@ public class WorldObject implements WorldElement {
   private Double length;
 
   @Override
-  public String getType() {
-    return "OBJECT";
+  public EntityType getType() {
+    return EntityType.OBJECT;
+  }
+
+  @Override
+  public NearbyElement toNearbyElement(double distance, String direction) {
+    return new NearbyElement(
+        id,
+        name,
+        category,
+        EntityType.OBJECT,
+        null, // WorldObject doesn't have a zoneType (Zones do)
+        Math.round(distance * 100.0) / 100.0,
+        direction,
+        tags,
+        null, null, null
+    );
   }
 
   @Override
   public String getZoneId() {
     return parentZoneId;
+  }
+
+  @Override
+  public boolean contains(Vector3 point) {
+    return (radius != null && radius > 0) || (width != null && length != null && width > 0 && length > 0);
   }
 
   public boolean intersects(Vector3 point) {

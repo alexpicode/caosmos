@@ -6,8 +6,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneType;
 import com.caosmos.world.domain.model.PeripheralPerception;
 import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.model.Zone;
@@ -39,7 +41,7 @@ class NearbyPerceptionServiceTest {
 
   @Test
   void testEntityVisibilityInSameZone() {
-    Zone town = createZone("town", "Town Center", null, "EXTERIOR");
+    Zone town = createZone("town", "Town Center", null, ZoneType.EXTERIOR);
     WorldObject anvil = createObject("anvil", "Anvil", "town", 5, 5);
 
     when(zoneManager.getZoneMap()).thenReturn(Map.of("town", town));
@@ -49,13 +51,13 @@ class NearbyPerceptionServiceTest {
 
     assertEquals(1, perception.elements().size());
     assertEquals("anvil", perception.elements().get(0).id());
-    assertEquals("OBJECT", perception.elements().get(0).type());
+    assertEquals(EntityType.OBJECT, perception.elements().get(0).type());
   }
 
   @Test
   void testEntityVisibilityFromExteriorToChildInterior() {
-    Zone town = createZone("town", "Town Center", null, "EXTERIOR");
-    Zone blacksmith = createZone("blacksmith", "Blacksmith", "town", "INTERIOR");
+    Zone town = createZone("town", "Town Center", null, ZoneType.EXTERIOR);
+    Zone blacksmith = createZone("blacksmith", "Blacksmith", "town", ZoneType.INTERIOR);
     WorldObject anvil = createObject("anvil", "Anvil", "blacksmith", 5, 5);
 
     when(zoneManager.getZoneMap()).thenReturn(Map.of("town", town, "blacksmith", blacksmith));
@@ -68,8 +70,8 @@ class NearbyPerceptionServiceTest {
 
   @Test
   void testZoneVisibilityHierarchically() {
-    Zone town = createZone("town", "Town Center", null, "EXTERIOR");
-    Zone square = createZone("square", "Central Square", "town", "EXTERIOR");
+    Zone town = createZone("town", "Town Center", null, ZoneType.EXTERIOR);
+    Zone square = createZone("square", "Central Square", "town", ZoneType.EXTERIOR);
 
     when(zoneManager.getZoneMap()).thenReturn(Map.of("town", town, "square", square));
     when(spatialHash.getNearbyEntities(any(), any(Double.class))).thenReturn(Set.<WorldElement>of(square));
@@ -78,13 +80,13 @@ class NearbyPerceptionServiceTest {
 
     assertEquals(1, perception.elements().size());
     assertEquals("square", perception.elements().get(0).id());
-    assertEquals("ZONE", perception.elements().get(0).type());
+    assertEquals(EntityType.ZONE, perception.elements().get(0).type());
   }
 
   @Test
   void testEntityInParentExteriorIsHiddenFromInterior() {
-    Zone town = createZone("town", "Town Center", null, "EXTERIOR");
-    Zone house = createZone("house", "Small House", "town", "INTERIOR");
+    Zone town = createZone("town", "Town Center", null, ZoneType.EXTERIOR);
+    Zone house = createZone("house", "Small House", "town", ZoneType.INTERIOR);
     WorldObject tree = createObject("tree", "Tree", "town", 10, 10);
 
     when(zoneManager.getZoneMap()).thenReturn(Map.of("town", town, "house", house));
@@ -102,8 +104,8 @@ class NearbyPerceptionServiceTest {
 
   @Test
   void testParentExteriorZoneIsVisibleFromInteriorForNavigation() {
-    Zone town = createZone("town", "Town Center", null, "EXTERIOR");
-    Zone house = createZone("house", "Small House", "town", "INTERIOR");
+    Zone town = createZone("town", "Town Center", null, ZoneType.EXTERIOR);
+    Zone house = createZone("house", "Small House", "town", ZoneType.INTERIOR);
 
     when(zoneManager.getZoneMap()).thenReturn(Map.of("town", town, "house", house));
     when(spatialHash.getNearbyEntities(any(), any(Double.class))).thenReturn(Set.<WorldElement>of(town));
@@ -121,9 +123,9 @@ class NearbyPerceptionServiceTest {
 
   @Test
   void testInteriorToSiblingInteriorVisibility() {
-    Zone house = createZone("house", "House", null, "INTERIOR");
-    Zone kitchen = createZone("kitchen", "Kitchen", "house", "INTERIOR");
-    Zone living = createZone("living", "Living Room", "house", "INTERIOR");
+    Zone house = createZone("house", "House", null, ZoneType.INTERIOR);
+    Zone kitchen = createZone("kitchen", "Kitchen", "house", ZoneType.INTERIOR);
+    Zone living = createZone("living", "Living Room", "house", ZoneType.INTERIOR);
     WorldObject tv = createObject("tv", "TV", "living", 5, 5);
 
     when(zoneManager.getZoneMap()).thenReturn(Map.of("house", house, "kitchen", kitchen, "living", living));
@@ -141,9 +143,9 @@ class NearbyPerceptionServiceTest {
 
   @Test
   void testExteriorToSiblingExteriorVisibility() {
-    Zone city = createZone("city", "City", null, "EXTERIOR");
-    Zone street = createZone("street", "Street", "city", "EXTERIOR");
-    Zone square = createZone("square", "Square", "city", "EXTERIOR");
+    Zone city = createZone("city", "City", null, ZoneType.EXTERIOR);
+    Zone street = createZone("street", "Street", "city", ZoneType.EXTERIOR);
+    Zone square = createZone("square", "Square", "city", ZoneType.EXTERIOR);
     WorldObject fountain = createObject("fountain", "Fountain", "square", 5, 5);
 
     when(zoneManager.getZoneMap()).thenReturn(Map.of("city", city, "street", street, "square", square));
@@ -162,7 +164,7 @@ class NearbyPerceptionServiceTest {
     assertTrue(perception.elements().stream().anyMatch(e -> e.id().equals("square")));
   }
 
-  private Zone createZone(String id, String name, String parentId, String type) {
+  private Zone createZone(String id, String name, String parentId, ZoneType type) {
     return new Zone(id, name, parentId, type, "TEST", Set.of(), Set.of(), false, new Vector3(0, 0, 0), 0, 0);
   }
 

@@ -8,6 +8,8 @@ import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.citizens.domain.model.perception.SpeechMessage;
+import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.ArrayList;
@@ -104,8 +106,23 @@ public class Citizen implements WorldElement {
   }
 
   @Override
-  public String getType() {
-    return "CITIZEN";
+  public EntityType getType() {
+    return EntityType.CITIZEN;
+  }
+
+  @Override
+  public NearbyElement toNearbyElement(double distance, String direction) {
+    return new NearbyElement(
+        uuid.toString(),
+        citizenProfile.identity().name(),
+        getCategory(),
+        EntityType.CITIZEN,
+        null,
+        Math.round(distance * 100.0) / 100.0,
+        direction,
+        getTags(),
+        null, null, null
+    );
   }
 
   @Override

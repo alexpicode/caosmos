@@ -4,6 +4,7 @@ import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.GatewayTransition;
 import com.caosmos.common.domain.model.world.SpeechElement;
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.world.domain.model.WorldObject;
@@ -35,7 +36,7 @@ public class WorldAdapter implements WorldPort {
     }
     String normalizedTag = tag.toLowerCase();
     return spatialHash.getNearbyEntities(position, maxDistance).stream()
-        .filter(entity -> "OBJECT".equals(entity.getType()) || "CITIZEN".equals(entity.getType()))
+        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
         .anyMatch(entity -> entity.getTags().contains(normalizedTag));
   }
 
@@ -58,7 +59,7 @@ public class WorldAdapter implements WorldPort {
   @Override
   public boolean isNearObject(Vector3 position, String objectId, double maxDistance) {
     return spatialHash.getById(objectId)
-        .filter(entity -> "OBJECT".equals(entity.getType()) || "CITIZEN".equals(entity.getType()))
+        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
         .map(entity -> {
           if (entity instanceof WorldObject obj) {
             if (obj.intersects(position)) {
@@ -87,7 +88,7 @@ public class WorldAdapter implements WorldPort {
   @Override
   public Optional<WorldElement> getObject(String objectId) {
     return spatialHash.getById(objectId)
-        .filter(entity -> "OBJECT".equals(entity.getType()) || "CITIZEN".equals(entity.getType()));
+        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType());
   }
 
   @Override

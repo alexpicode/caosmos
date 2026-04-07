@@ -95,7 +95,7 @@ public class SpatialHash implements WorldRegistry {
         (key, cell) -> {
           if (cell != null) {
             for (WorldElement obj : cell) {
-              if (obj instanceof Zone || position.distanceTo2D(obj.getPosition()) <= radius) {
+              if (obj.contains(position) || position.distanceTo2D(obj.getPosition()) <= radius) {
                 result.add(obj);
               }
             }
@@ -113,7 +113,7 @@ public class SpatialHash implements WorldRegistry {
           if (cell != null) {
             for (WorldElement obj : cell) {
               Vector3 pos = obj.getPosition();
-              if (obj instanceof Zone || (pos.x() >= minX && pos.x() <= maxX && pos.z() >= minZ && pos.z() <= maxZ)) {
+              if (obj.contains(pos) || (pos.x() >= minX && pos.x() <= maxX && pos.z() >= minZ && pos.z() <= maxZ)) {
                 result.add(obj);
               }
             }
@@ -172,7 +172,7 @@ public class SpatialHash implements WorldRegistry {
    * covered by its area. Otherwise, it returns a single key for its point position.
    */
   private Set<Long> getKeysForEntity(WorldElement obj) {
-    if (obj instanceof Zone zone) {
+    if (obj.contains(obj.getPosition()) && obj instanceof Zone zone) {
       double halfWidth = zone.getWidth() / 2.0;
       double halfLength = zone.getLength() / 2.0;
       Vector3 center = zone.getCenter();

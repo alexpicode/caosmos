@@ -1,5 +1,6 @@
 package com.caosmos.world.application.usecases;
 
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.world.application.dto.WorldEntitySummaryDTO;
 import com.caosmos.world.domain.service.SpatialHash;
@@ -44,7 +45,7 @@ public class GetWorldEntitiesUseCase {
 
     // Only return objects of type "OBJECT"
     return entities.stream()
-        .filter(e -> "OBJECT".equalsIgnoreCase(e.getType()))
+        .filter(e -> EntityType.OBJECT == e.getType())
         .toList();
   }
 }

@@ -10,11 +10,13 @@ import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.Status;
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.Location;
 import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.WorldDate;
 import com.caosmos.common.domain.model.world.WorldPerception;
+import com.caosmos.common.domain.model.world.ZoneType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -77,7 +79,7 @@ class PerceptionMonitorTest {
         "Unique-ID",
         "Old Statue",
         "DECORATION",
-        "OBJECT",
+        EntityType.OBJECT,
         null,
         5.0,
         "North",
@@ -206,7 +208,7 @@ class PerceptionMonitorTest {
         "obj-1",
         "Iron Pickaxe",
         "TOOL",
-        "OBJECT",
+        EntityType.OBJECT,
         null,
         2.0,
         "Forward",
@@ -246,8 +248,8 @@ class PerceptionMonitorTest {
         "zone-mkt",
         "Town Market",
         "MARKET",
-        "ZONE",
-        "URBAN",
+        EntityType.ZONE,
+        ZoneType.EXTERIOR,
         50.0,
         "North-East",
         Collections.emptySet(),
@@ -317,7 +319,7 @@ class PerceptionMonitorTest {
         "id-1",
         "Statue",
         "DECOR",
-        "OBJECT",
+        EntityType.OBJECT,
         null,
         2.0,
         "F",
@@ -328,7 +330,7 @@ class PerceptionMonitorTest {
         "id-2",
         "Pickaxe",
         "TOOL",
-        "OBJECT",
+        EntityType.OBJECT,
         null,
         5.0,
         "F",
@@ -368,7 +370,7 @@ class PerceptionMonitorTest {
         "id-1",
         "Greg",
         "HUMAN",
-        "CITIZEN",
+        EntityType.CITIZEN,
         null,
         0.5, // Well below proximity threshold
         "F",
@@ -398,7 +400,7 @@ class PerceptionMonitorTest {
         "id-1",
         "Enemy",
         "MONSTER",
-        "CITIZEN",
+        EntityType.CITIZEN,
         null,
         10.0, // Far away
         "F",
@@ -431,7 +433,7 @@ class PerceptionMonitorTest {
         "id-obj",
         "Iron Ore",
         "RESOURCE",
-        "OBJECT",
+        EntityType.OBJECT,
         null,
         0.5, // Close
         "F",

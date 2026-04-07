@@ -1,9 +1,9 @@
 package com.caosmos.common.domain.model.world;
 
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-
 
 @Getter
 @Builder
@@ -21,17 +21,40 @@ public class SpeechElement implements WorldElement {
   private final long startTick;
 
   @Override
-  public String getType() {
-    return "SPEECH";
+  public EntityType getType() {
+    return EntityType.SPEECH;
   }
 
   @Override
   public String getName() {
-    return sourceName + " says: " + message;
+    return "Speech from " + sourceName;
   }
 
   @Override
   public String getCategory() {
-    return "SOCIAL";
+    return "SPEECH";
   }
+
+  @Override
+  public NearbyElement toNearbyElement(double distance, String direction) {
+    return new NearbyElement(
+        id,
+        getName(),
+        getCategory(),
+        EntityType.SPEECH,
+        null,
+        Math.round(distance * 100.0) / 100.0,
+        direction,
+        Set.of(tone.getValue()),
+        sourceId,
+        targetId,
+        message
+    );
+  }
+
+  @Override
+  public boolean isLimitedToZone() {
+    return true;
+  }
+
 }

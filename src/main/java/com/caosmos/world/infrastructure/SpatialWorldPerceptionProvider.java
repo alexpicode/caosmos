@@ -2,12 +2,14 @@ package com.caosmos.world.infrastructure;
 
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
 import com.caosmos.common.domain.model.world.Environment;
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.Location;
 import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldDate;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.common.domain.model.world.WorldPerception;
+import com.caosmos.common.domain.model.world.ZoneType;
 import com.caosmos.world.application.WorldObjectInitializer;
 import com.caosmos.world.domain.model.PeripheralPerception;
 import com.caosmos.world.domain.model.WorldObject;
@@ -62,7 +64,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
       zoneOpt = zoneManager.findZoneAt(position, currentZoneId);
     }
     String zoneName = zoneOpt.map(Zone::getName).orElse("Unknown Territory");
-    String zoneType = zoneOpt.map(Zone::getZoneType).orElse("EXTERIOR");
+    ZoneType zoneType = zoneOpt.map(Zone::getZoneType).orElse(ZoneType.EXTERIOR);
 
     Map<String, Zone> allZones = zoneManager.getZoneMap();
     Set<String> tags = zoneOpt.map(z -> z.getEffectiveTags(allZones)).orElse(Set.of());
@@ -75,7 +77,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     String effectiveLightLevel;
     List<String> effectiveEnvTags;
 
-    if ("INTERIOR".equals(zoneType)) {
+    if (ZoneType.INTERIOR == zoneType) {
       effectiveLightLevel = "Artificial";
       effectiveEnvTags = List.of();
     } else {
@@ -86,7 +88,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     Environment perceivedEnv = new Environment(globalEnv.terrainType(), effectiveEnvTags, effectiveLightLevel);
 
     Set<String> finalTags = new HashSet<>(tags);
-    if ("EXTERIOR".equals(zoneType)) {
+    if (ZoneType.EXTERIOR == zoneType) {
       finalTags.addAll(effectiveEnvTags);
     }
 
@@ -104,7 +106,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
 
     Location location = new Location(
         zoneName,
-        zoneType,
+        zoneType.name(),
         zoneOpt.map(Zone::getCategory).orElse("UNKNOWN"),
         currentLocation,
         finalTags,
@@ -132,7 +134,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   private static String getCurrentLocation(List<NearbyElement> nearbyElements) {
     if (CollectionUtils.isNotEmpty(nearbyElements)) {
       var closest = nearbyElements.stream()
-          .filter(e -> "OBJECT".equals(e.type()))
+          .filter(e -> EntityType.OBJECT == e.type())
           .findFirst();
 
       if (closest.isPresent() && closest.get().distance() <= 2.0) {

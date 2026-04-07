@@ -1,9 +1,10 @@
 package com.caosmos.world.domain.service;
 
+import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.NearbyElement;
-import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneType;
 import com.caosmos.world.domain.model.PeripheralPerception;
 import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.model.Zone;
@@ -45,13 +46,12 @@ public class NearbyPerceptionService {
         continue;
       }
 
-      // 1. Zone filtering for speech (Simple rule: same zone only)
-      if (element instanceof SpeechElement) {
-        if (!Objects.equals(element.getZoneId(), currentZoneId)) {
+      // 1. Visibility rules
+      if (element.isLimitedToZone()) {
+        if (!java.util.Objects.equals(element.getZoneId(), currentZoneId)) {
           continue;
         }
       } else {
-        // 2. Normal visibility rules for other elements
         if (!isElementVisible(element, currentZone, zoneMap)) {
           continue;
         }
@@ -60,45 +60,15 @@ public class NearbyPerceptionService {
       double distance = position.distanceTo2D(element.getPosition());
       String direction = directionCalculator.getCardinalDirection(position, element.getPosition());
 
-      if (element instanceof Zone zone) {
-        if (!zone.getId().equals(currentZoneId)) {
-          elements.add(mapToNearbyElement(zone, distance, direction));
-        }
-      } else if (element instanceof SpeechElement speech) {
-        elements.add(new NearbyElement(
-            speech.getId(),
-            speech.getName(),
-            speech.getCategory(),
-            "MESSAGE",
-            null,
-            Math.round(distance * 100.0) / 100.0,
-            direction,
-            Set.of(speech.getTone().getValue()),
-            speech.getSourceId(),
-            speech.getTargetId(),
-            speech.getMessage()
-        ));
-      } else {
-        elements.add(new NearbyElement(
-            element.getId(),
-            element.getName(),
-            element.getCategory(),
-            element.getType(),
-            null,
-            Math.round(distance * 100.0) / 100.0,
-            direction,
-            element.getTags(),
-            null, null, null
-        ));
-      }
+      elements.add(element.toNearbyElement(distance, direction));
     }
 
     // Process zones to limit repetitive ones
     List<NearbyElement> zoneElements = elements.stream()
-        .filter(e -> "ZONE".equals(e.type()))
+        .filter(e -> EntityType.ZONE == e.type())
         .toList();
     List<NearbyElement> objectElements = elements.stream()
-        .filter(e -> ("OBJECT".equals(e.type()) || "MESSAGE".equals(e.type()) || "CITIZEN".equals(e.type())))
+        .filter(e -> (EntityType.OBJECT == e.type() || EntityType.SPEECH == e.type() || EntityType.CITIZEN == e.type()))
         .toList();
 
     List<NearbyElement> processedZones = processZones(zoneElements);
@@ -143,13 +113,13 @@ public class NearbyPerceptionService {
     }
 
     // Rule: Cannot see INSIDE an interior if we are not in it
-    if ("INTERIOR".equals(elementZone.getZoneType())) {
+    if (ZoneType.INTERIOR == elementZone.getZoneType()) {
       return false;
     }
 
     // Rule: Cannot see OUTSIDE from an interior
-    if (currentZone != null && "INTERIOR".equals(currentZone.getZoneType())
-        && "EXTERIOR".equals(elementZone.getZoneType())) {
+    if (currentZone != null && ZoneType.INTERIOR == currentZone.getZoneType()
+        && ZoneType.EXTERIOR == elementZone.getZoneType()) {
       return false;
     }
 
@@ -179,7 +149,7 @@ public class NearbyPerceptionService {
     }
 
     // Siblings: Only if Exterior (Open Sight)
-    if ("EXTERIOR".equals(currentZone.getZoneType())) {
+    if (ZoneType.EXTERIOR == currentZone.getZoneType()) {
       if (currentZone.getParentZoneId() == null && zone.getParentZoneId() == null) {
         return true;
       }
@@ -190,12 +160,12 @@ public class NearbyPerceptionService {
   }
 
   private boolean isAllowedByInteriorRule(Zone zone, Zone currentZone) {
-    if (currentZone == null || !"INTERIOR".equals(currentZone.getZoneType())) {
+    if (currentZone == null || ZoneType.INTERIOR != currentZone.getZoneType()) {
       return true;
     }
 
     // If current is INTERIOR, hide EXTERIOR except parent
-    if ("EXTERIOR".equals(zone.getZoneType())) {
+    if (ZoneType.EXTERIOR == zone.getZoneType()) {
       return currentZone.getParentZoneId() != null && currentZone.getParentZoneId().equals(zone.getId());
     }
 
@@ -219,17 +189,4 @@ public class NearbyPerceptionService {
     return result;
   }
 
-  private NearbyElement mapToNearbyElement(Zone zone, double distance, String direction) {
-    return new NearbyElement(
-        zone.getId(),
-        zone.getName(),
-        zone.getCategory(),
-        "ZONE",
-        zone.getZoneType(),
-        Math.round(distance * 100.0) / 100.0,
-        direction,
-        zone.getTags(),
-        null, null, null
-    );
-  }
 }
