@@ -73,12 +73,12 @@ public class ConversationManager {
     return newSession;
   }
 
-  public void registerDialogue(String speakerId, String speakerName, String message, long tick) {
+  public void registerDialogue(String speakerId, String speakerName, String message, String tone, long tick) {
     String sessionId = citizenToSession.get(speakerId);
     if (sessionId != null) {
       ConversationSession session = sessions.computeIfPresent(
           sessionId, (k, s) -> {
-            s.addDialogue(new DialogueLine(speakerId, speakerName, message, tick));
+            s.addDialogue(new DialogueLine(speakerId, speakerName, message, tone, tick));
             return s;
           }
       );
@@ -99,19 +99,22 @@ public class ConversationManager {
     }
     lastUpdatedTick = currentTick;
 
-    // Called once per pulse/tick cycle to advance stale sessions
+    // Called once per global tick to advance stale sessions
     sessions.forEach((id, session) -> {
+      long idleTicks = currentTick - session.getLastActivityTick();
+
+      // Always increment the counter so the AI prompt receives meaningful data
+      session.incrementTurnsWithoutResponse();
+
       if (session.getPhase() == ConversationPhase.ACTIVE || session.getPhase() == ConversationPhase.INITIATED) {
-        session.incrementTurnsWithoutResponse();
-        if (session.getTurnsWithoutResponse() >= 3) {
+        if (idleTicks >= 30) { // 30 seconds of inactivity
           session.setPhase(ConversationPhase.STALE);
-          log.debug("Session {} became STALE", id);
+          log.debug("Session {} became STALE after {} idle ticks", id, idleTicks);
         }
       } else if (session.getPhase() == ConversationPhase.STALE) {
-        session.incrementTurnsWithoutResponse();
-        if (session.getTurnsWithoutResponse() >= 4) { // one pulse after stale
+        if (idleTicks >= 60) { // 60 seconds total inactivity
           session.setPhase(ConversationPhase.ENDED);
-          log.debug("Session {} ENDED due to inactivity", id);
+          log.debug("Session {} ENDED due to prolonged inactivity ({} ticks)", id, idleTicks);
         }
       }
     });
