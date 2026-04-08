@@ -5,6 +5,8 @@ public record DialogueLine(
     String speakerName,
     String message,
     String tone,
+    String targetId,
+    // null = speaks to the group, "id" = addressed to someone
     long tick
 ) {
 

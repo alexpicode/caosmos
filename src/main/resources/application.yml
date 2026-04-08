@@ -29,6 +29,7 @@ caosmos:
     pulse-frequency: 5                # Frequency in seconds for citizen life cycle pulses (num ticks)
     walking-speed: 1.4                # Standard walking speed in m/s
     max-ticks-without-decision: 60    # Maximum number of marks without the LLM having made a decision
+    max-conversation-participants: 4  # Maximum number of participants in a single conversation session
   world:
     max-vision-distance: 30.0         # Maximum distance for searching nearby objects
     time:

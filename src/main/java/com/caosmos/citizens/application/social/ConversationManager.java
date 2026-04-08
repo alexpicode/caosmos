@@ -18,7 +18,13 @@ public class ConversationManager {
   // Map of sessionId to the actual ConversationSession
   private final ConcurrentHashMap<String, ConversationSession> sessions = new ConcurrentHashMap<>();
 
+  private final ConversationConfigProperties configProperties;
+
   private long lastUpdatedTick = -1;
+
+  public ConversationManager(ConversationConfigProperties configProperties) {
+    this.configProperties = configProperties;
+  }
 
   public ConversationSession initiateOrJoin(
       String citizenId,
@@ -31,39 +37,45 @@ public class ConversationManager {
       return null;
     }
 
-    // First check if target already has an open session with me.
-    // If not, see if I have one with target. If not, create new.
+    int maxParticipants = configProperties.maxConversationParticipants();
 
-    // Check if target is already in a session
+    // Check if target has an active session
     String targetSessionId = citizenToSession.get(targetId);
     if (targetSessionId != null) {
       ConversationSession targetSession = sessions.get(targetSessionId);
-      if (targetSession != null &&
-          (targetSession.getPartnerId().equals(citizenId) || targetSession.getInitiatorId().equals(citizenId))) {
-        // Target is talking to me, join their session
-        citizenToSession.put(citizenId, targetSessionId);
-        log.debug("Citizen {} joined existing session {} with {}", citizenId, targetSessionId, targetId);
-        return targetSession;
+      if (targetSession != null) {
+        // Check if I'm already in this session
+        if (targetSession.isParticipant(citizenId)) {
+          return targetSession;
+        }
+        // Try to join it
+        if (targetSession.addParticipant(citizenId, citizenName, maxParticipants)) {
+          citizenToSession.put(citizenId, targetSessionId);
+          log.debug("Citizen {} joined existing session {} with {}", citizenId, targetSessionId, targetId);
+          return targetSession;
+        }
+        // If we reach here, session is full. We can't join.
       }
     }
 
-    // Check if I am already in a session with target
+    // Check if I have an active session
     String mySessionId = citizenToSession.get(citizenId);
     if (mySessionId != null) {
       ConversationSession mySession = sessions.get(mySessionId);
-      if (mySession != null &&
-          (mySession.getPartnerId().equals(targetId) || mySession.getInitiatorId().equals(targetId))) {
-        // I am already talking to them
-        return mySession;
-      } else if (mySession != null) {
-        // I was talking to someone else, end that session for me
-        endSession(citizenId);
+      if (mySession != null) {
+        // If I have my own session, we try to add target
+        if (mySession.isParticipant(targetId)) {
+          return mySession;
+        }
+        // If I was talking to others, we can optionally just try to add new target if there's room
       }
     }
 
-    // Create a new session
+    // Create a new session with me and target
     String newSessionId = UUID.randomUUID().toString();
-    ConversationSession newSession = new ConversationSession(newSessionId, citizenId, targetId, targetName, tick);
+    ConversationSession newSession = new ConversationSession(newSessionId, citizenId, citizenName, tick);
+    // Add target as well initially so it's a 2-person session
+    newSession.addParticipant(targetId, targetName, maxParticipants);
     sessions.put(newSessionId, newSession);
     citizenToSession.put(citizenId, newSessionId);
     // DO NOT force target to join until they actually respond or perceive the message, 
@@ -73,22 +85,27 @@ public class ConversationManager {
     return newSession;
   }
 
-  public void registerDialogue(String speakerId, String speakerName, String message, String tone, long tick) {
+  public void registerDialogue(
+      String speakerId,
+      String speakerName,
+      String targetId,
+      String message,
+      String tone,
+      long tick
+  ) {
     String sessionId = citizenToSession.get(speakerId);
     if (sessionId != null) {
       ConversationSession session = sessions.computeIfPresent(
           sessionId, (k, s) -> {
-            s.addDialogue(new DialogueLine(speakerId, speakerName, message, tone, tick));
+            s.addDialogue(new DialogueLine(speakerId, speakerName, message, tone, targetId, tick));
             return s;
           }
       );
       if (session != null) {
         log.debug("Added dialogue to session {} from {}", sessionId, speakerId);
-        // If partner is not yet in the session map (because I initiated and this is my first message),
-        // we can safely add them to the map now so they can find it easily when they check.
-        String partnerId =
-            session.getInitiatorId().equals(speakerId) ? session.getPartnerId() : session.getInitiatorId();
-        citizenToSession.putIfAbsent(partnerId, sessionId);
+        // Ensure all participants are linked
+        session.getActiveParticipantIds().forEach(pid ->
+            citizenToSession.putIfAbsent(pid, sessionId));
       }
     }
   }
@@ -149,8 +166,16 @@ public class ConversationManager {
     if (sessionId != null) {
       ConversationSession session = sessions.get(sessionId);
       if (session != null) {
-        session.setPhase(ConversationPhase.ENDED);
-        log.debug("Citizen {} ended session {}", citizenId, sessionId);
+        int remaining = session.removeParticipant(citizenId);
+        if (remaining <= 1) {
+          // Only 1 remains, close for all
+          session.setPhase(ConversationPhase.ENDED);
+          // Clean up the last participant from the map
+          session.getActiveParticipantIds().forEach(citizenToSession::remove);
+          log.debug("Citizen {} ended session {}, session is now closed for all", citizenId, sessionId);
+        } else {
+          log.debug("Citizen {} left session {}, {} participants remaining", citizenId, sessionId, remaining);
+        }
       }
     }
   }

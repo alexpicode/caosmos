@@ -291,7 +291,14 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
-  public void registerDialogue(String speakerId, String speakerName, String message, String tone, long tick) {
-    conversationManager.registerDialogue(speakerId, speakerName, message, tone, tick);
+  public void registerDialogue(
+      String speakerId,
+      String speakerName,
+      String targetId,
+      String message,
+      String tone,
+      long tick
+  ) {
+    conversationManager.registerDialogue(speakerId, speakerName, targetId, message, tone, tick);
   }
 }

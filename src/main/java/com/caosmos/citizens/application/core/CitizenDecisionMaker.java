@@ -141,12 +141,16 @@ public class CitizenDecisionMaker {
     if (sessionOpt.isPresent()) {
       var session = sessionOpt.get();
       Map<String, Object> convMap = new HashMap<>();
-      convMap.put("partner", session.getPartnerName());
+      convMap.put("participants", session.getOthers(citizen.getUuid().toString()).values());
+      convMap.put("participantCount", session.getActiveParticipantCount());
       convMap.put("phase", session.getPhase().name());
-      convMap.put(
-          "lastSpeaker",
-          session.getLastSpeakerId().equals(citizen.getUuid().toString()) ? "Me" : session.getPartnerName()
-      );
+
+      String lastSpeakerId = session.getLastSpeakerId();
+      String lastSpeakerName = lastSpeakerId.equals(citizen.getUuid().toString())
+          ? "Me"
+          : session.getParticipants().getOrDefault(lastSpeakerId, "Unknown");
+      convMap.put("lastSpeaker", lastSpeakerName);
+
       convMap.put("isMyTurn", !session.getLastSpeakerId().equals(citizen.getUuid().toString()));
       convMap.put("turnsWithoutResponse", session.getTurnsWithoutResponse());
 
@@ -156,6 +160,12 @@ public class CitizenDecisionMaker {
             Map<String, String> dlMap = new HashMap<>();
             dlMap.put("speaker", line.speakerName());
             dlMap.put("message", line.message());
+            if (line.targetId() != null) {
+              dlMap.put(
+                  "directedTo", session.getParticipants()
+                      .getOrDefault(line.targetId(), "Unknown")
+              );
+            }
             return dlMap;
           })
           .toList();

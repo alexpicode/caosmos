@@ -91,14 +91,13 @@ public class GetCitizenDetailUseCase {
 
   private SpeechMessageDto mapSessionLineToDto(DialogueLine line, ConversationSession session, String myId) {
     String targetName;
-    if (line.speakerId().equals(myId)) {
-      // If I am the speaker, target is the partner
-      targetName = session.getPartnerName();
+    if (line.targetId() != null) {
+      // Message addressed to someone specific
+      targetName = session.getParticipants().getOrDefault(line.targetId(), "Unknown");
     } else {
-      // If partner is the speaker, target is me
-      targetName = citizenRegistry.get(UUID.fromString(myId))
-          .map(c -> c.getCitizenProfile().identity().name())
-          .orElse("Me");
+      // Message to the group
+      List<String> others = session.getOthers(line.speakerId()).values().stream().toList();
+      targetName = others.size() == 1 ? others.get(0) : "Group";
     }
 
     return new SpeechMessageDto(

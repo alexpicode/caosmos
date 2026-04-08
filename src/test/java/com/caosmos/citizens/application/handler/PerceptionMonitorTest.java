@@ -38,7 +38,9 @@ class PerceptionMonitorTest {
   @BeforeEach
   void setUp() {
     taskRegistry = new TaskRegistry();
-    ConversationManager conversationManager = new ConversationManager();
+    com.caosmos.citizens.application.social.ConversationConfigProperties config = new com.caosmos.citizens.application.social.ConversationConfigProperties(
+        4);
+    ConversationManager conversationManager = new ConversationManager(config);
     socialHeuristicsEngine = new SocialHeuristicsEngine(conversationManager);
     socialHeuristicsEngine.init();
     monitor = new PerceptionMonitor(taskRegistry, socialHeuristicsEngine);

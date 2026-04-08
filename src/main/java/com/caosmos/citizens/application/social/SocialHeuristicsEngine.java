@@ -28,9 +28,8 @@ public class SocialHeuristicsEngine {
         var session = sessionOpt.get();
         // If it's my turn
         if (!myId.equals(session.getLastSpeakerId())) {
-          // Is there a message from my partner?
           return messages.stream()
-              .filter(m -> m.sourceId().equals(session.getPartnerId()) || m.sourceId().equals(session.getInitiatorId()))
+              .filter(m -> session.isParticipant(m.sourceId()) && !m.sourceId().equals(myId))
               .findFirst();
         }
       }

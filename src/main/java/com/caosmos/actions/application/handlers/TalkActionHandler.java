@@ -82,7 +82,14 @@ public class TalkActionHandler implements ActionHandler {
           clock.getCurrentTick()
       );
     }
-    citizenService.registerDialogue(citizenId.toString(), sourceName, message, tone.getValue(), clock.getCurrentTick());
+    citizenService.registerDialogue(
+        citizenId.toString(),
+        sourceName,
+        targetId,
+        message,
+        tone.getValue(),
+        clock.getCurrentTick()
+    );
 
     // Socializing reduces stress
     citizenService.reduceStress(citizenId, ActionThresholds.TALK_STRESS_REDUCTION);

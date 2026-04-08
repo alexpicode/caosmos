@@ -69,5 +69,5 @@ public interface CitizenPort {
 
   void initiateOrJoinConversation(String citizenId, String citizenName, String targetId, String targetName, long tick);
 
-  void registerDialogue(String speakerId, String speakerName, String message, String tone, long tick);
+  void registerDialogue(String speakerId, String speakerName, String targetId, String message, String tone, long tick);
 }
