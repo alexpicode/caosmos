@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.caosmos.citizens.application.registry.TaskRegistry;
+import com.caosmos.citizens.application.social.ConversationManager;
 import com.caosmos.citizens.application.social.SocialHeuristicsEngine;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
@@ -37,7 +38,8 @@ class PerceptionMonitorTest {
   @BeforeEach
   void setUp() {
     taskRegistry = new TaskRegistry();
-    socialHeuristicsEngine = new SocialHeuristicsEngine();
+    ConversationManager conversationManager = new ConversationManager();
+    socialHeuristicsEngine = new SocialHeuristicsEngine(conversationManager);
     socialHeuristicsEngine.init();
     monitor = new PerceptionMonitor(taskRegistry, socialHeuristicsEngine);
 

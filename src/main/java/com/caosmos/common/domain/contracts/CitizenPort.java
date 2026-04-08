@@ -66,4 +66,8 @@ public interface CitizenPort {
   String getWorkplaceTag(UUID citizenId);
 
   String getName(UUID citizenId);
+
+  void initiateOrJoinConversation(String citizenId, String citizenName, String targetId, String targetName, long tick);
+
+  void registerDialogue(String speakerId, String speakerName, String message, long tick);
 }

@@ -2,6 +2,7 @@ package com.caosmos.citizens.application.core;
 
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.application.model.PulseContext;
+import com.caosmos.citizens.application.social.ConversationManager;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.CitizenPerception;
@@ -33,6 +34,7 @@ public class CitizenDecisionMaker {
   private final SystemPromptTemplatePort promptTemplate;
   private final JsonSerializer jsonSerializer;
   private final ActionPort actionPort;
+  private final ConversationManager conversationManager;
 
   /**
    * Makes a decision for a citizen based on their current state and world perception.
@@ -132,6 +134,36 @@ public class CitizenDecisionMaker {
     } else {
       messageMap.put("world_json", "{}");
       messageMap.put("explore_categories_json", "[]");
+    }
+
+    // Add conversation context if available and active
+    var sessionOpt = conversationManager.getActiveSession(citizen.getUuid().toString());
+    if (sessionOpt.isPresent()) {
+      var session = sessionOpt.get();
+      Map<String, Object> convMap = new HashMap<>();
+      convMap.put("partner", session.getPartnerName());
+      convMap.put("phase", session.getPhase().name());
+      convMap.put(
+          "lastSpeaker",
+          session.getLastSpeakerId().equals(citizen.getUuid().toString()) ? "Me" : session.getPartnerName()
+      );
+      convMap.put("isMyTurn", !session.getLastSpeakerId().equals(citizen.getUuid().toString()));
+      convMap.put("turnsWithoutResponse", session.getTurnsWithoutResponse());
+
+      // Add dialogue history
+      var dialogueList = session.getHistory().stream()
+          .map(line -> {
+            Map<String, String> dlMap = new HashMap<>();
+            dlMap.put("speaker", line.speakerName());
+            dlMap.put("message", line.message());
+            return dlMap;
+          })
+          .toList();
+      convMap.put("recentDialogue", dialogueList);
+
+      messageMap.put("conversation_json", jsonSerializer.toJson(convMap));
+    } else {
+      messageMap.put("conversation_json", "{}");
     }
 
     return promptTemplate.buildMessage(userPromptResource, messageMap);

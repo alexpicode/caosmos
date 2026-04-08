@@ -73,6 +73,17 @@ public class TalkActionHandler implements ActionHandler {
 
     worldPort.spawnSpeech(speech);
 
+    if (targetId != null && !targetId.isBlank()) {
+      citizenService.initiateOrJoinConversation(
+          citizenId.toString(),
+          sourceName,
+          targetId,
+          targetName,
+          clock.getCurrentTick()
+      );
+    }
+    citizenService.registerDialogue(citizenId.toString(), sourceName, message, clock.getCurrentTick());
+
     // Socializing reduces stress
     citizenService.reduceStress(citizenId, ActionThresholds.TALK_STRESS_REDUCTION);
     citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_TALK);

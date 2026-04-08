@@ -5,6 +5,7 @@ import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.common.domain.model.world.Vector3;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -12,11 +13,12 @@ public class ConversationTask implements Task {
 
   private final String targetId;
   private final Vector3 targetPosition;
-  private int ticksRemaining = 10; // Default timeout if no response
+  private final Supplier<Boolean> isSessionEnded;
 
-  public ConversationTask(String targetId, Vector3 targetPosition) {
+  public ConversationTask(String targetId, Vector3 targetPosition, Supplier<Boolean> isSessionEnded) {
     this.targetId = targetId;
     this.targetPosition = targetPosition;
+    this.isSessionEnded = isSessionEnded;
   }
 
   @Override
@@ -26,14 +28,12 @@ public class ConversationTask implements Task {
 
   @Override
   public ActiveTask executeOnTick(Citizen citizen, FullPerception perception, double dt, double walkingSpeed) {
-    ticksRemaining--;
-
     // Maintain orientation towards target
     log.trace("Citizen {} in conversation with {} at {}", citizen.getUuid(), targetId, targetPosition);
 
-    if (ticksRemaining <= 0) {
-      log.info("Conversation with {} timed out for citizen {}", targetId, citizen.getUuid());
-      return toActiveTask(citizen).withCompleted(true).withGoal("Conversation timeout");
+    if (isSessionEnded.get()) {
+      log.info("Conversation with {} ended or went stale for citizen {}", targetId, citizen.getUuid());
+      return toActiveTask(citizen).withCompleted(true).withGoal("Conversation ended");
     }
 
     return toActiveTask(citizen);
@@ -54,6 +54,6 @@ public class ConversationTask implements Task {
 
   @Override
   public boolean allowsRoutineInterruptions() {
-    return false;
+    return true;
   }
 }

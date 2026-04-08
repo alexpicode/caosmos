@@ -10,6 +10,10 @@
 
 <world_json>
 
+### Active Conversation (if applicable):
+
+<conversation_json>
+
 ### Available Categories (ONLY targets for EXPLORE action):
 
 These categories represent types of zones or objects that exist in the distance. You should use one of these as the '

@@ -1,11 +1,13 @@
 package com.caosmos.citizens.application.handler;
 
+import com.caosmos.citizens.application.social.ConversationManager;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
 import com.caosmos.citizens.domain.model.perception.SpeechMessage;
+import com.caosmos.common.domain.contracts.SimulationClock;
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.world.EntityType;
@@ -17,10 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-/**
- * Handles perception gathering and reflex evaluation for citizens. Manages citizen, world perception and reflexive
- * responses to environmental stimuli.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -30,6 +28,8 @@ public class CitizenPerceptionHandler {
   private final WorldPort worldPort;
   private final PerceptionMonitor perceptionMonitor;
   private final CitizenMentalMapper mentalMapper;
+  private final ConversationManager conversationManager;
+  private final SimulationClock clock;
 
   /**
    * Handles the perception process for a citizen. Gathers world perception and evaluates reflexes.
@@ -39,6 +39,8 @@ public class CitizenPerceptionHandler {
       List<String> unprocessedEvents,
       boolean allowsRoutineInterruptions
   ) {
+    conversationManager.tickUpdate(clock.getCurrentTick());
+
     String citizenName = citizen.getCitizenProfile().identity().name();
 
     // 1. Get current position and world perception with filter to exclude self

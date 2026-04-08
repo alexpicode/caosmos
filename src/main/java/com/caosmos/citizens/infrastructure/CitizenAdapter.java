@@ -3,6 +3,7 @@ package com.caosmos.citizens.infrastructure;
 import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.registry.CitizenRegistry;
 import com.caosmos.citizens.application.registry.TaskRegistry;
+import com.caosmos.citizens.application.social.ConversationManager;
 import com.caosmos.citizens.domain.model.Hand;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.task.ConversationTask;
@@ -21,6 +22,7 @@ import com.caosmos.common.domain.model.world.Vector3;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ public class CitizenAdapter implements CitizenPort {
   private final WorldRegistry spatialRegistry;
   private final WorldPort worldPort;
   private final CitizenPerceptionHandler perceptionHandler;
+  private final ConversationManager conversationManager;
 
   @Override
   public boolean isNear(UUID citizenId, String targetId, double maxDistance) {
@@ -231,7 +234,8 @@ public class CitizenAdapter implements CitizenPort {
   @Override
   public void assignConversationTask(UUID citizenId, String targetId, Vector3 targetPosition) {
     log.debug("Setting Conversation task for citizen {} with {}", citizenId, targetId);
-    registerAndSyncTask(citizenId, new ConversationTask(targetId, targetPosition));
+    Supplier<Boolean> isSessionEnded = () -> conversationManager.getActiveSession(citizenId.toString()).isEmpty();
+    registerAndSyncTask(citizenId, new ConversationTask(targetId, targetPosition, isSessionEnded));
   }
 
   private void registerAndSyncTask(UUID citizenId, Task task) {
@@ -273,5 +277,21 @@ public class CitizenAdapter implements CitizenPort {
     return citizenRegistry.get(citizenId)
         .map(citizen -> citizen.getCitizenProfile().identity().name())
         .orElse(null);
+  }
+
+  @Override
+  public void initiateOrJoinConversation(
+      String citizenId,
+      String citizenName,
+      String targetId,
+      String targetName,
+      long tick
+  ) {
+    conversationManager.initiateOrJoin(citizenId, citizenName, targetId, targetName, tick);
+  }
+
+  @Override
+  public void registerDialogue(String speakerId, String speakerName, String message, long tick) {
+    conversationManager.registerDialogue(speakerId, speakerName, message, tick);
   }
 }
