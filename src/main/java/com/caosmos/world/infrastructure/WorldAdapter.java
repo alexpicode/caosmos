@@ -2,12 +2,15 @@ package com.caosmos.world.infrastructure;
 
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.items.ItemData;
+import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
 import com.caosmos.common.domain.model.world.GatewayTransition;
 import com.caosmos.common.domain.model.world.SpeechElement;
-import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.world.domain.model.WorldObject;
+import com.caosmos.world.domain.service.EnvironmentNormalizer;
+import com.caosmos.world.domain.service.EnvironmentService;
 import com.caosmos.world.domain.service.SpatialHash;
 import com.caosmos.world.domain.service.SpeechManager;
 import com.caosmos.world.domain.service.ZoneManager;
@@ -16,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +33,8 @@ public class WorldAdapter implements WorldPort {
   private final SpatialHash spatialHash;
   private final ZoneManager zoneManager;
   private final SpeechManager speechManager;
+  private final EnvironmentService environmentService;
+  private final EnvironmentNormalizer environmentNormalizer;
 
   @Override
   public boolean isNearObjectWithTag(Vector3 position, String tag, double maxDistance) {
@@ -172,5 +179,20 @@ public class WorldAdapter implements WorldPort {
   @Override
   public void consumeSpeech(String speechId) {
     speechManager.consumeEarly(speechId);
+  }
+
+  @Override
+  public SortedSet<EnvironmentImpactTag> getNormalizedEnvironmentTags() {
+    return environmentNormalizer.normalize(environmentService.getCurrentEnvironment());
+  }
+
+  @Override
+  public Set<String> getObjectTags(String objectId) {
+    if (objectId == null) {
+      return Collections.emptySet();
+    }
+    return spatialHash.getById(objectId)
+        .map(WorldElement::getTags)
+        .orElse(Collections.emptySet());
   }
 }

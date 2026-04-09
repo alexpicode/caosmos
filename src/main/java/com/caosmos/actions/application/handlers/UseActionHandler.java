@@ -1,9 +1,7 @@
 package com.caosmos.actions.application.handlers;
 
 import com.caosmos.actions.domain.ActionHandler;
-import com.caosmos.actions.domain.ActionThresholds;
-import com.caosmos.common.domain.contracts.CitizenPort;
-import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.contracts.CreativeResolutionPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
 import java.util.UUID;
@@ -14,8 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UseActionHandler implements ActionHandler {
 
-  private final WorldPort worldService;
-  private final CitizenPort citizenService;
+  private final CreativeResolutionPort creativeResolutionPort;
 
   @Override
   public String getActionType() {
@@ -24,20 +21,6 @@ public class UseActionHandler implements ActionHandler {
 
   @Override
   public ActionResult execute(UUID citizenId, ActionRequest request) {
-    String targetId = (String) request.parameters().get("targetId");
-
-    if (targetId == null || targetId.isBlank()) {
-      return ActionResult.failure("Target ID is required for USE", getActionType());
-    }
-
-    // Check proximity
-    if (!citizenService.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_USE)) {
-      return ActionResult.failure("You are too far from " + targetId + " to use it.", getActionType());
-    }
-
-    worldService.interactWithObject(targetId);
-    citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_USE);
-
-    return ActionResult.success("Used " + targetId, getActionType());
+    return creativeResolutionPort.resolve(citizenId, request);
   }
 }

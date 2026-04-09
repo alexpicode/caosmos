@@ -1,12 +1,15 @@
 package com.caosmos.common.domain.contracts;
 
 import com.caosmos.common.domain.model.items.ItemData;
+import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
 import com.caosmos.common.domain.model.world.GatewayTransition;
 import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
 
 public interface WorldPort {
 
@@ -41,4 +44,8 @@ public interface WorldPort {
   void spawnSpeech(SpeechElement speech);
 
   void consumeSpeech(String speechId);
+
+  SortedSet<EnvironmentImpactTag> getNormalizedEnvironmentTags();
+
+  Set<String> getObjectTags(String objectId);
 }

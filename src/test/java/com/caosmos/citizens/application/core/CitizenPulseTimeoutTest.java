@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.model.PhysiologicalReflex;
 import com.caosmos.citizens.application.model.PulseConfiguration;
+import com.caosmos.citizens.application.social.ConversationManager;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
@@ -35,6 +36,7 @@ class CitizenPulseTimeoutTest {
   private PhysiologicalMotor physiologicalMotor;
   private PulseConfiguration pulseConfiguration;
   private EntityTelemetryService telemetryService;
+  private ConversationManager conversationManager;
   private CitizenPulse citizenPulse;
 
   @BeforeEach
@@ -45,6 +47,7 @@ class CitizenPulseTimeoutTest {
     perceptionHandler = mock(CitizenPerceptionHandler.class);
     physiologicalMotor = mock(PhysiologicalMotor.class, RETURNS_DEEP_STUBS);
     telemetryService = mock(EntityTelemetryService.class);
+    conversationManager = mock(ConversationManager.class);
     pulseConfiguration = new PulseConfiguration(10, mock(Resource.class), mock(Resource.class), 20);
 
     when(citizen.getCitizenProfile().identity().name()).thenReturn("TestCitizen");
@@ -81,7 +84,8 @@ class CitizenPulseTimeoutTest {
         perceptionHandler,
         physiologicalMotor,
         pulseConfiguration,
-        telemetryService
+        telemetryService,
+        conversationManager
     );
   }
 
