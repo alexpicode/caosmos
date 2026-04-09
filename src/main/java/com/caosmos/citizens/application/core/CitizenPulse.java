@@ -4,11 +4,13 @@ import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.model.PhysiologicalReflex;
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.application.model.PulseContext;
+import com.caosmos.citizens.application.social.ConversationManager;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.InterruptType;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.LastAction;
+import com.caosmos.citizens.domain.model.social.ConversationPhase;
 import com.caosmos.common.application.telemetry.BiometricsEntry;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
 import com.caosmos.common.domain.contracts.AgentPulse;
@@ -33,6 +35,7 @@ public class CitizenPulse implements AgentPulse {
   private final PhysiologicalMotor physiologicalMotor;
   private final PulseConfiguration pulseConfiguration;
   private final EntityTelemetryService telemetryService;
+  private final ConversationManager conversationManager;
 
   private final EventBuffer eventBuffer = new EventBuffer();
 
@@ -106,9 +109,17 @@ public class CitizenPulse implements AgentPulse {
     // 5. Execute Active Task
     taskManager.executeActiveTask(citizen, fullPerception);
 
+    // 5.5 Sync Conversation State
+    boolean isTalking = isCitizenTalking();
+    if (isTalking && CitizenState.IDLE.equals(citizen.getState())) {
+      citizen.transitionTo(CitizenState.TALKING, "Engaged in conversation");
+    } else if (!isTalking && CitizenState.TALKING.equals(citizen.getState())) {
+      citizen.transitionTo(CitizenState.IDLE, "Conversation ended or stale");
+    }
+
     // 6. Decision Phase
-    if (CitizenState.IDLE.equals(citizen.getState())) {
-      log.info("[CITIZEN:{}] Entering Decision Phase (IDLE)...", citizenName);
+    if (CitizenState.IDLE.equals(citizen.getState()) || CitizenState.TALKING.equals(citizen.getState())) {
+      log.info("[CITIZEN:{}] Entering Decision Phase ({})...", citizenName, citizen.getState());
       performDecision(createContext(tick, citizenName, fullPerception));
     }
   }
@@ -168,8 +179,18 @@ public class CitizenPulse implements AgentPulse {
 
   private void performDecision(PulseContext context) {
     var lastAction = decisionMaker.makeDecision(citizen, context, pulseConfiguration);
-    citizen.transitionTo(CitizenState.IDLE, lastAction);
+    CitizenState nextState = isCitizenTalking() ? CitizenState.TALKING : CitizenState.IDLE;
+    citizen.transitionTo(nextState, lastAction);
     eventBuffer.clear();
+  }
+
+  private boolean isCitizenTalking() {
+    var activeSession = conversationManager.getActiveSession(citizen.getUuid().toString());
+    if (activeSession.isPresent()) {
+      var phase = activeSession.get().getPhase();
+      return phase == ConversationPhase.ACTIVE || phase == ConversationPhase.INITIATED;
+    }
+    return false;
   }
 }
 

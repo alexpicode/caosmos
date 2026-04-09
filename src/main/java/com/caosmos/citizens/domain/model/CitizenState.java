@@ -5,5 +5,6 @@ public enum CitizenState {
   MOVING,
   THINKING,
   INTERRUPTED,
-  BUSY
+  BUSY,
+  TALKING
 }

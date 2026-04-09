@@ -2,6 +2,7 @@ package com.caosmos.citizens.domain.task;
 
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.PhysiologicalThresholds;
+import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,11 @@ public class WaitTask implements Task {
 
   public WaitTask(boolean inSafeZone) {
     this.inSafeZone = inSafeZone;
+  }
+
+  @Override
+  public CitizenState getCitizenState() {
+    return CitizenState.IDLE;
   }
 
   @Override

@@ -3,6 +3,7 @@ package com.caosmos.citizens.application.core;
 import com.caosmos.citizens.application.handler.CitizenPerceptionHandler;
 import com.caosmos.citizens.application.model.PulseConfiguration;
 import com.caosmos.citizens.application.registry.CitizenRegistry;
+import com.caosmos.citizens.application.social.ConversationManager;
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.common.application.agents.LifeManager;
@@ -47,6 +48,7 @@ public class CitizenPopulationService implements PopulationService {
   private final PhysiologicalMotor physiologicalMotor;
   private final EntityTelemetryService telemetryService;
   private final CitizenSettings citizenSettings;
+  private final ConversationManager conversationManager;
 
   public void spawnAll() {
     log.info("[POPULATION] Initializing global spawn sequence...");
@@ -68,8 +70,8 @@ public class CitizenPopulationService implements PopulationService {
     log.info("[POPULATION] Spawning citizen {} from manifest {}", citizenId, manifestName);
 
     AgentManifest manifest = manifestRepository.get(manifestName)
-                                               .orElseThrow(() -> new RuntimeException(
-                                                   "Manifest not found: " + manifestName));
+        .orElseThrow(() -> new RuntimeException(
+            "Manifest not found: " + manifestName));
 
     Map<String, Object> combinedData = new HashMap<>(manifest.metadata());
     combinedData.put("personality", manifest.personality());
@@ -98,7 +100,8 @@ public class CitizenPopulationService implements PopulationService {
         perceptionHandler,
         physiologicalMotor,
         configuration,
-        telemetryService
+        telemetryService,
+        conversationManager
     );
 
     lifeManager.startLife(citizenId, citizenPulse);
