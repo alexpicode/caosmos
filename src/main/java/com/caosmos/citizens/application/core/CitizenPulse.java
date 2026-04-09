@@ -118,7 +118,7 @@ public class CitizenPulse implements AgentPulse {
     }
 
     // 6. Decision Phase
-    if (CitizenState.IDLE.equals(citizen.getState()) || CitizenState.TALKING.equals(citizen.getState())) {
+    if (shouldCitizenThink()) {
       log.info("[CITIZEN:{}] Entering Decision Phase ({})...", citizenName, citizen.getState());
       performDecision(createContext(tick, citizenName, fullPerception));
     }
@@ -190,6 +190,35 @@ public class CitizenPulse implements AgentPulse {
       var phase = activeSession.get().getPhase();
       return phase == ConversationPhase.ACTIVE || phase == ConversationPhase.INITIATED;
     }
+    return false;
+  }
+
+  private boolean shouldCitizenThink() {
+    CitizenState state = citizen.getState();
+
+    // Always think if IDLE or INTERRUPTED (standard behavior)
+    if (CitizenState.IDLE.equals(state) || CitizenState.INTERRUPTED.equals(state)) {
+      return true;
+    }
+
+    // If TALKING, only think if it's our turn or the session has been lost
+    if (CitizenState.TALKING.equals(state)) {
+      var sessionOpt = conversationManager.getActiveSession(citizen.getUuid().toString());
+      if (sessionOpt.isPresent()) {
+        var session = sessionOpt.get();
+
+        // 1. It's our turn to respond (last speaker was someone else)
+        if (!citizen.getUuid().toString().equals(session.getLastSpeakerId())) {
+          return true;
+        }
+
+        // 2. We are waiting for others to speak
+        return false;
+      }
+      // If we are in TALKING state but no session exists, we should think to exit this state
+      return true;
+    }
+
     return false;
   }
 }
