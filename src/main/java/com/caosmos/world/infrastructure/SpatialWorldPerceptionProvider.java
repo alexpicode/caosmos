@@ -2,9 +2,7 @@ package com.caosmos.world.infrastructure;
 
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
 import com.caosmos.common.domain.model.world.Environment;
-import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.Location;
-import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldDate;
 import com.caosmos.common.domain.model.world.WorldElement;
@@ -27,7 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +99,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
 
     Set<String> categoriesForExplore = getCategoriesInRadius(position, exploreSearchRadius);
 
-    String currentLocation = getCurrentLocation(nearbyElements);
+    String currentLocation = (ZoneType.INTERIOR == zoneType) ? "Interior Area" : "Open Area";
 
     Location location = new Location(
         zoneName,
@@ -120,7 +117,8 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   private Set<String> getCategoriesInRadius(Vector3 position, double radius) {
     Set<String> categories = new java.util.HashSet<>();
 
-    // We only need to consult SpatialHash as it now contains both WorldObjects and Zones
+    // We only need to consult SpatialHash as it now contains both WorldObjects and
+    // Zones
     spatialHash.getNearbyEntities(position, radius).stream()
         .forEach(e -> {
           if (e.getCategory() != null) {
@@ -129,21 +127,6 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         });
 
     return categories;
-  }
-
-  private static String getCurrentLocation(List<NearbyElement> nearbyElements) {
-    if (CollectionUtils.isNotEmpty(nearbyElements)) {
-      var closest = nearbyElements.stream()
-          .filter(e -> EntityType.OBJECT == e.type())
-          .findFirst();
-
-      if (closest.isPresent() && closest.get().distance() <= 2.0) {
-        // Remove the current location entity from nearbyElements
-        nearbyElements.remove(closest.get());
-        return closest.get().name();
-      }
-    }
-    return "Open Area";
   }
 
   public void addWorldObject(WorldObject worldObject) {

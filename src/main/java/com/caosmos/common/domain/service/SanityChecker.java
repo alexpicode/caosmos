@@ -17,6 +17,12 @@ public class SanityChecker {
       return Optional.of("Target ID is required for " + intent.verb());
     }
 
+    // 1. If the item is already equipped, it's inherently near (distance 0)
+    if (citizenPort.isItemEquipped(intent.citizenId(), intent.targetId())) {
+      return Optional.empty();
+    }
+
+    // 2. Otherwise, check world proximity
     if (!citizenPort.isNear(intent.citizenId(), intent.targetId(), PROXIMITY_USE)) {
       return Optional.of("You are too far from " + intent.targetId() + " to use it.");
     }

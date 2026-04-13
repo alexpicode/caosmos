@@ -5,6 +5,7 @@ import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.common.domain.model.world.ZoneType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class Zone implements WorldElement {
   private String id;
   private String name;
   private String parentZoneId; // For nested zones
+  @JsonProperty("type")
   private ZoneType zoneType; // e.g. INTERIOR, EXTERIOR
   private Set<String> physicalTags = new HashSet<>();
   private Set<String> contextualTags = new HashSet<>();
@@ -56,6 +58,7 @@ public class Zone implements WorldElement {
     this.length = length;
   }
 
+  @JsonIgnore
   @Override
   public EntityType getType() {
     return EntityType.ZONE;

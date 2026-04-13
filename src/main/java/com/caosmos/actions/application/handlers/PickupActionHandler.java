@@ -40,7 +40,7 @@ public class PickupActionHandler implements ActionHandler {
     ItemData item = worldService.removeObject(targetId);
 
     if (item != null) {
-      boolean success = citizenService.addToInventory(citizenId, item.id(), item.name(), item.tags());
+      boolean success = citizenService.addToInventory(citizenId, item);
       if (success) {
         citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_PICKUP);
         return ActionResult.success("Picked up " + item.name(), getActionType());

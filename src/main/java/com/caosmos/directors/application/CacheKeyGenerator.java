@@ -5,8 +5,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.SortedSet;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class CacheKeyGenerator {
 
@@ -38,6 +40,9 @@ public class CacheKeyGenerator {
       sb.append(String.join(",", envTags));
     }
     sb.append("]");
+
+    String keyString = sb.toString();
+    log.info("[CACHE KEY] Generating key from string: {}", keyString);
 
     try {
       // Apply SHA-256 for a fixed-length constraint and indexing efficiency

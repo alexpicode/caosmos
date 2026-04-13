@@ -62,18 +62,21 @@ public class PerceptionMonitor {
       boolean isCloseObject = EntityType.OBJECT == element.type() &&
           element.distance() < PhysiologicalThresholds.ENTITY_PROXIMITY_ALERT_DISTANCE;
 
-      if (isHostile || isCloseObject) {
-        String messagePrefix = isHostile ? "Threat detected: " : "Nearby object: ";
+      if (isHostile) {
         return new PerceptionEvaluation(
-            new ReflexResult(true, messagePrefix + element.name(), informativeEvents),
+            new ReflexResult(true, "Threat detected: " + element.name(), informativeEvents),
             pendingZoneId, pendingZoneName, zoneChanged
         );
+      }
+
+      if (isCloseObject) {
+        informativeEvents.add("Nearby object: " + element.name());
       }
     }
 
     // --- 1.5 Social Interruptions (Communication) ---
     List<SpeechMessage> messages = perception.nearbyElements().stream()
-        .filter(e -> "MESSAGE".equals(e.type()))
+        .filter(e -> EntityType.SPEECH.equals(e.type()))
         .map(e -> {
           SpeechTone tone = e.tags().isEmpty() ? SpeechTone.NEUTRAL : SpeechTone.fromString(e.tags().iterator().next());
           return new SpeechMessage(e.id(), e.sourceId(), e.name(), e.targetId(), e.message(), tone);
@@ -126,18 +129,10 @@ public class PerceptionMonitor {
         }
         if (hasTag(element, "interesting")) {
           informativeEvents.add("INTERESTING! You've spotted: " + element.name());
-          return new PerceptionEvaluation(
-              new ReflexResult(true, "Object of interest: " + element.name(), informativeEvents),
-              pendingZoneId, pendingZoneName, zoneChanged
-          );
         }
 
         if (hasTag(element, "resource")) {
           informativeEvents.add("You've seen a resource: " + element.name());
-          return new PerceptionEvaluation(
-              new ReflexResult(true, "Resource detected: " + element.name(), informativeEvents),
-              pendingZoneId, pendingZoneName, zoneChanged
-          );
         }
       }
     }
@@ -184,7 +179,7 @@ public class PerceptionMonitor {
     for (var element : perception.nearbyElements()) {
       targetFound = checkSearchTarget(citizen.getUuid(), element.category());
       if (targetFound != null) {
-        String prefix = "ZONE".equals(element.type()) ? "the " : "";
+        String prefix = EntityType.ZONE.equals(element.type()) ? "the " : "";
         informativeEvents.add("SEARCH COMPLETE! You've found " + prefix + targetFound + ": " + element.name());
         return new PerceptionEvaluation(
             new ReflexResult(true, "Target found: " + targetFound, informativeEvents),

@@ -582,6 +582,95 @@
         "information"
       ],
       "radius": 0.1
+    },
+    {
+      "id": "test_timber_dry",
+      "name": "Dry Timber",
+      "category": "RESOURCE",
+      "position": {
+        "x": -298,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wood",
+        "flammable",
+        "dry",
+        "resource"
+      ],
+      "radius": 0.5,
+      "parentZoneId": "residential_zone"
+    },
+    {
+      "id": "test_timber_wet",
+      "name": "Wet Timber",
+      "category": "RESOURCE",
+      "position": {
+        "x": -302,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wood",
+        "flammable",
+        "wet",
+        "resource"
+      ],
+      "radius": 0.5,
+      "parentZoneId": "residential_zone"
+    },
+    {
+      "id": "test_iron_scrap",
+      "name": "Rusty Iron Scrap",
+      "category": "RESOURCE",
+      "position": {
+        "x": -300,
+        "y": 0,
+        "z": 2
+      },
+      "tags": [
+        "metal",
+        "iron",
+        "resource"
+      ],
+      "radius": 0.3,
+      "parentZoneId": "residential_zone"
+    },
+    {
+      "id": "test_water_vial",
+      "name": "Vial of Water",
+      "category": "TOOL",
+      "position": {
+        "x": -300,
+        "y": 0,
+        "z": -2
+      },
+      "tags": [
+        "water",
+        "extinguisher",
+        "liquid",
+        "tool"
+      ],
+      "radius": 0.1,
+      "parentZoneId": "residential_zone"
+    },
+    {
+      "id": "test_matches",
+      "name": "Box of Matches",
+      "category": "TOOL",
+      "position": {
+        "x": -299,
+        "y": 0,
+        "z": 1
+      },
+      "tags": [
+        "igniter",
+        "fire_source",
+        "flammable",
+        "tool"
+      ],
+      "radius": 0.1,
+      "parentZoneId": "residential_zone"
     }
   ]
 }

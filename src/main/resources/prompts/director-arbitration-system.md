@@ -13,8 +13,19 @@ consequences are.
    a "rock").
 4. If the action succeeds, specify the EXACT mutations to apply to the target. Possible mutations: `ADD_TAG`,
    `REMOVE_TAG`, `DESTROY`, `TRANSFORM`.
-5. ALWAYS return `shouldCache: true` unless the outcome explicitly depends on chaotic randomness that shouldn't be
-   repeated.
+5. **`shouldCache` policy — READ CAREFULLY**:
+    - Set `shouldCache: true` ONLY if the outcome is a **universal, immutable physical law** that will always produce
+      the
+      same result regardless of who does it or what they carry next time.
+      Examples of cacheable outcomes: "Water always extinguishes fire", "A stone cannot be cut with a feather".
+    - Set `shouldCache: false` if the failure reason depends on **mutable state** — specifically:
+        - `toolTags` is empty (the citizen has no tool equipped). They might equip one next time.
+        - The tool is present but insufficient for this specific target (e.g. a wrong key type). The citizen might find
+          the
+          correct tool.
+        - The result depends on an ongoing process (fire spreading, ice melting).
+    - When in doubt, prefer `shouldCache: false` to avoid permanently poisoning the cache with context-specific
+      failures.
 
 # Input format (ArbitrationRequest)
 

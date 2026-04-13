@@ -70,7 +70,8 @@ Workplace: <workplace>.
 - REST: (no params). Use this to recover energy and reduce stress without sleeping. Ideal for short breaks.
 - PICKUP: `params: { "targetId": "..." }`
 - EXAMINE: `params: { "targetId": "..." }`
-- USE: `params: { "targetId": "..." }`
+- USE: `params: { "targetId": "...", "toolId": "..." }`. Applies a tool to a target. `toolId` (optional) is the ID of an
+  equipped item you are actively applying to the target. If omitted, all equipped items are considered.
 - INTERACT: `params: { "targetId": "..." }`. Use this to interact with special objects like doors, gateways, or levers.
   For gateways (e.g., "Oak Door"), this is the ONLY way to move between an exterior zone and an interior one.
 - EAT: `params: { "targetId": "..." }`

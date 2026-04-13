@@ -19,7 +19,9 @@ import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
@@ -65,6 +67,40 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
+  public Set<String> getEquippedItemTags(UUID citizenId, String itemId) {
+    if (itemId == null) {
+      return java.util.Collections.emptySet();
+    }
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> {
+          var inv = citizen.inventory();
+          if (inv.getLeftHand() != null && itemId.equals(inv.getLeftHand().id()) && inv.getLeftHand().tags() != null) {
+            return new HashSet<>(inv.getLeftHand().tags());
+          }
+          if (inv.getRightHand() != null && itemId.equals(inv.getRightHand().id())
+              && inv.getRightHand().tags() != null) {
+            return new HashSet<>(inv.getRightHand().tags());
+          }
+          return Collections.<String>emptySet();
+        })
+        .orElse(Collections.emptySet());
+  }
+
+  @Override
+  public boolean isItemEquipped(UUID citizenId, String itemId) {
+    if (itemId == null) {
+      return false;
+    }
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> {
+          var inv = citizen.inventory();
+          return (inv.getLeftHand() != null && itemId.equals(inv.getLeftHand().id())) ||
+              (inv.getRightHand() != null && itemId.equals(inv.getRightHand().id()));
+        })
+        .orElse(false);
+  }
+
+  @Override
   public Vector3 getPosition(UUID citizenId) {
     return citizenRegistry.get(citizenId)
         .map(citizen -> citizen.getCurrentState().getPosition())
@@ -104,12 +140,9 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
-  public boolean addToInventory(
-      UUID citizenId, String itemId, String itemName, List<String> tags
-  ) {
+  public boolean addToInventory(UUID citizenId, ItemData item) {
     AtomicBoolean result = new AtomicBoolean(false);
     citizenRegistry.get(citizenId).ifPresent(citizen -> {
-      ItemData item = new ItemData(itemId, itemName, tags);
       result.set(citizen.inventory().addItem(item));
     });
     return result.get();

@@ -10,6 +10,7 @@ import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.service.SanityChecker;
 import com.caosmos.directors.application.DirectorArbitrator;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +44,16 @@ public class CreativeResolutionAdapter implements CreativeResolutionPort {
         .orElse(citizenPosition); // fallback position if not found
 
     // 2. Fetch all related entity tags required to build the semantic context
-    Set<String> toolTags = Set.of(); // TODO extract equipped item tags from CitizenPort if needed in future. Currently treating empty.
+    // toolTags: the specific tags of the active tool used. 
+    // If not specified, the citizen is using their bare hands (empty tags).
+    String toolId = (String) request.parameters().get("toolId");
+    Set<String> toolTags;
+    if (toolId != null) {
+      toolTags = citizenPort.getEquippedItemTags(citizenId, toolId);
+    } else {
+      toolTags = Collections.emptySet();
+    }
+
     Set<String> targetTags = worldPort.getObjectTags(targetId);
 
     // 3. Obtain Weather/Environment modifiers

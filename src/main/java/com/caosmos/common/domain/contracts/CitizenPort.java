@@ -2,7 +2,7 @@ package com.caosmos.common.domain.contracts;
 
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface CitizenPort {
@@ -17,7 +17,7 @@ public interface CitizenPort {
 
   void consumeEnergy(UUID citizenId, double amount);
 
-  boolean addToInventory(UUID citizenId, String itemId, String itemName, List<String> tags);
+  boolean addToInventory(UUID citizenId, ItemData item);
 
   ItemData removeFromInventory(UUID citizenId, String itemId);
 
@@ -58,6 +58,10 @@ public interface CitizenPort {
   boolean isNear(UUID citizenId, String targetId, double maxDistance);
 
   boolean isItemEquippedWithTag(UUID citizenId, String tag);
+
+  Set<String> getEquippedItemTags(UUID citizenId, String itemId);
+
+  boolean isItemEquipped(UUID citizenId, String itemId);
 
   boolean isInZoneWithTag(UUID citizenId, String tag);
 

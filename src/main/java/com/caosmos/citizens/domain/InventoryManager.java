@@ -73,7 +73,15 @@ public class InventoryManager {
       unequipHand(Hand.RIGHT);
     }
 
-    EquippedItem eqItem = new EquippedItem(itemToEquip.id(), itemToEquip.name(), itemToEquip.tags());
+    EquippedItem eqItem = new EquippedItem(
+        itemToEquip.id(),
+        itemToEquip.name(),
+        itemToEquip.tags(),
+        itemToEquip.category(),
+        itemToEquip.radius(),
+        itemToEquip.width(),
+        itemToEquip.length()
+    );
 
     switch (hand) {
       case LEFT -> this.leftHand = eqItem;
@@ -103,7 +111,17 @@ public class InventoryManager {
 
     // Move back to regular items (backpack)
     // Note: This won't fail capacity because the item was already counting while equipped
-    items.put(item.id(), new ItemData(item.id(), item.name(), item.tags()));
+    items.put(
+        item.id(), new ItemData(
+            item.id(),
+            item.name(),
+            item.tags(),
+            item.category(),
+            item.radius(),
+            item.width(),
+            item.length()
+        )
+    );
     return true;
   }
 

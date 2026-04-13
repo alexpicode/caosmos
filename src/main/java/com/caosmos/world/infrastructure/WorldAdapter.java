@@ -16,6 +16,7 @@ import com.caosmos.world.domain.service.SpeechManager;
 import com.caosmos.world.domain.service.ZoneManager;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -138,8 +139,16 @@ public class WorldAdapter implements WorldPort {
         .filter(entity -> entity instanceof WorldObject)
         .map(entity -> {
           WorldObject obj = (WorldObject) entity;
-          ItemData data = new ItemData(obj.getId(), obj.getName(), new ArrayList<>(obj.getTags()));
-          // TODO spatialHash.remove(objectId); // If there was a remove method
+          ItemData data = new ItemData(
+              obj.getId(),
+              obj.getName(),
+              new ArrayList<>(obj.getTags()),
+              obj.getCategory(),
+              obj.getRadius(),
+              obj.getWidth(),
+              obj.getLength()
+          );
+          spatialHash.remove(objectId);
           return data;
         })
         .orElse(null);
@@ -147,8 +156,29 @@ public class WorldAdapter implements WorldPort {
 
   @Override
   public void spawnObject(Vector3 pos, ItemData data) {
-    // TODO Spawn object in the world using ItemData
     log.info("Spawning object {} ({}) at {}", data.id(), data.name(), pos);
+
+    // 1. Detect the zone at the spawn position to ensure visibility
+    String zoneId = zoneManager.findZoneAt(pos, null)
+        .map(com.caosmos.world.domain.model.Zone::getId)
+        .orElse(null);
+
+    // 2. Create the WorldObject with technical properties from ItemData
+    WorldObject newObj = new WorldObject(
+        data.id(),
+        data.name(),
+        data.category(),
+        pos,
+        new HashSet<>(data.tags()),
+        zoneId,
+        null, // targetZoneId (not a gateway)
+        data.radius(),
+        data.width(),
+        data.length()
+    );
+
+    // 3. Register in the spatial hash
+    spatialHash.register(newObj);
   }
 
   @Override

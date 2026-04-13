@@ -5,7 +5,11 @@ import java.util.List;
 public record EquippedItem(
     String id,
     String name,
-    List<String> tags
+    List<String> tags,
+    String category,
+    Double radius,
+    Double width,
+    Double length
 ) {
 
 }
