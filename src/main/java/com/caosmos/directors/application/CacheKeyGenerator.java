@@ -42,7 +42,7 @@ public class CacheKeyGenerator {
     sb.append("]");
 
     String keyString = sb.toString();
-    log.info("[CACHE KEY] Generating key from string: {}", keyString);
+    log.debug("[CACHE KEY] Generating key from string: {}", keyString);
 
     try {
       // Apply SHA-256 for a fixed-length constraint and indexing efficiency

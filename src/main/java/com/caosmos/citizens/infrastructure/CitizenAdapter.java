@@ -109,7 +109,7 @@ public class CitizenAdapter implements CitizenPort {
 
   @Override
   public void updatePosition(UUID citizenId, Vector3 newPos) {
-    log.info("Updating position for citizen {}: {}", citizenId, newPos);
+    log.debug("Updating position for citizen {}: {}", citizenId, newPos);
     citizenRegistry.get(citizenId).ifPresent(citizen -> {
       citizen.getCurrentState().setPosition(newPos);
       spatialRegistry.updatePosition(citizen, newPos);
@@ -135,7 +135,7 @@ public class CitizenAdapter implements CitizenPort {
 
   @Override
   public void consumeEnergy(UUID citizenId, double amount) {
-    log.info("Consuming {} energy for citizen {}", amount, citizenId);
+    log.debug("Consuming {} energy for citizen {}", amount, citizenId);
     citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.biology().decreaseEnergy(amount));
   }
 

@@ -103,6 +103,6 @@ public class ExploreTask implements Task {
 
   @Override
   public void onInterrupt(String reason) {
-    log.info("Exploration interrupted. Reason: {}", reason);
+    log.debug("Exploration interrupted. Reason: {}", reason);
   }
 }

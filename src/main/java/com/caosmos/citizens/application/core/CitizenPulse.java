@@ -39,11 +39,10 @@ public class CitizenPulse implements AgentPulse {
 
   private final EventBuffer eventBuffer = new EventBuffer();
 
-
   @Override
   public void pulse(long tick) {
     String citizenName = citizen.getCitizenProfile().identity().name();
-    log.info("[CITIZEN:{}] Pulsing at tick: {}", citizenName, tick);
+    log.debug("[CITIZEN:{}] Pulsing at tick: {}", citizenName, tick);
 
     // 1. Update passive domain state (decay metabolism)
     double dt = pulseConfiguration.pulseFrequencySeconds();
@@ -119,7 +118,7 @@ public class CitizenPulse implements AgentPulse {
 
     // 6. Decision Phase
     if (shouldCitizenThink()) {
-      log.info("[CITIZEN:{}] Entering Decision Phase ({})...", citizenName, citizen.getState());
+      log.debug("[CITIZEN:{}] Entering Decision Phase ({})...", citizenName, citizen.getState());
       performDecision(createContext(tick, citizenName, fullPerception));
     }
   }
@@ -128,7 +127,7 @@ public class CitizenPulse implements AgentPulse {
       long tick, String citizenName, String actionType, String reason, List<String> events,
       boolean cancelTask, InterruptType interruptType, FullPerception fullPerception
   ) {
-    log.info(
+    log.debug(
         "[CITIZEN:{}] INTERRUPTION: {} (Action: {}, Type: {}, CancelTask: {})",
         citizenName, reason, actionType, interruptType, cancelTask
     );

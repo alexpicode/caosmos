@@ -129,12 +129,12 @@ public class WorldAdapter implements WorldPort {
   @Override
   public void updateObjectTag(String objectId, String newTag) {
     // TODO Update object tag in the world
-    log.info("Updating tag for object {}: {}", objectId, newTag);
+    log.debug("Updating tag for object {}: {}", objectId, newTag);
   }
 
   @Override
   public ItemData removeObject(String objectId) {
-    log.info("Removing object {}", objectId);
+    log.debug("Removing object {}", objectId);
     return spatialHash.getById(objectId)
         .filter(entity -> entity instanceof WorldObject)
         .map(entity -> {
@@ -191,14 +191,14 @@ public class WorldAdapter implements WorldPort {
   @Override
   public String examineObject(String objectId) {
     // TODO Examine object in the world
-    log.info("Examining object {}", objectId);
+    log.debug("Examining object {}", objectId);
     return "You see a " + objectId; // Mock description
   }
 
   @Override
   public void interactWithObject(String objectId) {
     // TODO Interact with object in the world
-    log.info("Interacting with object {}", objectId);
+    log.debug("Interacting with object {}", objectId);
   }
 
   @Override

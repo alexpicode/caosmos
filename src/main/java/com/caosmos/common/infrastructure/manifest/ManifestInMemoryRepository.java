@@ -54,7 +54,7 @@ public class ManifestInMemoryRepository implements ManifestRepository {
   public void clear() {
     int size = manifestCache.size();
     manifestCache.clear();
-    log.info("[REPOSITORY] Cleared {} manifests from cache", size);
+    log.debug("[REPOSITORY] Cleared {} manifests from cache", size);
   }
 
   public int size() {

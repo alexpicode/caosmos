@@ -38,6 +38,6 @@ public class RestTask implements Task {
 
   @Override
   public void onInterrupt(String reason) {
-    log.info("Resting interrupted. Reason: {}", reason);
+    log.debug("Resting interrupted. Reason: {}", reason);
   }
 }

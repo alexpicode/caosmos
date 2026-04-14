@@ -163,7 +163,7 @@ public class Citizen implements WorldElement {
   }
 
   public void transitionTo(CitizenState newState, LastAction reasonAction) {
-    log.info(
+    log.debug(
         "[CITIZEN:{}] State transition: {} -> {} (Result: {})",
         citizenProfile.identity().name(),
         currentState.getState(),
@@ -175,7 +175,7 @@ public class Citizen implements WorldElement {
   }
 
   public void clearTask(CitizenState nextState, String reason) {
-    log.info(
+    log.debug(
         "[CITIZEN:{}] Clearing task. Next state: {} (Reason: {})",
         citizenProfile.identity().name(),
         nextState,
@@ -186,7 +186,7 @@ public class Citizen implements WorldElement {
   }
 
   public void clearTask(CitizenState nextState, LastAction action) {
-    log.info(
+    log.debug(
         "[CITIZEN:{}] Clearing task with action. Next state: {} (Action: {})",
         citizenProfile.identity().name(),
         nextState,

@@ -69,6 +69,6 @@ public class WorkTask implements Task {
 
   @Override
   public void onInterrupt(String reason) {
-    log.info("Leaving work in {} because: {}", workplaceType, reason);
+    log.debug("Leaving work in {} because: {}", workplaceType, reason);
   }
 }

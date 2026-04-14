@@ -64,6 +64,6 @@ public class WaitTask implements Task {
 
   @Override
   public void onInterrupt(String reason) {
-    log.info("Wait interrupted. Reason: {}", reason);
+    log.debug("Wait interrupted. Reason: {}", reason);
   }
 }

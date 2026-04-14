@@ -33,12 +33,12 @@ public class DirectorArbitrator {
     // 3. Fast Path: Check if this exact physical interaction was already resolved before
     Optional<ResolutionResult> cachedOptional = cacheService.lookup(key);
     if (cachedOptional.isPresent()) {
-      log.info("[WISDOM CACHE] HIT for key: {}", key.hash());
+      log.debug("[WISDOM CACHE] HIT for key: {}", key.hash());
       return cachedOptional.get();
     }
 
     // 4. Creative Path (AI Fallback): If it's a new interaction, delegate to the AI Physics Arbitrator
-    log.info("[WISDOM CACHE] MISS for key: {}. Delegating to ArbitrationProvider.", key.hash());
+    log.debug("[WISDOM CACHE] MISS for key: {}. Delegating to ArbitrationProvider.", key.hash());
     ArbitrationRequest request = new ArbitrationRequest(
         intent.verb(), toolTags, targetTags, envTags, targetName, targetCategory
     );

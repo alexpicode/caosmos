@@ -50,7 +50,7 @@ public class CitizenDecisionMaker {
     citizen.transitionTo(CitizenState.THINKING, "Deciding next action");
 
     // 3. Request Thinking from AI
-    log.info("[CITIZEN:{}] Requesting AI Decision...", citizenName);
+    log.debug("[CITIZEN:{}] Requesting AI Decision...", citizenName);
     AgentAction response = thinkingProvider.think(
         citizen.getUuid(),
         citizenName,
@@ -58,7 +58,7 @@ public class CitizenDecisionMaker {
         systemMessage,
         userMessage
     );
-    log.info(
+    log.debug(
         "[CITIZEN:{}] AI DECISION: {} - params: {} - reasoning: {}",
         citizenName,
         response.type(),
@@ -69,7 +69,7 @@ public class CitizenDecisionMaker {
     // 4. Dispatch Resulting Action
     ActionRequest request = new ActionRequest(response.type(), response.reasoning(), response.params());
     ActionResult result = actionPort.dispatch(citizen.getUuid(), request);
-    log.info(
+    log.debug(
         "[CITIZEN:{}] DISPATCH RESULT: {} - {}",
         citizenName,
         result.success() ? "SUCCESS" : "FAILED",

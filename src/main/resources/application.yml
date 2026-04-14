@@ -41,5 +41,4 @@ caosmos:
 logging:
   level:
     org.springframework.ai.ollama: DEBUG
-    #    com.caosmos.citizens.application.CitizenPulse: DEBUG
-    com.caosmos.citizens: DEBUG
+    com.caosmos: DEBUG

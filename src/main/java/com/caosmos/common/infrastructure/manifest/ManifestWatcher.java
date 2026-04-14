@@ -59,8 +59,8 @@ public class ManifestWatcher {
       watching = true;
 
       Thread.ofVirtual()
-            .name("manifest-watcher")
-            .start(this::watchLoop);
+          .name("manifest-watcher")
+          .start(this::watchLoop);
 
       log.info("[WATCHER] Started watching for manifest changes");
     } catch (IOException e) {
@@ -77,7 +77,7 @@ public class ManifestWatcher {
     try {
       if (watchService != null) {
         watchService.close();
-        log.info("[WATCHER] Stopped watching for manifest changes");
+        log.debug("[WATCHER] Stopped watching for manifest changes");
       }
     } catch (IOException e) {
       log.error("[WATCHER] Error stopping watch service: {}", e.getMessage());
@@ -99,7 +99,7 @@ public class ManifestWatcher {
         key.reset();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        log.info("[WATCHER] Watcher interrupted");
+        log.debug("[WATCHER] Watcher interrupted");
         break;
       } catch (Exception e) {
         log.error("[WATCHER] Error in watch loop: {}", e.getMessage());

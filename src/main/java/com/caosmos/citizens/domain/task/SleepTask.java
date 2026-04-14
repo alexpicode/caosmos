@@ -52,6 +52,6 @@ public class SleepTask implements Task {
 
   @Override
   public void onInterrupt(String reason) {
-    log.info("Sleep interrupted. Waking up because: {}", reason);
+    log.debug("Sleep interrupted. Waking up because: {}", reason);
   }
 }

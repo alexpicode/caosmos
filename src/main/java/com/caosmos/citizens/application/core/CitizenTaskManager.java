@@ -60,7 +60,7 @@ public class CitizenTaskManager {
       citizen.updateTask(activeTask);
 
       if (activeTask.completed()) {
-        log.info("[CITIZEN:{}] Task completed: {}", citizenName, activeTask.goal());
+        log.debug("[CITIZEN:{}] Task completed: {}", citizenName, activeTask.goal());
         LastAction completionAction = citizen.getLastAction().withStatus("SUCCESS");
         cancelActiveTask(citizen, CitizenState.IDLE, completionAction);
       } else {

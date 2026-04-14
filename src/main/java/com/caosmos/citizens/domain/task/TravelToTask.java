@@ -89,7 +89,7 @@ public class TravelToTask implements Task {
 
   @Override
   public void onInterrupt(String reason) {
-    log.info("Travel to {} interrupted. Reason: {}", target, reason);
+    log.debug("Travel to {} interrupted. Reason: {}", target, reason);
   }
 
 }

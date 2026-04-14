@@ -40,7 +40,7 @@ public class SpringAiArbitrationAdapter implements ArbitrationProvider {
       // Serialize tags and details so the AI prompt can read them organically
       String requestJson = objectMapper.writeValueAsString(request);
 
-      log.info("Requesting Arbitration for: {}", requestJson);
+      log.debug("Requesting Arbitration for: {}", requestJson);
 
       // Invoke the Spring AI conversational client setting the specific system behavior
       // of a physics judge, and appending the strict output format required by the BeanOutputConverter.
