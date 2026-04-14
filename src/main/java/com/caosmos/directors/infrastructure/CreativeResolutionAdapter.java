@@ -4,6 +4,8 @@ import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.CreativeResolutionPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionIntent;
+import com.caosmos.common.domain.model.actions.ResolutionResult;
+import com.caosmos.common.domain.model.actions.StateMutation;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
 import com.caosmos.common.domain.model.world.EnvironmentImpactTag;

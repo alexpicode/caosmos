@@ -8,13 +8,4 @@ public record ResolutionResult(
     List<StateMutation> mutations,
     boolean shouldCache
 ) {
-
-  public record StateMutation(
-      String targetId,
-      String mutationType,
-      String key,
-      String value
-  ) {
-
-  }
 }

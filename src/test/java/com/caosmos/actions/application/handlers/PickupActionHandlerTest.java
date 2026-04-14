@@ -58,7 +58,7 @@ class PickupActionHandlerTest {
 
     when(citizenPort.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)).thenReturn(true);
     when(worldPort.removeObject(targetId)).thenReturn(item);
-    when(citizenPort.addToInventory(citizenId, item.id(), item.name(), item.tags())).thenReturn(true);
+    when(citizenPort.addToInventory(citizenId, item)).thenReturn(true);
 
     ActionResult result = handler.execute(citizenId, request);
 
