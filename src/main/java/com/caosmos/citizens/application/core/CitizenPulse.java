@@ -167,10 +167,20 @@ public class CitizenPulse implements AgentPulse {
   }
 
   private PulseContext createContext(long tick, String citizenName, FullPerception fullPerception) {
+    // 1. Refresh the citizen's own domain state perception.
+    // This is vital because executeActiveTask (e.g. EQUIP) might have modified the domain state
+    // since the initial pulse perception was captured.
+    FullPerception refreshedPerception = new FullPerception(
+        citizen.getPerception(),
+        fullPerception.world(),
+        fullPerception.reflex(),
+        fullPerception.recentMessages()
+    );
+
     return new PulseContext(
         citizenName,
         tick,
-        fullPerception,
+        refreshedPerception,
         eventBuffer.snapshot(),
         citizen.getLastAction()
     );

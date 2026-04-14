@@ -44,12 +44,22 @@ public class CreativeResolutionAdapter implements CreativeResolutionPort {
         .orElse(citizenPosition); // fallback position if not found
 
     // 2. Fetch all related entity tags required to build the semantic context
-    // toolTags: the specific tags of the active tool used. 
+    // tool: the reference to the tool(s) used. Can be "left", "right", "both" or a UUID.
     // If not specified, the citizen is using their bare hands (empty tags).
-    String toolId = (String) request.parameters().get("toolId");
+    String toolRef = (String) request.parameters().get("tool");
+
     Set<String> toolTags;
-    if (toolId != null) {
-      toolTags = citizenPort.getEquippedItemTags(citizenId, toolId);
+    if (toolRef != null) {
+      toolTags = citizenPort.getTagsByToolReference(citizenId, toolRef);
+      if (toolTags.isEmpty()) {
+        // If tool reference provided but no items match, return explicit error to help LLM correct itself
+        var equipped = citizenPort.getEquippedItemsNames(citizenId);
+        return ActionResult.failure(
+            "The specified tool reference '" + toolRef + "' did not match any equipped item. " +
+                "Currently equipped: " + (equipped.isEmpty() ? "nothing" : String.join(", ", equipped)),
+            request.type()
+        );
+      }
     } else {
       toolTags = Collections.emptySet();
     }
@@ -104,7 +114,17 @@ public class CreativeResolutionAdapter implements CreativeResolutionPort {
       return new ActionResult(true, result.narration(), request.type(), changes);
     } else {
       // Forward AI's failure narration (e.g. "The torch cannot ignite the wet wood")
-      return ActionResult.failure(result.narration(), request.type());
+      String narration = result.narration();
+      if (toolRef == null) {
+        // Add hint for bare-handed failure to prevent "Phantom Tool" confusion
+        var equipped = citizenPort.getEquippedItemsNames(citizenId);
+        if (!equipped.isEmpty()) {
+          narration += " [HINT: You tried this with bare hands. You have items equipped: " +
+              String.join(", ", equipped)
+              + ". Specify 'tool' (e.g., \"right\", \"left\", or \"both\") if you intended to use any of them.]";
+        }
+      }
+      return ActionResult.failure(narration, request.type());
     }
   }
 }

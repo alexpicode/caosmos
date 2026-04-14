@@ -19,8 +19,10 @@ import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -67,6 +69,56 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
+  public Set<String> getTagsByToolReference(UUID citizenId, String toolRef) {
+    if (toolRef == null || toolRef.isBlank()) {
+      return Collections.emptySet();
+    }
+
+    String normalizedRef = toolRef.trim().toLowerCase();
+
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> {
+          var inv = citizen.inventory();
+          Set<String> tags = new java.util.HashSet<>();
+
+          switch (normalizedRef) {
+            case "left" -> {
+              if (inv.getLeftHand() != null && inv.getLeftHand().tags() != null) {
+                tags.addAll(inv.getLeftHand().tags());
+              }
+            }
+            case "right" -> {
+              if (inv.getRightHand() != null && inv.getRightHand().tags() != null) {
+                tags.addAll(inv.getRightHand().tags());
+              }
+            }
+            case "both" -> {
+              if (inv.getLeftHand() != null && inv.getLeftHand().tags() != null) {
+                tags.addAll(inv.getLeftHand().tags());
+              }
+              if (inv.getRightHand() != null && inv.getRightHand().tags() != null) {
+                tags.addAll(inv.getRightHand().tags());
+              }
+            }
+            default -> {
+              // Fallback to UUID matching
+              if (inv.getLeftHand() != null && normalizedRef.equals(inv.getLeftHand().id().toLowerCase())) {
+                if (inv.getLeftHand().tags() != null) {
+                  tags.addAll(inv.getLeftHand().tags());
+                }
+              } else if (inv.getRightHand() != null && normalizedRef.equals(inv.getRightHand().id().toLowerCase())) {
+                if (inv.getRightHand().tags() != null) {
+                  tags.addAll(inv.getRightHand().tags());
+                }
+              }
+            }
+          }
+          return tags;
+        })
+        .orElse(Collections.emptySet());
+  }
+
+  @Override
   public Set<String> getEquippedItemTags(UUID citizenId, String itemId) {
     if (itemId == null) {
       return java.util.Collections.emptySet();
@@ -98,6 +150,23 @@ public class CitizenAdapter implements CitizenPort {
               (inv.getRightHand() != null && itemId.equals(inv.getRightHand().id()));
         })
         .orElse(false);
+  }
+
+  @Override
+  public List<String> getEquippedItemsNames(UUID citizenId) {
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> {
+          var inv = citizen.inventory();
+          List<String> names = new ArrayList<>();
+          if (inv.getLeftHand() != null) {
+            names.add(inv.getLeftHand().name() + " (" + inv.getLeftHand().id() + ") [LEFT]");
+          }
+          if (inv.getRightHand() != null) {
+            names.add(inv.getRightHand().name() + " (" + inv.getRightHand().id() + ") [RIGHT]");
+          }
+          return names;
+        })
+        .orElse(Collections.emptyList());
   }
 
   @Override

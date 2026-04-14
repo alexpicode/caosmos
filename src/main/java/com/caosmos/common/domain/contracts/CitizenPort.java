@@ -2,6 +2,7 @@ package com.caosmos.common.domain.contracts;
 
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,7 +62,11 @@ public interface CitizenPort {
 
   Set<String> getEquippedItemTags(UUID citizenId, String itemId);
 
+  Set<String> getTagsByToolReference(UUID citizenId, String toolRef);
+
   boolean isItemEquipped(UUID citizenId, String itemId);
+
+  List<String> getEquippedItemsNames(UUID citizenId);
 
   boolean isInZoneWithTag(UUID citizenId, String tag);
 

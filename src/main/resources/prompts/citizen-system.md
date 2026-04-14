@@ -70,8 +70,15 @@ Workplace: <workplace>.
 - REST: (no params). Use this to recover energy and reduce stress without sleeping. Ideal for short breaks.
 - PICKUP: `params: { "targetId": "..." }`
 - EXAMINE: `params: { "targetId": "..." }`
-- USE: `params: { "targetId": "...", "toolId": "..." }`. Applies a tool to a target. `toolId` (optional) is the ID of an
-  equipped item you are actively applying to the target. If omitted, all equipped items are considered.
+- USE: `params: { "targetId": "...", "tool": "..." }`. Applies a tool to a target.
+    - `tool`: (Optional) The reference to the **EQUIPPED** item(s) to use.
+        - Use `"left"` or `"right"` to use an item in that specific hand.
+        - Use `"both"` to combine the effects of items in both hands.
+        - Alternatively, use the unique UUID of an equipped item.
+    - **CRITICAL**: If you omit `tool`, you strictly use your **BARE HANDS**. If you have a tool equipped (check
+      `equipment`) and want to use it, you MUST specify the `tool` reference. The system will not assume you are using a
+      tool.
+    - **Effect**: Triggers physical interaction based on the tool's tags and the target's tags.
 - INTERACT: `params: { "targetId": "..." }`. Use this to interact with special objects like doors, gateways, or levers.
   For gateways (e.g., "Oak Door"), this is the ONLY way to move between an exterior zone and an interior one.
 - EAT: `params: { "targetId": "..." }`

@@ -55,18 +55,44 @@ public class InventoryManager {
   }
 
   /**
-   * Equips an item from the inventory to the specified hand.
+   * Equips an item from the inventory or move it from another hand to the specified hand.
    *
    * @return true if the item was found and equipped successfully.
    */
   public boolean equipToHand(String itemId, Hand hand) {
-    ItemData itemToEquip = items.remove(itemId);
+    if (itemId == null || itemId.isBlank()) {
+      return false;
+    }
+
+    ItemData itemToEquip = items.get(itemId);
+    boolean fromBackpack = itemToEquip != null;
+
+    if (!fromBackpack) {
+      // Check if it's in the other hand
+      Hand otherHand = (hand == Hand.LEFT) ? Hand.RIGHT : Hand.LEFT;
+      EquippedItem inOther = (otherHand == Hand.LEFT) ? leftHand : rightHand;
+
+      if (inOther != null && itemId.equals(inOther.id())) {
+        itemToEquip = new ItemData(
+            inOther.id(), inOther.name(), inOther.tags(), inOther.category(),
+            inOther.radius(), inOther.width(), inOther.length()
+        );
+        // Remove from other hand first
+        if (otherHand == Hand.LEFT) {
+          leftHand = null;
+        } else {
+          rightHand = null;
+        }
+      }
+    } else {
+      items.remove(itemId);
+    }
+
     if (itemToEquip == null) {
       return false;
     }
 
-    // If something was in the hand, move it back to backpack
-    // This is safe because total capacity counts hands and backpack
+    // If something was in the target hand, move it back to backpack
     if (hand == Hand.LEFT && leftHand != null) {
       unequipHand(Hand.LEFT);
     } else if (hand == Hand.RIGHT && rightHand != null) {

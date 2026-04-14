@@ -14,18 +14,21 @@ consequences are.
 4. If the action succeeds, specify the EXACT mutations to apply to the target. Possible mutations: `ADD_TAG`,
    `REMOVE_TAG`, `DESTROY`, `TRANSFORM`.
 5. **`shouldCache` policy — READ CAREFULLY**:
-    - Set `shouldCache: true` ONLY if the outcome is a **universal, immutable physical law** that will always produce
-      the
-      same result regardless of who does it or what they carry next time.
-      Examples of cacheable outcomes: "Water always extinguishes fire", "A stone cannot be cut with a feather".
-    - Set `shouldCache: false` if the failure reason depends on **mutable state** — specifically:
-        - `toolTags` is empty (the citizen has no tool equipped). They might equip one next time.
-        - The tool is present but insufficient for this specific target (e.g. a wrong key type). The citizen might find
-          the
-          correct tool.
-        - The result depends on an ongoing process (fire spreading, ice melting).
-    - When in doubt, prefer `shouldCache: false` to avoid permanently poisoning the cache with context-specific
-      failures.
+
+- Set `shouldCache: true` ONLY if the outcome is a **universal, immutable physical law** that will always produce the
+  same result regardless of who does it or what they carry next time.
+  Examples of cacheable outcomes: "Water always extinguishes fire", "A stone cannot be cut with a feather".
+- Set `shouldCache: false` if the failure reason depends on **mutable state** or **ongoing biological/physical processes
+  ** — specifically:
+    - **Toolless Interactions**: If `toolTags` is empty, it means the citizen is using their **BARE HANDS**. Be
+      realistic: Bare hands can touch, push, or pick up things, but they CANNOT ignite flammable objects (without an
+      igniter), mine rocks (without a tool), or extinguish fires (without a liquid/tool). **DO NOT CACHE** failures
+      caused purely by lacking a tool.
+    - The tool is present but **insufficient** for this specific target (e.g. using a small hammer on a giant boulder).
+      The citizen might find a better tool next time.
+    - The result depends on an **ongoing process** (fire spreading, ice melting, building something over time).
+    - The outcome depends on **randomness or probability** (e.g. attempting to catch a fast-moving object).
+- When in doubt, prefer `shouldCache: false` to avoid permanently poisoning the cache with context-specific failures.
 
 # Input format (ArbitrationRequest)
 
