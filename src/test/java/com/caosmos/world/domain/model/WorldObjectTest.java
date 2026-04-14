@@ -51,8 +51,10 @@ class WorldObjectTest {
 
   @Test
   void testDefaultPointIntersection() {
-    WorldObject obj = new WorldObject();
-    obj.setPosition(new Vector3(0, 0, 0));
+    WorldObject obj = new WorldObject(
+        "test-obj", "Test", "TEST", new Vector3(0, 0, 0),
+        Set.of(), null, null, null, null, null
+    );
 
     assertTrue(obj.intersects(new Vector3(0.05, 0, 0.05)), "Point very close to center should intersect");
     assertFalse(obj.intersects(new Vector3(0.5, 0, 0.5)), "Point further away should not intersect by default");

@@ -18,6 +18,10 @@ public interface CitizenPort {
 
   void consumeEnergy(UUID citizenId, double amount);
 
+  void applyDamage(UUID citizenId, double amount);
+
+  void heal(UUID citizenId, double amount);
+
   boolean addToInventory(UUID citizenId, ItemData item);
 
   ItemData removeFromInventory(UUID citizenId, String itemId);

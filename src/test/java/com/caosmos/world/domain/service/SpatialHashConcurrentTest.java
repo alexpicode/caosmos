@@ -24,9 +24,11 @@ class SpatialHashConcurrentTest {
         executor.submit(() -> {
           for (int j = 0; j < operationsPerThread; j++) {
             String id = UUID.randomUUID().toString();
-            WorldObject obj = new WorldObject();
-            obj.setId(id);
-            obj.setPosition(new Vector3(Math.random() * 100, 0, Math.random() * 100));
+            WorldObject obj = new WorldObject(
+                id, "Obj-" + id, "RESOURCE",
+                new Vector3(Math.random() * 100, 0, Math.random() * 100),
+                java.util.Set.of(), null, null, null, null, null
+            );
 
             // Randomly perform different operations
             double choice = Math.random();

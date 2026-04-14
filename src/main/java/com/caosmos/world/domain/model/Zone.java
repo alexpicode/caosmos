@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @NoArgsConstructor
 public class Zone implements WorldElement {
 
@@ -97,11 +97,11 @@ public class Zone implements WorldElement {
         point.z() >= center.z() - halfLength && point.z() <= center.z() + halfLength;
   }
 
-  public void setPhysicalTags(Set<String> physicalTags) {
+  public synchronized void setPhysicalTags(Set<String> physicalTags) {
     this.physicalTags = normalizeTags(physicalTags);
   }
 
-  public void setContextualTags(Set<String> contextualTags) {
+  public synchronized void setContextualTags(Set<String> contextualTags) {
     this.contextualTags = normalizeTags(contextualTags);
   }
 

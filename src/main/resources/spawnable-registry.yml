@@ -1,0 +1,25 @@
+# Registration of canonical items for the SPAWN mutation.
+# Tier 1: Canonical items with fixed properties.
+spawnables:
+  ASH:
+    name: "Ash"
+    tags: [ "ash", "powder", "non-flammable" ]
+    category: "RESOURCE"
+    radius: 0.1
+  FIREWOOD:
+    name: "Firewood"
+    tags: [ "wood", "flammable", "fuel" ]
+    category: "RESOURCE"
+    radius: 0.15
+  STONE_DEBRIS:
+    name: "Stone Debris"
+    tags: [ "stone", "rubble", "heavy" ]
+    category: "RESOURCE"
+    radius: 0.2
+
+# Destruction fallbacks: if an object with a specific tag is destroyed without an explicit spawn,
+# these items are spawned automatically to maintain matter conservation.
+destruction-fallbacks:
+  burnable: "ASH"
+  breakable: "STONE_DEBRIS"
+  edible: null # No residue for eaten items

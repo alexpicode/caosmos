@@ -4,14 +4,13 @@ import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.CreativeResolutionPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionIntent;
-import com.caosmos.common.domain.model.actions.ResolutionResult;
-import com.caosmos.common.domain.model.actions.StateMutation;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
 import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.service.SanityChecker;
 import com.caosmos.directors.application.DirectorArbitrator;
+import com.caosmos.directors.application.EffectResolver;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +31,7 @@ public class CreativeResolutionAdapter implements CreativeResolutionPort {
   private final DirectorArbitrator directorArbitrator;
   private final WorldPort worldPort;
   private final CitizenPort citizenPort;
+  private final EffectResolver effectResolver;
 
   @Override
   public ActionResult resolve(UUID citizenId, ActionRequest request) {
@@ -99,13 +99,7 @@ public class CreativeResolutionAdapter implements CreativeResolutionPort {
 
     if (result.success()) {
       // 7. Apply deterministic physical mutations given by the AI
-      if (result.mutations() != null) {
-        for (var mut : result.mutations()) {
-          if ("ADD_TAG".equals(mut.mutationType())) {
-            worldPort.updateObjectTag(mut.targetId(), mut.value());
-          }
-        }
-      }
+      effectResolver.resolve(citizenId, result.mutations());
       // 8. Cost of execution
       //TODO Add a configuration for the cost of execution
       citizenPort.consumeEnergy(citizenId, 4.0); // ENERGY_COST_USE

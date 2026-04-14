@@ -13,7 +13,11 @@ import java.util.SortedSet;
 
 public interface WorldPort {
 
-  void updateObjectTag(String objectId, String newTag);
+  void addObjectTag(String objectId, String tag);
+
+  void removeObjectTag(String objectId, String tag);
+
+  void transformObject(String objectId, String newEntityType, Set<String> newTags);
 
   ItemData removeObject(String objectId);
 

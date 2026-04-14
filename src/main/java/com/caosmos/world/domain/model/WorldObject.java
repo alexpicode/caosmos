@@ -4,11 +4,13 @@ import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.NearbyElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @NoArgsConstructor
 public class WorldObject implements WorldElement {
 
@@ -42,7 +44,7 @@ public class WorldObject implements WorldElement {
   private Vector3 position;
   private Set<String> tags;
 
-  public void setTags(Set<String> tags) {
+  protected synchronized void setTags(Set<String> tags) {
     if (tags == null) {
       this.tags = java.util.Collections.emptySet();
     } else {
@@ -51,6 +53,27 @@ public class WorldObject implements WorldElement {
           .map(String::toLowerCase)
           .collect(java.util.stream.Collectors.toSet());
     }
+  }
+
+  public synchronized void addTag(String tag) {
+    Set<String> updated = new HashSet<>(this.tags);
+    updated.add(tag.toLowerCase());
+    this.tags = Collections.unmodifiableSet(updated);
+  }
+
+  public synchronized void removeTag(String tag) {
+    Set<String> updated = new HashSet<>(this.tags);
+    updated.remove(tag.toLowerCase());
+    this.tags = Collections.unmodifiableSet(updated);
+  }
+
+  /**
+   * Atomically replaces the name and all tags of this object. Both changes happen under the same lock to prevent
+   * observers seeing an intermediate state.
+   */
+  public synchronized void transform(String newName, Set<String> newTags) {
+    this.name = newName;
+    setTags(newTags);
   }
 
   private String parentZoneId;

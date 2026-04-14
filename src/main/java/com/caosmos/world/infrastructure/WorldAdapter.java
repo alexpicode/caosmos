@@ -127,9 +127,33 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
-  public void updateObjectTag(String objectId, String newTag) {
-    // TODO Update object tag in the world
-    log.debug("Updating tag for object {}: {}", objectId, newTag);
+  public void addObjectTag(String objectId, String tag) {
+    spatialHash.getById(objectId).ifPresent(entity -> {
+      if (entity instanceof WorldObject obj) {
+        obj.addTag(tag);
+        log.debug("Added tag '{}' to object {}", tag, objectId);
+      }
+    });
+  }
+
+  @Override
+  public void removeObjectTag(String objectId, String tag) {
+    spatialHash.getById(objectId).ifPresent(entity -> {
+      if (entity instanceof WorldObject obj) {
+        obj.removeTag(tag);
+        log.debug("Removed tag '{}' from object {}", tag, objectId);
+      }
+    });
+  }
+
+  @Override
+  public void transformObject(String objectId, String newType, Set<String> newTags) {
+    spatialHash.getById(objectId).ifPresent(entity -> {
+      if (entity instanceof WorldObject obj) {
+        obj.transform(newType, newTags);
+        log.info("Transformed object {} into {}", objectId, newType);
+      }
+    });
   }
 
   @Override

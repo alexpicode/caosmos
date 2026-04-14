@@ -1,6 +1,8 @@
 spring:
   application:
     name: caosmos
+  config:
+    import: optional:classpath:spawnable-registry.yml
   ai:
     #    ollama:
     #      base-url: http://localhost:11434

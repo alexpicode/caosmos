@@ -18,6 +18,6 @@ public record ItemData(
 
   // Helper constructor for basic items or legacy calls
   public ItemData(String id, String name, List<String> tags) {
-    this(id, name, tags, "RESOURCE", 0.1, null, null);
+    this(id, name, tags, "UNKNOWN", 0.1, null, null);
   }
 }

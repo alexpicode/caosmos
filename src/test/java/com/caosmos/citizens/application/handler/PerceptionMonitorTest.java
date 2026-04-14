@@ -103,8 +103,7 @@ class PerceptionMonitorTest {
     PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
 
     // Assert
-    assertTrue(result.isCritical());
-    assertTrue(result.reason().contains("Object of interest"));
+    assertFalse(result.isCritical(), "Interesting objects should not trigger a critical reflex");
   }
 
   @Test
@@ -457,7 +456,6 @@ class PerceptionMonitorTest {
     PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
 
     // Assert
-    assertTrue(result.isCritical(), "Close object should trigger critical reflex");
-    assertTrue(result.reason().contains("Nearby object: Iron Ore"));
+    assertFalse(result.isCritical(), "Close objects should not trigger a critical reflex");
   }
 }

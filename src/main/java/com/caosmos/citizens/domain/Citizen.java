@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,7 +41,6 @@ public class Citizen implements WorldElement {
   private final Set<String> visitedZoneIds = new HashSet<>();
 
   @Getter
-  @Setter
   private CurrentState currentState;
 
   public Citizen(UUID uuid, CitizenProfile citizenProfile) {
@@ -151,7 +149,7 @@ public class Citizen implements WorldElement {
 
   // --- State Transition Methods ---
 
-  public void transitionTo(CitizenState newState, String reason) {
+  public synchronized void transitionTo(CitizenState newState, String reason) {
     log.debug(
         "[CITIZEN:{}] INTERNAL State transition: {} -> {} (Reason: {})",
         citizenProfile.identity().name(),
@@ -162,7 +160,7 @@ public class Citizen implements WorldElement {
     currentState.setState(newState);
   }
 
-  public void transitionTo(CitizenState newState, LastAction reasonAction) {
+  public synchronized void transitionTo(CitizenState newState, LastAction reasonAction) {
     log.debug(
         "[CITIZEN:{}] State transition: {} -> {} (Result: {})",
         citizenProfile.identity().name(),
@@ -174,7 +172,7 @@ public class Citizen implements WorldElement {
     currentState.setLastAction(reasonAction);
   }
 
-  public void clearTask(CitizenState nextState, String reason) {
+  public synchronized void clearTask(CitizenState nextState, String reason) {
     log.debug(
         "[CITIZEN:{}] Clearing task. Next state: {} (Reason: {})",
         citizenProfile.identity().name(),
@@ -185,7 +183,7 @@ public class Citizen implements WorldElement {
     transitionTo(nextState, reason);
   }
 
-  public void clearTask(CitizenState nextState, LastAction action) {
+  public synchronized void clearTask(CitizenState nextState, LastAction action) {
     log.debug(
         "[CITIZEN:{}] Clearing task with action. Next state: {} (Action: {})",
         citizenProfile.identity().name(),
@@ -196,15 +194,15 @@ public class Citizen implements WorldElement {
     transitionTo(nextState, action);
   }
 
-  public void updateTask(ActiveTask activeTask) {
+  public synchronized void updateTask(ActiveTask activeTask) {
     currentState.setActiveTask(activeTask);
   }
 
-  public void updateMentalMap(MentalMap mentalMap) {
+  public synchronized void updateMentalMap(MentalMap mentalMap) {
     currentState.setMentalMap(mentalMap);
   }
 
-  public void updateRecentMessages(List<SpeechMessage> newMessages) {
+  public synchronized void updateRecentMessages(List<SpeechMessage> newMessages) {
     if (newMessages == null || newMessages.isEmpty()) {
       return;
     }
@@ -249,7 +247,7 @@ public class Citizen implements WorldElement {
     return zoneId != null && visitedZoneIds.contains(zoneId);
   }
 
-  public void enterZone(String zoneId, String zoneName) {
+  public synchronized void enterZone(String zoneId, String zoneName) {
     this.currentState.setCurrentZoneId(zoneId);
     this.currentState.setCurrentZone(zoneName);
 

@@ -209,6 +209,18 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
+  public void applyDamage(UUID citizenId, double amount) {
+    log.debug("Applying {} damage to citizen {}", amount, citizenId);
+    citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.biology().decreaseVitality(amount));
+  }
+
+  @Override
+  public void heal(UUID citizenId, double amount) {
+    log.debug("Healing {} to citizen {}", amount, citizenId);
+    citizenRegistry.get(citizenId).ifPresent(citizen -> citizen.biology().increaseVitality(amount));
+  }
+
+  @Override
   public boolean addToInventory(UUID citizenId, ItemData item) {
     AtomicBoolean result = new AtomicBoolean(false);
     citizenRegistry.get(citizenId).ifPresent(citizen -> {

@@ -169,12 +169,17 @@ class NearbyPerceptionServiceTest {
   }
 
   private WorldObject createObject(String id, String name, String zoneId, double x, double z) {
-    WorldObject obj = new WorldObject();
-    obj.setId(id);
-    obj.setName(name);
-    obj.setParentZoneId(zoneId);
-    obj.setPosition(new Vector3(x, 0, z));
-    obj.setTags(Set.of());
-    return obj;
+    return new WorldObject(
+        id,
+        name,
+        "TEST_OBJECT",
+        new Vector3(x, 0, z),
+        Set.of(),
+        zoneId,
+        null, // targetZoneId
+        0.1,  // radius
+        null, // width
+        null  // length
+    );
   }
 }
