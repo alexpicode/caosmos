@@ -16,6 +16,12 @@ spawnables:
     tags: [ "stone", "rubble", "heavy" ]
     category: "RESOURCE"
     radius: 0.2
+  COIN_BAG:
+    name: "Coin Bag"
+    tags: [ "coin_container", "valuable" ]
+    category: "COIN"
+    radius: 0.08
+    amount: 10.0
 
 # Destruction fallbacks: if an object with a specific tag is destroyed without an explicit spawn,
 # these items are spawned automatically to maintain matter conservation.

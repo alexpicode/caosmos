@@ -9,7 +9,8 @@ public record CitizenProfile(
     Status status,
     @JsonProperty("base_location") BaseLocation baseLocation,
     String personality,
-    String manifestId
+    String manifestId,
+    Double coins
 ) {
 
   public record BaseLocation(

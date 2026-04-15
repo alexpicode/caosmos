@@ -25,7 +25,7 @@ class TravelToTaskTest {
     Identity identity = new Identity("Test Citizen", null, null, Collections.emptyList(), Collections.emptyMap());
     // Provide a non-null base location to ensure citizen has a position
     CitizenProfile.BaseLocation base = new CitizenProfile.BaseLocation(0, 0, 0);
-    CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Normal", "manifest-1");
+    CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Normal", "manifest-1", 0.0);
 
     citizen = new Citizen(uuid, profile);
     task = new TravelToTask(new Vector3(100, 0, 100), "target-1");

@@ -21,6 +21,7 @@ class WorldObjectTest {
         null, // targetZoneId
         2.0,
         null,
+        null,
         null
     );
 
@@ -40,7 +41,8 @@ class WorldObjectTest {
         null, // targetZoneId
         null,
         4.0,
-        2.0
+        2.0,
+        null
     );
 
     assertTrue(obj.intersects(new Vector3(1.5, 0, 0.5)), "Point (1.5, 0.5) should be inside 4x2 box at (0,0)");
@@ -53,7 +55,7 @@ class WorldObjectTest {
   void testDefaultPointIntersection() {
     WorldObject obj = new WorldObject(
         "test-obj", "Test", "TEST", new Vector3(0, 0, 0),
-        Set.of(), null, null, null, null, null
+        Set.of(), null, null, null, null, null, null
     );
 
     assertTrue(obj.intersects(new Vector3(0.05, 0, 0.05)), "Point very close to center should intersect");

@@ -36,6 +36,7 @@ public class Citizen implements WorldElement {
 
   private final BiologyManager biologyManager;
   private final InventoryManager inventoryManager;
+  private final EconomyManager economyManager;
 
   @Getter
   private final Set<String> visitedZoneIds = new HashSet<>();
@@ -48,6 +49,7 @@ public class Citizen implements WorldElement {
     this.citizenProfile = citizenProfile;
     this.biologyManager = new BiologyManager(citizenProfile.status());
     this.inventoryManager = new InventoryManager(20);
+    this.economyManager = new EconomyManager(citizenProfile.coins() != null ? citizenProfile.coins() : 0.0);
 
     // Initialize position from BaseLocation
     Vector3 initialPosition = null;
@@ -76,6 +78,10 @@ public class Citizen implements WorldElement {
 
   public InventoryManager inventory() {
     return inventoryManager;
+  }
+
+  public EconomyManager economy() {
+    return economyManager;
   }
 
   // --- Convenience Methods ---
@@ -239,7 +245,8 @@ public class Citizen implements WorldElement {
         currentState.getActiveTask(),
         currentState.getPosition(),
         currentState.getMentalMap(),
-        currentState.getRecentMessages()
+        currentState.getRecentMessages(),
+        economyManager.getCoins()
     );
   }
 

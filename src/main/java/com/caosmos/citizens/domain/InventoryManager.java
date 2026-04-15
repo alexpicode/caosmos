@@ -75,7 +75,7 @@ public class InventoryManager {
       if (inOther != null && itemId.equals(inOther.id())) {
         itemToEquip = new ItemData(
             inOther.id(), inOther.name(), inOther.tags(), inOther.category(),
-            inOther.radius(), inOther.width(), inOther.length()
+            inOther.radius(), inOther.width(), inOther.length(), inOther.amount()
         );
         // Remove from other hand first
         if (otherHand == Hand.LEFT) {
@@ -106,7 +106,8 @@ public class InventoryManager {
         itemToEquip.category(),
         itemToEquip.radius(),
         itemToEquip.width(),
-        itemToEquip.length()
+        itemToEquip.length(),
+        itemToEquip.amount()
     );
 
     switch (hand) {
@@ -145,7 +146,8 @@ public class InventoryManager {
             item.category(),
             item.radius(),
             item.width(),
-            item.length()
+            item.length(),
+            item.amount()
         )
     );
     return true;

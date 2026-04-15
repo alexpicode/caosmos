@@ -1,6 +1,7 @@
 package com.caosmos.directors.application;
 
 import com.caosmos.common.domain.contracts.CitizenPort;
+import com.caosmos.common.domain.contracts.EconomyPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.MutationType;
 import com.caosmos.common.domain.model.actions.StateMutation;
@@ -24,6 +25,7 @@ public class EffectResolver {
 
   private final WorldPort worldPort;
   private final CitizenPort citizenPort;
+  private final EconomyPort economyPort;
   private final SpawnRegistryConfig registryConfig;
   private final ObjectMapper objectMapper;
 
@@ -163,6 +165,13 @@ public class EffectResolver {
           citizenPort.reduceStress(citizenId, -delta);
         }
       }
+      case "coins" -> {
+        if (delta > 0) {
+          economyPort.addCoins(citizenId, delta);
+        } else {
+          economyPort.subtractCoins(citizenId, -delta);
+        }
+      }
     }
   }
 
@@ -174,7 +183,8 @@ public class EffectResolver {
         template.getCategory(),
         template.getRadius(),
         template.getWidth(),
-        template.getLength()
+        template.getLength(),
+        template.getAmount()
     );
     worldPort.spawnObject(pos, data);
   }

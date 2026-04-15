@@ -27,7 +27,7 @@ class CitizenRegistryTest {
     UUID uuid = UUID.randomUUID();
 
     Status status = new Status(100, 0, 100, 0);
-    CitizenProfile profile = new CitizenProfile(null, status, null, "Friendly", "test-manifest");
+    CitizenProfile profile = new CitizenProfile(null, status, null, "Friendly", "test-manifest", 0.0);
     Citizen citizen = new Citizen(uuid, profile);
 
     registry.register(uuid, citizen);

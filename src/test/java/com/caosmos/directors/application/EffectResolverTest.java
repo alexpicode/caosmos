@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.caosmos.common.domain.contracts.CitizenPort;
+import com.caosmos.common.domain.contracts.EconomyPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.MutationType;
 import com.caosmos.common.domain.model.actions.StateMutation;
@@ -24,6 +25,7 @@ class EffectResolverTest {
 
   private WorldPort worldPort;
   private CitizenPort citizenPort;
+  private EconomyPort economyPort;
   private SpawnRegistryConfig registryConfig;
   private EffectResolver effectResolver;
   private UUID citizenId;
@@ -32,8 +34,9 @@ class EffectResolverTest {
   void setUp() {
     worldPort = mock(WorldPort.class);
     citizenPort = mock(CitizenPort.class);
+    economyPort = mock(EconomyPort.class);
     registryConfig = mock(SpawnRegistryConfig.class);
-    effectResolver = new EffectResolver(worldPort, citizenPort, registryConfig, new ObjectMapper());
+    effectResolver = new EffectResolver(worldPort, citizenPort, economyPort, registryConfig, new ObjectMapper());
     citizenId = UUID.randomUUID();
   }
 
@@ -53,7 +56,7 @@ class EffectResolverTest {
 
   @Test
   void shouldResolveDestroyWithFallback() {
-    ItemData removedItem = new ItemData("obj1", "Log", List.of("burnable"), "RESOURCE", 0.1, null, null);
+    ItemData removedItem = new ItemData("obj1", "Log", List.of("burnable"), "RESOURCE", 0.1, null, null, null);
     when(worldPort.removeObject("obj1")).thenReturn(removedItem);
     when(registryConfig.getDestructionFallbacks()).thenReturn(Map.of("burnable", "ASH"));
     ItemTemplate ashTemplate = new ItemTemplate();
@@ -99,5 +102,19 @@ class EffectResolverTest {
     effectResolver.resolve(citizenId, List.of(mut));
 
     verify(worldPort).spawnObject(eq(new Vector3(5, 0, 5)), any(ItemData.class));
+  }
+
+  @Test
+  void shouldResolveModifyCitizenCoins() {
+    StateMutation mut = new StateMutation(null, MutationType.MODIFY_CITIZEN, "coins", "100");
+    effectResolver.resolve(citizenId, List.of(mut));
+    verify(economyPort).addCoins(citizenId, 20.0); // Clamped to 20 by EffectResolver
+  }
+
+  @Test
+  void shouldResolveModifyCitizenCoinsNegative() {
+    StateMutation mut = new StateMutation(null, MutationType.MODIFY_CITIZEN, "coins", "-10");
+    effectResolver.resolve(citizenId, List.of(mut));
+    verify(economyPort).subtractCoins(citizenId, 10.0);
   }
 }

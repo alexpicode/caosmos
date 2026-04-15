@@ -14,7 +14,8 @@ public record CitizenPerception(
     ActiveTask activeTask,
     Vector3 position,
     MentalMap mentalMap,
-    List<SpeechMessage> recentMessages
+    List<SpeechMessage> recentMessages,
+    double coins
 ) {
 
 }

@@ -179,7 +179,8 @@ class NearbyPerceptionServiceTest {
         null, // targetZoneId
         0.1,  // radius
         null, // width
-        null  // length
+        null, // length
+        null  // amount
     );
   }
 }

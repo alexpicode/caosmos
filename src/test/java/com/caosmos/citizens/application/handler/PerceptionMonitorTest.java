@@ -50,7 +50,8 @@ class PerceptionMonitorTest {
         new Status(100.0, 0.0, 100.0, 0.0),
         new CitizenProfile.BaseLocation(0, 0, 0),
         "Neutral",
-        "manifest-1"
+        "manifest-1",
+        0.0
     );
     citizen = new Citizen(UUID.randomUUID(), profile);
     date = new WorldDate(1, "Morning");

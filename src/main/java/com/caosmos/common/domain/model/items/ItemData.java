@@ -9,15 +9,11 @@ public record ItemData(
     String category,
     Double radius,
     Double width,
-    Double length
+    Double length,
+    Double amount
 ) {
 
   public ItemData {
     tags = tags != null ? tags.stream().map(String::toLowerCase).toList() : List.of();
-  }
-
-  // Helper constructor for basic items or legacy calls
-  public ItemData(String id, String name, List<String> tags) {
-    this(id, name, tags, "UNKNOWN", 0.1, null, null);
   }
 }

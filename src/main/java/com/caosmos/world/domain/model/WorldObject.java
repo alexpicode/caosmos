@@ -24,7 +24,8 @@ public class WorldObject implements WorldElement {
       String targetZoneId,
       Double radius,
       Double width,
-      Double length
+      Double length,
+      Double amount
   ) {
     this.id = id;
     this.name = name;
@@ -36,6 +37,7 @@ public class WorldObject implements WorldElement {
     this.radius = radius;
     this.width = width;
     this.length = length;
+    this.amount = amount;
   }
 
   private String id;
@@ -43,6 +45,7 @@ public class WorldObject implements WorldElement {
   private String category;
   private Vector3 position;
   private Set<String> tags;
+  private Double amount;
 
   protected synchronized void setTags(Set<String> tags) {
     if (tags == null) {

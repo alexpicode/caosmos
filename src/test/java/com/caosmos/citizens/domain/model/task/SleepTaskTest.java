@@ -23,7 +23,7 @@ class SleepTaskTest {
     UUID uuid = UUID.randomUUID();
     Status initialStatus = new Status(100.0, 50.0, 20.0, 50.0);
     Identity identity = new Identity("Test Citizen", null, null, Collections.emptyList(), Collections.emptyMap());
-    CitizenProfile profile = new CitizenProfile(identity, initialStatus, null, "Normal", "manifest-1");
+    CitizenProfile profile = new CitizenProfile(identity, initialStatus, null, "Normal", "manifest-1", 0.0);
 
     citizen = new Citizen(uuid, profile);
     task = new SleepTask();

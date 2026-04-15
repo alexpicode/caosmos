@@ -9,7 +9,8 @@ public record EquippedItem(
     String category,
     Double radius,
     Double width,
-    Double length
+    Double length,
+    Double amount
 ) {
 
 }

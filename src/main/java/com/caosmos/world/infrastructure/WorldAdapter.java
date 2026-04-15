@@ -170,7 +170,8 @@ public class WorldAdapter implements WorldPort {
               obj.getCategory(),
               obj.getRadius(),
               obj.getWidth(),
-              obj.getLength()
+              obj.getLength(),
+              obj.getAmount()
           );
           spatialHash.remove(objectId);
           return data;
@@ -198,7 +199,8 @@ public class WorldAdapter implements WorldPort {
         null, // targetZoneId (not a gateway)
         data.radius(),
         data.width(),
-        data.length()
+        data.length(),
+        data.amount()
     );
 
     // 3. Register in the spatial hash

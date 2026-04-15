@@ -26,7 +26,7 @@ class ExploreTaskTest {
     Status initialStatus = new Status(100.0, 0.0, 100.0, 0.0);
     Identity identity = new Identity("Explorer", null, null, Collections.emptyList(), Collections.emptyMap());
     CitizenProfile.BaseLocation base = new CitizenProfile.BaseLocation(0, 0, 0);
-    CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Adventurous", "manifest-1");
+    CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Adventurous", "manifest-1", 0.0);
 
     citizen = new Citizen(uuid, profile);
     // Explore North (0, 0, 1)

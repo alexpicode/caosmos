@@ -3,6 +3,7 @@ package com.caosmos.actions.application.handlers;
 import com.caosmos.actions.domain.ActionHandler;
 import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
+import com.caosmos.common.domain.contracts.EconomyPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
@@ -17,6 +18,7 @@ public class PickupActionHandler implements ActionHandler {
 
   private final WorldPort worldService;
   private final CitizenPort citizenService;
+  private final EconomyPort economyService;
 
   @Override
   public String getActionType() {
@@ -40,6 +42,13 @@ public class PickupActionHandler implements ActionHandler {
     ItemData item = worldService.removeObject(targetId);
 
     if (item != null) {
+      if (item.tags().contains("coin_container")) {
+        double amount = item.amount() != null ? item.amount() : 0.0;
+        economyService.addCoins(citizenId, amount);
+        citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_PICKUP);
+        return ActionResult.success("Picked up " + amount + " coins", getActionType());
+      }
+
       boolean success = citizenService.addToInventory(citizenId, item);
       if (success) {
         citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_PICKUP);

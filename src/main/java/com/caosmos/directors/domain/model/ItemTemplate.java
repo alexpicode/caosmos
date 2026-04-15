@@ -12,4 +12,5 @@ public class ItemTemplate {
   private Double radius;
   private Double width;
   private Double length;
+  private Double amount;
 }
