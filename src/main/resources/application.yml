@@ -28,14 +28,14 @@ caosmos:
     external-path: config/caosmos/manifests
     internal-path: #src/main/resources/manifests
   citizen:
-    pulse-frequency: 5                # Frequency in seconds for citizen life cycle pulses (num ticks)
+    pulse-frequency: 5                # Frequency in simulation ticks for citizen life cycle pulses
     walking-speed: 1.4                # Standard walking speed in m/s
     max-ticks-without-decision: 60    # Maximum number of marks without the LLM having made a decision
     max-conversation-participants: 4  # Maximum number of participants in a single conversation session
   world:
     max-vision-distance: 30.0         # Maximum distance for searching nearby objects
     time:
-      speed: 10.0                     # 1 real second = 60 simulation seconds (1 minute)
+      time-scale: 60.0                # 1 real second = 60 simulation seconds (1 minute)
       start-day: 1                    # Initial simulation day
       start-hour: 8                   # Initial simulation hour (8:00 AM)
     speech-ttl-ticks: 2               # Number of ticks a speech element lives before auto-removal

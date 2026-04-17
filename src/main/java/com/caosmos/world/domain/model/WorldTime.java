@@ -10,26 +10,36 @@ public class WorldTime {
   private int hour;
   private int minute;
 
+  private double remainingSeconds = 0.0;
+
   public WorldTime(int startDay, int startHour) {
     this.day = startDay;
     this.hour = startHour;
     this.minute = 0;
   }
 
-  public double advanceByTick(double speedMultiplier) {
-    double worldDeltaTimeInSeconds = 1.0 * speedMultiplier;
-    addSeconds((long) worldDeltaTimeInSeconds);
+  public double advanceByTick(double timeScale) {
+    double worldDeltaTimeInSeconds = 1.0 * timeScale;
+    addSeconds(worldDeltaTimeInSeconds);
     return worldDeltaTimeInSeconds;
   }
 
-  private void addSeconds(long seconds) {
-    long totalMinutes = minute + seconds / 60;
-    minute = (int) (totalMinutes % 60);
+  private void addSeconds(double seconds) {
+    remainingSeconds += seconds;
 
-    long totalHours = hour + totalMinutes / 60;
-    hour = (int) (totalHours % 24);
+    // Only advance logical time when we accumulate whole minutes
+    if (remainingSeconds >= 60.0) {
+      long totalMinutesToAdd = (long) (remainingSeconds / 60.0);
+      remainingSeconds %= 60.0;
 
-    day += totalHours / 24;
+      long totalMinutes = minute + totalMinutesToAdd;
+      minute = (int) (totalMinutes % 60);
+
+      long totalHours = hour + totalMinutes / 60;
+      hour = (int) (totalHours % 24);
+
+      day += (int) (totalHours / 24);
+    }
   }
 
   public String getTimeString() {

@@ -41,7 +41,7 @@ public final class PhysiologicalThresholds {
   public static final double SLEEP_VITALITY_RESTORATION_RATE = 4.0;
   public static final double SLEEP_HUNGER_INCREASE_RATE = 0.2;
 
-  public static final double REST_ENERGY_RECOVERY_RATE = 2.0;
+  public static final double REST_ENERGY_RECOVERY_RATE = 5.0;
   public static final double REST_STRESS_REDUCTION_RATE = 1.5;
 
   public static final double WAIT_ENERGY_DECAY_RATE = 0.2;

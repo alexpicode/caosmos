@@ -8,7 +8,6 @@ import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.LastAction;
 import com.caosmos.citizens.domain.task.Task;
-import com.caosmos.common.domain.contracts.SimulationClock;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.Optional;
@@ -28,10 +27,9 @@ public class CitizenTaskManager {
   private final CitizenSettings citizenSettings;
   private final TaskRegistry taskRegistry;
   private final WorldRegistry spatialRegistry;
-  private final SimulationClock worldTimeService;
   private final CitizenPerceptionHandler perceptionHandler;
 
-  public void executeActiveTask(Citizen citizen, FullPerception perception) {
+  public void executeActiveTask(Citizen citizen, FullPerception perception, double dt) {
     Optional<Task> task = taskRegistry.get(citizen.getUuid());
 
     if (task.isPresent()) {
@@ -47,7 +45,7 @@ public class CitizenTaskManager {
 
       // Execute the task
       ActiveTask activeTask = task.get()
-          .executeOnTick(citizen, perception, worldTimeService.getDeltaTime(), citizenSettings.getWalkingSpeed());
+          .executeOnTick(citizen, perception, dt, citizenSettings.getWalkingSpeed());
 
       Vector3 newPosition = citizen.getPosition();
       if (!initialPosition.equals(newPosition)) {

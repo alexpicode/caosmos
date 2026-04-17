@@ -49,7 +49,7 @@ public interface WorldPort {
 
   void consumeSpeech(String speechId);
 
-  SortedSet<EnvironmentImpactTag> getNormalizedEnvironmentTags();
+  SortedSet<EnvironmentImpactTag> getNormalizedEnvironmentTags(String zoneId);
 
   Set<String> getObjectTags(String objectId);
 }

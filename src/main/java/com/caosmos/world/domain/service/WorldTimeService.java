@@ -25,7 +25,7 @@ public class WorldTimeService implements SimulationClock {
   @Override
   public void update(long tick) {
     this.currentTick = tick;
-    this.lastDeltaTime = worldTime.advanceByTick(config.getSpeed());
+    this.lastDeltaTime = worldTime.advanceByTick(config.getTimeScale());
   }
 
   @Override

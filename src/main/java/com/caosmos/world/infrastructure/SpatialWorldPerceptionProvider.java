@@ -19,7 +19,6 @@ import com.caosmos.world.domain.service.WorldTimeService;
 import com.caosmos.world.domain.service.ZoneManager;
 import jakarta.annotation.PostConstruct;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -69,24 +68,11 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
         .map(Zone::getName).orElse(null);
 
     WorldDate worldDate = worldTimeService.getWorldDate();
-    Environment globalEnv = environmentService.getCurrentEnvironment();
-
-    String effectiveLightLevel;
-    List<String> effectiveEnvTags;
-
-    if (ZoneType.INTERIOR == zoneType) {
-      effectiveLightLevel = "Artificial";
-      effectiveEnvTags = List.of();
-    } else {
-      effectiveLightLevel = globalEnv.lightLevel();
-      effectiveEnvTags = globalEnv.tags();
-    }
-
-    Environment perceivedEnv = new Environment(globalEnv.terrainType(), effectiveEnvTags, effectiveLightLevel);
+    Environment perceivedEnv = environmentService.getEffectiveEnvironment(zoneType);
 
     Set<String> finalTags = new HashSet<>(tags);
     if (ZoneType.EXTERIOR == zoneType) {
-      finalTags.addAll(effectiveEnvTags);
+      finalTags.addAll(perceivedEnv.tags());
     }
 
     PeripheralPerception peripheralPerception = nearbyPerceptionService.getPeripheralPerception(

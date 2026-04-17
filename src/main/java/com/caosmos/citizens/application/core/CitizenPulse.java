@@ -14,6 +14,7 @@ import com.caosmos.citizens.domain.model.social.ConversationPhase;
 import com.caosmos.common.application.telemetry.BiometricsEntry;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
 import com.caosmos.common.domain.contracts.AgentPulse;
+import com.caosmos.common.domain.contracts.SimulationClock;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class CitizenPulse implements AgentPulse {
   private final PulseConfiguration pulseConfiguration;
   private final EntityTelemetryService telemetryService;
   private final ConversationManager conversationManager;
+  private final SimulationClock simulationClock;
 
   private final EventBuffer eventBuffer = new EventBuffer();
 
@@ -44,8 +46,10 @@ public class CitizenPulse implements AgentPulse {
     String citizenName = citizen.getCitizenProfile().identity().name();
     log.debug("[CITIZEN:{}] Pulsing at tick: {}", citizenName, tick);
 
-    // 1. Update passive domain state (decay metabolism)
-    double dt = pulseConfiguration.pulseFrequencySeconds();
+    // 1. Calculate simulated elapsed time for this pulse interval
+    // getDeltaTime() returns simulated seconds per tick (= 1 real second * timeScale)
+    // multiplied by how many ticks we waited → total simulated seconds since last pulse
+    double dt = pulseConfiguration.pulseFrequencyTicks() * simulationClock.getDeltaTime();
     physiologicalMotor.applyPassiveMetabolism(citizen, dt);
 
     // 1.5 Register Biometrics
@@ -106,7 +110,7 @@ public class CitizenPulse implements AgentPulse {
     }
 
     // 5. Execute Active Task
-    taskManager.executeActiveTask(citizen, fullPerception);
+    taskManager.executeActiveTask(citizen, fullPerception, dt);
 
     // 5.5 Sync Conversation State
     boolean isTalking = isCitizenTalking();

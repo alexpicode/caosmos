@@ -8,7 +8,9 @@ import com.caosmos.common.domain.model.world.GatewayTransition;
 import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneType;
 import com.caosmos.world.domain.model.WorldObject;
+import com.caosmos.world.domain.model.Zone;
 import com.caosmos.world.domain.service.EnvironmentNormalizer;
 import com.caosmos.world.domain.service.EnvironmentService;
 import com.caosmos.world.domain.service.SpatialHash;
@@ -238,8 +240,12 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
-  public SortedSet<EnvironmentImpactTag> getNormalizedEnvironmentTags() {
-    return environmentNormalizer.normalize(environmentService.getCurrentEnvironment());
+  public SortedSet<EnvironmentImpactTag> getNormalizedEnvironmentTags(String zoneId) {
+    ZoneType zoneType = zoneId != null ?
+        zoneManager.getZone(zoneId).map(Zone::getZoneType).orElse(ZoneType.EXTERIOR)
+        : ZoneType.EXTERIOR;
+
+    return environmentNormalizer.normalize(environmentService.getEffectiveEnvironment(zoneType));
   }
 
   @Override

@@ -9,6 +9,7 @@ import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.common.application.agents.LifeManager;
 import com.caosmos.common.application.agents.PopulationService;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
+import com.caosmos.common.domain.contracts.SimulationClock;
 import com.caosmos.common.domain.contracts.repository.ManifestRepository;
 import com.caosmos.common.domain.model.manifest.AgentManifest;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,10 +34,7 @@ public class CitizenPopulationService implements PopulationService {
   private Resource userPromptResource;
 
   @Value("${caosmos.citizen.pulse-frequency}")
-  private int pulseFrequencyRealSeconds;
-
-  @Value("${caosmos.world.time.speed:10.0}")
-  private double simulationSpeed;
+  private int pulseFrequencyTicks;
 
   private final ManifestRepository manifestRepository;
   private final LifeManager lifeManager;
@@ -49,6 +47,7 @@ public class CitizenPopulationService implements PopulationService {
   private final EntityTelemetryService telemetryService;
   private final CitizenSettings citizenSettings;
   private final ConversationManager conversationManager;
+  private final SimulationClock simulationClock;
 
   public void spawnAll() {
     log.info("[POPULATION] Initializing global spawn sequence...");
@@ -84,10 +83,8 @@ public class CitizenPopulationService implements PopulationService {
     citizenRegistry.register(UUID.fromString(citizenId), citizen);
 
     // Orchestrator that handles the cognitive cycle
-    int pulseFrequencySimulatedSeconds = (int) (pulseFrequencyRealSeconds * simulationSpeed);
-
     PulseConfiguration configuration = new PulseConfiguration(
-        pulseFrequencySimulatedSeconds,
+        pulseFrequencyTicks,
         systemPromptResource,
         userPromptResource,
         citizenSettings.getMaxTicksWithoutDecision()
@@ -101,7 +98,8 @@ public class CitizenPopulationService implements PopulationService {
         physiologicalMotor,
         configuration,
         telemetryService,
-        conversationManager
+        conversationManager,
+        simulationClock
     );
 
     lifeManager.startLife(citizenId, citizenPulse);

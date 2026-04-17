@@ -1,6 +1,7 @@
 package com.caosmos.world.domain.service;
 
 import com.caosmos.common.domain.model.world.Environment;
+import com.caosmos.common.domain.model.world.ZoneType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,11 +33,23 @@ public class EnvironmentService {
     return new Environment(terrainType, tags, lightLevel);
   }
 
+  public Environment getEffectiveEnvironment(ZoneType zoneType) {
+    Environment global = getCurrentEnvironment();
+
+    if (ZoneType.INTERIOR == zoneType) {
+      // For interiors, we strip weather effects and set artificial light
+      return new Environment(global.terrainType(), List.of(), "Artificial");
+    }
+
+    return global;
+  }
+
   private void updateWeather() {
     long currentTick = worldTimeService.getCurrentTick();
     // Change weather every 10000 ticks (approx every simulation day or so depending on speed)
     if (lastWeatherChangeTick == -1 || currentTick - lastWeatherChangeTick > 10000) {
-      String[] weatherOptions = {"CLEAR", "CLOUDY", "RAINY", "STORM", "FOG"};
+//      String[] weatherOptions = {"CLEAR", "CLOUDY", "RAINY", "STORM", "FOG"};
+      String[] weatherOptions = {"CLEAR", "CLOUDY", "FOG"};
       currentWeather = weatherOptions[random.nextInt(weatherOptions.length)];
       lastWeatherChangeTick = currentTick;
     }

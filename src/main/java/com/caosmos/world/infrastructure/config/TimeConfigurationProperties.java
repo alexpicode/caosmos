@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "caosmos.world.time")
 public class TimeConfigurationProperties implements WorldTimeSettings {
 
-  private double speed = 60.0;           // 1 real second = X simulation seconds
+  private double timeScale = 60.0;       // 1 real second = X simulation seconds
   private int startDay = 1;
   private int startHour = 8;
 }

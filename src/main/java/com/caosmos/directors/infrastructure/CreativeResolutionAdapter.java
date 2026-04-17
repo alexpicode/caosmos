@@ -68,8 +68,9 @@ public class CreativeResolutionAdapter implements CreativeResolutionPort {
 
     Set<String> targetTags = worldPort.getObjectTags(targetId);
 
-    // 3. Obtain Weather/Environment modifiers
-    Set<String> envTags = worldPort.getNormalizedEnvironmentTags().stream()
+    // 3. Obtain Weather/Environment modifiers based on the logical zone
+    String currentZoneId = citizenPort.getCurrentZoneId(citizenId);
+    Set<String> envTags = worldPort.getNormalizedEnvironmentTags(currentZoneId).stream()
         .map(EnvironmentImpactTag::name)
         .collect(Collectors.toSet());
 
