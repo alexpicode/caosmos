@@ -70,6 +70,8 @@ public interface CitizenPort {
 
   boolean isItemEquipped(UUID citizenId, String itemId);
 
+  boolean isItemInInventory(UUID citizenId, String itemId);
+
   List<String> getEquippedItemsNames(UUID citizenId);
 
   boolean isInZoneWithTag(UUID citizenId, String tag);

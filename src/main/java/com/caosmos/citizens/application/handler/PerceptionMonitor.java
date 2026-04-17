@@ -53,9 +53,18 @@ public class PerceptionMonitor {
     String pendingZoneName = zoneChanged ? newZoneName : null;
 
     // --- 1. Critical Reflexes (Survival First) ---
+    String currentTargetId = null;
+    if (currentState.getActiveTask() != null) {
+      currentTargetId = currentState.getActiveTask().targetId();
+    }
+
     for (NearbyElement element : perception.nearbyElements()) {
       if (EntityType.CITIZEN != element.type() && EntityType.OBJECT != element.type()) {
         continue;
+      }
+
+      if (currentTargetId != null && currentTargetId.equals(element.id())) {
+        continue; // Ignore the active target for threshold interruptions
       }
 
       boolean isHostile = hasTag(element, "hostile");

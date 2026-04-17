@@ -153,6 +153,16 @@ public class CitizenAdapter implements CitizenPort {
   }
 
   @Override
+  public boolean isItemInInventory(UUID citizenId, String itemId) {
+    if (itemId == null) {
+      return false;
+    }
+    return citizenRegistry.get(citizenId)
+        .map(citizen -> citizen.inventory().getItem(itemId) != null)
+        .orElse(false);
+  }
+
+  @Override
   public List<String> getEquippedItemsNames(UUID citizenId) {
     return citizenRegistry.get(citizenId)
         .map(citizen -> {

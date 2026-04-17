@@ -54,6 +54,13 @@ public class CreativeResolutionAdapter implements CreativeResolutionPort {
     if (toolRef != null) {
       toolTags = citizenPort.getTagsByToolReference(citizenId, toolRef);
       if (toolTags.isEmpty()) {
+        if (citizenPort.isItemInInventory(citizenId, toolRef)) {
+          return ActionResult.failure(
+              "ERROR: Tool '" + toolRef + "' is in your inventory but not equipped. You must EQUIP it before using it.",
+              request.type()
+          );
+        }
+
         // If tool reference provided but no items match, return explicit error to help LLM correct itself
         var equipped = citizenPort.getEquippedItemsNames(citizenId);
         return ActionResult.failure(

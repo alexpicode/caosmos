@@ -17,8 +17,9 @@ public class SanityChecker {
       return Optional.of("Target ID is required for " + intent.verb());
     }
 
-    // 1. If the item is already equipped, it's inherently near (distance 0)
-    if (citizenPort.isItemEquipped(intent.citizenId(), intent.targetId())) {
+    // 1. If the item is already equipped or in inventory, it's inherently near (distance 0)
+    if (citizenPort.isItemEquipped(intent.citizenId(), intent.targetId()) ||
+        citizenPort.isItemInInventory(intent.citizenId(), intent.targetId())) {
       return Optional.empty();
     }
 
