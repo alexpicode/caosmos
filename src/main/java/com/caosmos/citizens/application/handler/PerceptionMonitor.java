@@ -174,14 +174,19 @@ public class PerceptionMonitor {
       String pendingZoneName,
       boolean zoneChanged
   ) {
-    // 1. Current location
-    String targetFound = checkSearchTarget(citizen.getUuid(), perception.location().category());
-    if (targetFound != null) {
-      informativeEvents.add("SEARCH COMPLETE! You've found the " + targetFound + " in " + perception.location().zone());
-      return new PerceptionEvaluation(
-          new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
-          pendingZoneId, pendingZoneName, zoneChanged
-      );
+    String targetFound;
+
+    // 1. Current location (only if zone just changed to avoid infinite loops)
+    if (zoneChanged) {
+      targetFound = checkSearchTarget(citizen.getUuid(), perception.location().category());
+      if (targetFound != null) {
+        informativeEvents.add(
+            "SEARCH COMPLETE! You've found the " + targetFound + " in " + perception.location().zone());
+        return new PerceptionEvaluation(
+            new ReflexResult(true, "Target found: " + targetFound, informativeEvents),
+            pendingZoneId, pendingZoneName, zoneChanged
+        );
+      }
     }
 
     // 2. Nearby elements (Entities and Zones)

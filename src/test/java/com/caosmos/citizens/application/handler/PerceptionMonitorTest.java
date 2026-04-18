@@ -198,6 +198,34 @@ class PerceptionMonitorTest {
   }
 
   @Test
+  void shouldNotTriggerSearchWhenStayingInTargetCategoryZone() {
+    // Arrange: Pre-enter the zone
+    citizen.enterZone("zone-mine", "Gold Mine");
+
+    taskRegistry.register(
+        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
+            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+            "MINING",
+            "Looking for gold"
+        )
+    );
+
+    WorldPerception perception = new WorldPerception(
+        date,
+        new Location("Gold Mine", "INDUSTRIAL", "MINING", "Shaft", Set.of(), null, "zone-mine"),
+        environment,
+        Collections.emptyList(),
+        Collections.emptySet()
+    );
+
+    // Act
+    PerceptionEvaluation result = monitor.evaluate(citizen, perception, true);
+
+    // Assert
+    assertFalse(result.isCritical(), "Should not trigger when staying in same zone without new objects");
+  }
+
+  @Test
   void shouldCompleteSearchWhenSeeingTargetCategoryObject() {
     // Arrange
     taskRegistry.register(

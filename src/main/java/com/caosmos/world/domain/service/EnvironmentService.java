@@ -2,7 +2,8 @@ package com.caosmos.world.domain.service;
 
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.ZoneType;
-import com.caosmos.world.infrastructure.config.WeatherStateConfig;
+import com.caosmos.world.domain.config.WeatherStateConfig;
+import com.caosmos.world.domain.config.WorldConfigProperties;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class EnvironmentService {
 
   private final WorldTimeService worldTimeService;
-  private final com.caosmos.world.infrastructure.config.WorldConfigProperties worldConfigProperties;
+  private final WorldConfigProperties worldConfigProperties;
   private final Random random = new Random();
 
   private String currentWeather = "CLEAR";

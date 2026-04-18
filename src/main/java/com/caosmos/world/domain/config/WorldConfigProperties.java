@@ -1,4 +1,4 @@
-package com.caosmos.world.infrastructure.config;
+package com.caosmos.world.domain.config;
 
 import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;

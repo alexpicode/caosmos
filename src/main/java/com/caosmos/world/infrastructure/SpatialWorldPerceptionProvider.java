@@ -83,7 +83,11 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     );
     var nearbyElements = peripheralPerception.elements();
 
-    Set<String> categoriesForExplore = getCategoriesInRadius(position, exploreSearchRadius);
+    Set<String> categoriesForExplore = getCategoriesInRadius(
+        position,
+        exploreSearchRadius,
+        zoneOpt.map(Zone::getCategory).orElse(null)
+    );
 
     String currentLocation = (ZoneType.INTERIOR == zoneType) ? "Interior Area" : "Open Area";
 
@@ -100,16 +104,15 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     return new WorldPerception(worldDate, location, perceivedEnv, nearbyElements, categoriesForExplore);
   }
 
-  private Set<String> getCategoriesInRadius(Vector3 position, double radius) {
+  private Set<String> getCategoriesInRadius(Vector3 position, double radius, String categoryToExclude) {
     Set<String> categories = new java.util.HashSet<>();
 
     // We only need to consult SpatialHash as it now contains both WorldObjects and
     // Zones
     spatialHash.getNearbyEntities(position, radius).stream()
+        .filter(e -> e.getCategory() != null && !e.getCategory().equalsIgnoreCase(categoryToExclude))
         .forEach(e -> {
-          if (e.getCategory() != null) {
-            categories.add(e.getCategory());
-          }
+          categories.add(e.getCategory());
         });
 
     return categories;
