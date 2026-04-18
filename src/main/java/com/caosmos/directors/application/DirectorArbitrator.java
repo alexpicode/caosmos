@@ -69,7 +69,7 @@ public class DirectorArbitrator {
     String targetCategory = worldPort.getObject(targetId).map(e -> e.getCategory()).orElse("object");
 
     // 3. Resolve (Cache or AI)
-    ResolutionResult result = arbitrate(intent, targetName, targetCategory);
+    ResolutionResult result = arbitrate(intent, targetId, targetName, targetCategory);
 
     // 4. Transform to ActionResult and apply effects
     if (result.success()) {
@@ -84,7 +84,7 @@ public class DirectorArbitrator {
     }
   }
 
-  private ResolutionResult arbitrate(ActionIntent intent, String targetName, String targetCategory) {
+  private ResolutionResult arbitrate(ActionIntent intent, String targetId, String targetName, String targetCategory) {
     // 1. Ensure tags are properly sorted to guarantee deterministic SHA-256 hash generation
     TreeSet<String> toolTags = intent.toolTags() != null ? new TreeSet<>(intent.toolTags()) : new TreeSet<>();
     TreeSet<String> targetTags = intent.targetTags() != null ? new TreeSet<>(intent.targetTags()) : new TreeSet<>();
@@ -104,7 +104,7 @@ public class DirectorArbitrator {
     // 4. Creative Path (AI Fallback): If it's a new interaction, delegate to the AI Physics Arbitrator
     log.debug("[WISDOM CACHE] MISS for key: {}. Delegating to ArbitrationProvider.", key.hash());
     ArbitrationRequest request = new ArbitrationRequest(
-        intent.verb(), toolTags, targetTags, envTags, targetName, targetCategory
+        targetId, intent.verb(), toolTags, targetTags, envTags, targetName, targetCategory
     );
 
     ResolutionResult result = arbitrationProvider.arbitrate(request);

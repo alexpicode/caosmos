@@ -55,24 +55,26 @@ consequences are.
    48:
    49: - `verb`: The action string (e.g. USE)
    50: - `toolTags`: Array of tags for the item the citizen used
-   51: - `targetName`: Name of the target
-   52: - `targetCategory`: Category of the target
-   53: - `targetTags`: Array of tags for the target
-   54: - `environmentTags`: Array of environment impact tags
-   55:
-   56: # Output format
-   57:
-   58: You MUST output ONLY a valid JSON matching this schema:
-   59: {
-   60: "success": boolean,
-   61: "narration": "Brief, objective description of what happened physically (max 2 sentences)",
-   62: "mutations": [
-   63: {
-   64: "targetId": "string (use the target element's implicit ID context)",
-   65: "mutationType": "ADD_TAG | REMOVE_TAG | SPAWN | DESTROY | TRANSFORM | MODIFY_CITIZEN",
-   66: "key": "string (tag name, stat name, or entity type)",
-   67: "value": "string (tag value, delta, or Tier 2 JSON)"
-   68: }
-   69: ],
-   70: "shouldCache": boolean
-   71: }
+   51: - `targetId`: The unique ID of the target object. MANDATORY for mutations affecting this object.
+
+- `targetName`: Name of the target
+  52: - `targetCategory`: Category of the target
+  53: - `targetTags`: Array of tags for the target
+  54: - `environmentTags`: Array of environment impact tags
+  55:
+  56: # Output format
+  57:
+  58: You MUST output ONLY a valid JSON matching this schema:
+  59: {
+  60: "success": boolean,
+  61: "narration": "Brief, objective description of what happened physically (max 2 sentences)",
+  62: "mutations": [
+  63: {
+  64: "targetId": "string (The ID of the affected element. To affect the current target, use the EXACT targetId provided in the input.)",
+  65: "mutationType": "ADD_TAG | REMOVE_TAG | SPAWN | DESTROY | TRANSFORM | MODIFY_CITIZEN",
+  66: "key": "string (tag name, stat name, or entity type)",
+  67: "value": "string (tag value, delta, or Tier 2 JSON)"
+  68: }
+  69: ],
+  70: "shouldCache": boolean
+  71: }

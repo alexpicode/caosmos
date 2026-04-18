@@ -69,7 +69,15 @@ public class EffectResolver {
     // 2. Remove the object
     ItemData removed = worldPort.removeObject(mut.targetId());
 
-    if (removed != null && registryConfig.getDestructionFallbacks() != null) {
+    if (removed == null) {
+      log.warn(
+          "Physical mismatch: Mutation requested DESTROY on non-existent object ID '{}'. " +
+              "Possible Director arbitration ID mismatch.", mut.targetId()
+      );
+      return;
+    }
+
+    if (registryConfig.getDestructionFallbacks() != null) {
       // Conservation of matter: check tags for fallback spawn
       for (String tag : removed.tags()) {
         String fallbackType = registryConfig.getDestructionFallbacks().get(tag.toLowerCase());
