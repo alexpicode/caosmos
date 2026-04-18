@@ -53,4 +53,8 @@ public class WorldTime {
   public int getCurrentHour() {
     return hour;
   }
+
+  public double getTotalSeconds() {
+    return (day * 24 * 3600.0) + (hour * 3600.0) + (minute * 60.0) + remainingSeconds;
+  }
 }

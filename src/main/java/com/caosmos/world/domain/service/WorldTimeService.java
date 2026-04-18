@@ -46,4 +46,8 @@ public class WorldTimeService implements SimulationClock {
     return lastDeltaTime;
   }
 
+  public double getTotalSeconds() {
+    return worldTime.getTotalSeconds();
+  }
+
 }

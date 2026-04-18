@@ -2,8 +2,10 @@ package com.caosmos.world.domain.service;
 
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.ZoneType;
+import com.caosmos.world.infrastructure.config.WeatherStateConfig;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ public class EnvironmentService {
   private final Random random = new Random();
 
   private String currentWeather = "CLEAR";
-  private long lastWeatherChangeTick = -1;
+  private double nextWeatherChangeTimeSeconds = -1;
 
   public Environment getCurrentEnvironment() {
     updateWeather();
@@ -46,15 +48,54 @@ public class EnvironmentService {
   }
 
   private void updateWeather() {
-    long currentTick = worldTimeService.getCurrentTick();
-    // Change weather every 10000 ticks (approx every simulation day or so depending on speed)
-    if (lastWeatherChangeTick == -1 || currentTick - lastWeatherChangeTick > 10000) {
-      List<String> weatherOptions = worldConfigProperties.weatherOptions();
-      if (weatherOptions != null && !weatherOptions.isEmpty()) {
-        currentWeather = weatherOptions.get(random.nextInt(weatherOptions.size()));
+    double now = worldTimeService.getTotalSeconds();
+
+    if (nextWeatherChangeTimeSeconds == -1 || now >= nextWeatherChangeTimeSeconds) {
+      var states = worldConfigProperties.weatherStates();
+      if (states == null || states.isEmpty()) {
+        return;
       }
-      lastWeatherChangeTick = currentTick;
+
+      // 1. Transition to next state
+      String nextState = selectNextState(states);
+      if (nextState != null) {
+        currentWeather = nextState;
+      }
+
+      // 2. Schedule next change
+      var config = states.get(currentWeather);
+      if (config != null) {
+        double durationMinutes = config.minDurationMinutes() +
+            (config.maxDurationMinutes() - config.minDurationMinutes()) * random.nextDouble();
+        nextWeatherChangeTimeSeconds = now + (durationMinutes * 60.0);
+      } else {
+        // Fallback if state is not configured
+        nextWeatherChangeTimeSeconds = now + 3600.0;
+      }
     }
+  }
+
+  private String selectNextState(Map<String, WeatherStateConfig> states) {
+    var config = states.get(currentWeather);
+    if (config == null || config.transitions() == null || config.transitions().isEmpty()) {
+      // If no transitions defined, pick a random available state as fallback
+      List<String> keys = new ArrayList<>(states.keySet());
+      return keys.get(random.nextInt(keys.size()));
+    }
+
+    Map<String, Double> transitions = config.transitions();
+    double totalWeight = transitions.values().stream().mapToDouble(Double::doubleValue).sum();
+    double pick = random.nextDouble() * totalWeight;
+
+    double cumulativeWeight = 0.0;
+    for (Map.Entry<String, Double> entry : transitions.entrySet()) {
+      cumulativeWeight += entry.getValue();
+      if (pick <= cumulativeWeight) {
+        return entry.getKey();
+      }
+    }
+
+    return currentWeather; // Fallback
   }
 
   private String getLightLevel(int hour) {
