@@ -51,7 +51,7 @@ public class CitizenPerceptionHandler {
         currentZoneId,
         worldEntity -> !worldEntity.getId().equals(citizen.getId())
     );
-    log.debug("[CITIZEN:{}] WorldPerception at position {}: {}", citizenName, currentPosition, worldPerception);
+    log.trace("[CITIZEN:{}] WorldPerception at position {}: {}", citizenName, currentPosition, worldPerception);
 
     // 2. Synchronize Spatial Context (Zone & Mental Map)
     synchronizeSpatialContext(citizen, currentPosition, worldPerception);

@@ -32,6 +32,12 @@ public class SleepTask implements Task {
       biology.increaseVitality(PhysiologicalThresholds.SLEEP_VITALITY_RESTORATION_RATE * hours);
     }
 
+    log.debug(
+        "[CITIZEN:{}] Sleeping... Energy: {}%",
+        citizen.getName(),
+        Math.round(biology.getEnergy())
+    );
+
     boolean isComplete = biology.getEnergy() >= 100.0;
     if (isComplete) {
       log.info("Citizen {} is fully rested.", citizen.getUuid());

@@ -23,6 +23,13 @@ public class RestTask implements Task {
     // 2. Reduce Stress
     biology.decreaseStress(PhysiologicalThresholds.REST_STRESS_REDUCTION_RATE * hours);
 
+    log.debug(
+        "[CITIZEN:{}] Resting... Energy: {}%, Stress: {}%",
+        citizen.getName(),
+        Math.round(biology.getEnergy()),
+        Math.round(biology.getStress())
+    );
+
     return toActiveTask(citizen).withCompleted(biology.getEnergy() >= 100.0);
   }
 

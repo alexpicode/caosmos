@@ -46,4 +46,4 @@ caosmos:
 logging:
   level:
     org.springframework.ai.ollama: DEBUG
-    com.caosmos: DEBUG
+    com.caosmos: TRACE

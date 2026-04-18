@@ -62,7 +62,7 @@ public class CitizenTaskManager {
         LastAction completionAction = citizen.getLastAction().withStatus("SUCCESS");
         cancelActiveTask(citizen, CitizenState.IDLE, completionAction);
       } else {
-        log.debug("[CITIZEN:{}] Continuing task: {}", citizenName, activeTask);
+        log.trace("[CITIZEN:{}] Continuing task: {}", citizenName, activeTask);
       }
     }
   }
@@ -81,6 +81,5 @@ public class CitizenTaskManager {
     taskRegistry.remove(citizen.getUuid());
     citizen.clearTask(newState, action);
   }
-
 
 }

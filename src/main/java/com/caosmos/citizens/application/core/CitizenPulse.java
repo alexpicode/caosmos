@@ -44,7 +44,7 @@ public class CitizenPulse implements AgentPulse {
   @Override
   public void pulse(long tick) {
     String citizenName = citizen.getCitizenProfile().identity().name();
-    log.debug("[CITIZEN:{}] Pulsing at tick: {}", citizenName, tick);
+    log.trace("[CITIZEN:{}] Pulsing at tick: {}", citizenName, tick);
 
     // 1. Calculate simulated elapsed time for this pulse interval
     // getDeltaTime() returns simulated seconds per tick (= 1 real second * timeScale)
