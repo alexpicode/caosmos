@@ -91,8 +91,7 @@ public class TalkActionHandler implements ActionHandler {
         clock.getCurrentTick()
     );
 
-    // Socializing reduces stress
-    citizenService.reduceStress(citizenId, ActionThresholds.TALK_STRESS_REDUCTION);
+    // Socializing costs a tiny bit of energy per speech act
     citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_TALK);
 
     String feedback = (targetId != null && !targetId.isBlank()) ?

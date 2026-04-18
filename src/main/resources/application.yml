@@ -38,6 +38,7 @@ caosmos:
       time-scale: 60.0                # 1 real second = 60 simulation seconds (1 minute)
       start-day: 1                    # Initial simulation day
       start-hour: 8                   # Initial simulation hour (8:00 AM)
+    weather-options: [ "CLEAR", "CLOUDY", "FOG" ]
     speech-ttl-ticks: 2               # Number of ticks a speech element lives before auto-removal
   directors:
     observer:

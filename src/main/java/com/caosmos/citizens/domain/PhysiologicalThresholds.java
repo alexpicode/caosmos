@@ -24,31 +24,32 @@ public final class PhysiologicalThresholds {
   public static final double ENTITY_PROXIMITY_ALERT_DISTANCE = 1.5;
 
   // Passive metabolic rates (per hour - positive magnitudes)
-  public static final double PASSIVE_HUNGER_RATE = 0.5;
-  public static final double PASSIVE_ENERGY_DECAY_RATE = 0.4;
+  public static final double PASSIVE_HUNGER_RATE = 3.0;
+  public static final double PASSIVE_ENERGY_DECAY_RATE = 6.0;
 
   // Crisis effects
   public static final double HUNGER_CRISIS_VITALITY_DRAIN_RATE = 1.0;
   public static final double EXTREME_FATIGUE_SPEED_FACTOR = 0.5;
 
   // Movement costs (per hour)
-  public static final double MOVE_ENERGY_COST_RATE = 1.5;
-  public static final double MOVE_HUNGER_COST_RATE = 1.0;
+  public static final double MOVE_ENERGY_COST_RATE = 2.0;
+  public static final double MOVE_HUNGER_COST_RATE = 2.0;
 
   // Recovery rates (per hour)
-  public static final double SLEEP_ENERGY_RECOVERY_RATE = 10.0;
+  public static final double SLEEP_ENERGY_RECOVERY_RATE = 18.5;
   public static final double SLEEP_STRESS_REDUCTION_RATE = 5.0;
   public static final double SLEEP_VITALITY_RESTORATION_RATE = 4.0;
-  public static final double SLEEP_HUNGER_INCREASE_RATE = 0.2;
+  public static final double SLEEP_HUNGER_INCREASE_RATE = 0.5;
 
-  public static final double REST_ENERGY_RECOVERY_RATE = 5.0;
+  public static final double REST_ENERGY_RECOVERY_RATE = 9.0;
   public static final double REST_STRESS_REDUCTION_RATE = 1.5;
+  public static final double SOCIAL_STRESS_REDUCTION_RATE = 15.0;
 
   public static final double WAIT_ENERGY_DECAY_RATE = 0.2;
   public static final double SAFE_ZONE_STRESS_REDUCTION_RATE = 1.0;
 
   // Work rates (per hour)
-  public static final double MINE_ENERGY_DRAIN_RATE = 3.5;
+  public static final double MINE_ENERGY_DRAIN_RATE = 8.0;
   public static final double MINE_HUNGER_INCREASE_RATE = 1.8;
   public static final double MINE_STRESS_INCREASE_RATE = 0.6;
 

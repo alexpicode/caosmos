@@ -1,6 +1,7 @@
 package com.caosmos.citizens.domain.task;
 
 import com.caosmos.citizens.domain.Citizen;
+import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
@@ -28,6 +29,9 @@ public class ConversationTask implements Task {
 
   @Override
   public ActiveTask executeOnTick(Citizen citizen, FullPerception perception, double dt, double walkingSpeed) {
+    double hours = dt / 3600.0;
+    citizen.biology().decreaseStress(PhysiologicalThresholds.SOCIAL_STRESS_REDUCTION_RATE * hours);
+
     // Maintain orientation towards target
     log.trace("Citizen {} in conversation with {} at {}", citizen.getUuid(), targetId, targetPosition);
 

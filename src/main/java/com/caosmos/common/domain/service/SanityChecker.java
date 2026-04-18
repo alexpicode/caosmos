@@ -3,6 +3,7 @@ package com.caosmos.common.domain.service;
 import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionIntent;
+import com.caosmos.common.domain.model.world.EntityType;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,8 @@ public class SanityChecker {
       return Optional.of("Target ID is required for " + intent.verb());
     }
 
-    // 1. If the item is already equipped or in inventory, it's inherently near (distance 0)
+    // 1. If the item is already equipped or in inventory, it's inherently near
+    // (distance 0)
     if (citizenPort.isItemEquipped(intent.citizenId(), intent.targetId()) ||
         citizenPort.isItemInInventory(intent.citizenId(), intent.targetId())) {
       return Optional.empty();
@@ -28,8 +30,24 @@ public class SanityChecker {
       return Optional.of("You are too far from " + intent.targetId() + " to " + intent.verb().toLowerCase() + ".");
     }
 
-    if (worldPort.getObject(intent.targetId()).isEmpty()) {
+    var worldObject = worldPort.getObject(intent.targetId());
+    if (worldObject.isEmpty()) {
+      // Check if it's a zone to give a better error message
+      String zoneName = worldPort.getZoneName(intent.targetId());
+      if (zoneName != null && !zoneName.isBlank()) {
+        if ("EXAMINE".equalsIgnoreCase(intent.verb())) {
+          return Optional.of("You cannot EXAMINE a zone. Move into it or use EXPLORE to learn more about locations.");
+        }
+      }
       return Optional.of("Object doesn't exist.");
+    }
+
+    // 3. EXAMINE restrictions (No citizens)
+    if ("EXAMINE".equalsIgnoreCase(intent.verb())) {
+      if (EntityType.CITIZEN.equals(worldObject.get().getType())) {
+        return Optional.of(
+            "You cannot EXAMINE another person. Use TALK to interact with them and learn about them through conversation.");
+      }
     }
 
     // Additional checks for energy can be added here

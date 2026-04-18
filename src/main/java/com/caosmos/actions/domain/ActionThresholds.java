@@ -18,21 +18,20 @@ public final class ActionThresholds {
   public static final double PROXIMITY_EXAMINE = 2.5;
   public static final double DISTANT_NAVIGATION_STEP = 50.0;
 
-  // Energy Costs (Energy units)
-  public static final double ENERGY_COST_PICKUP = 2.0;
-  public static final double ENERGY_COST_DROP = 1.0;
-  public static final double ENERGY_COST_EAT = 0.5;
-  public static final double ENERGY_COST_EQUIP = 1.0;
-  public static final double ENERGY_COST_UNEQUIP = 1.0;
-  public static final double ENERGY_COST_EXAMINE = 1.0;
-  public static final double ENERGY_COST_TALK = 0.2;
-  public static final double ENERGY_COST_USE = 4.0;
+  // Energy Costs (Maneuver Effort - Fixed metabolic pulse)
+  public static final double ENERGY_COST_PICKUP = 0.1;
+  public static final double ENERGY_COST_DROP = 0.05;
+  public static final double ENERGY_COST_EAT = 0.1;
+  public static final double ENERGY_COST_EQUIP = 0.1;
+  public static final double ENERGY_COST_UNEQUIP = 0.05;
+  public static final double ENERGY_COST_EXAMINE = 0.1;
+  public static final double ENERGY_COST_TALK = 0.02;
+  public static final double ENERGY_COST_USE = 0.5;
 
   // Physiological Recovery/Impact (Points)
   public static final double DRINK_HYDRATION_RECOVERY = 20.0;
   public static final double DRINK_STRESS_REDUCTION = 2.0;
   public static final double EAT_NUTRITION_RECOVERY = 25.0;
-  public static final double TALK_STRESS_REDUCTION = 5.0;
 
   // Workplace Tag Mapping
   public static final String TAG_MINING = "mining";

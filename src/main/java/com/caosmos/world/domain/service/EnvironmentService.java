@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class EnvironmentService {
 
   private final WorldTimeService worldTimeService;
+  private final com.caosmos.world.infrastructure.config.WorldConfigProperties worldConfigProperties;
   private final Random random = new Random();
 
   private String currentWeather = "CLEAR";
@@ -48,9 +49,10 @@ public class EnvironmentService {
     long currentTick = worldTimeService.getCurrentTick();
     // Change weather every 10000 ticks (approx every simulation day or so depending on speed)
     if (lastWeatherChangeTick == -1 || currentTick - lastWeatherChangeTick > 10000) {
-//      String[] weatherOptions = {"CLEAR", "CLOUDY", "RAINY", "STORM", "FOG"};
-      String[] weatherOptions = {"CLEAR", "CLOUDY", "FOG"};
-      currentWeather = weatherOptions[random.nextInt(weatherOptions.length)];
+      List<String> weatherOptions = worldConfigProperties.weatherOptions();
+      if (weatherOptions != null && !weatherOptions.isEmpty()) {
+        currentWeather = weatherOptions.get(random.nextInt(weatherOptions.size()));
+      }
       lastWeatherChangeTick = currentTick;
     }
   }
