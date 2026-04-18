@@ -39,6 +39,9 @@ caosmos:
       start-day: 1                    # Initial simulation day
       start-hour: 8                   # Initial simulation hour (8:00 AM)
     speech-ttl-ticks: 2               # Number of ticks a speech element lives before auto-removal
+  directors:
+    observer:
+      style: "concise, technical and descriptive of physical properties"  # Style for AI generated descriptions
 
 logging:
   level:

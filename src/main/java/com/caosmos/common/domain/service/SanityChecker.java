@@ -25,7 +25,7 @@ public class SanityChecker {
 
     // 2. Otherwise, check world proximity
     if (!citizenPort.isNear(intent.citizenId(), intent.targetId(), PROXIMITY_USE)) {
-      return Optional.of("You are too far from " + intent.targetId() + " to use it.");
+      return Optional.of("You are too far from " + intent.targetId() + " to " + intent.verb().toLowerCase() + ".");
     }
 
     if (worldPort.getObject(intent.targetId()).isEmpty()) {

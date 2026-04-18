@@ -18,8 +18,6 @@ import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
 import com.caosmos.common.domain.model.items.ItemData;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +58,17 @@ class PickupActionHandlerTest {
   void testPickupSucceedsWhenNear() {
     String targetId = "rock1";
     ActionRequest request = new ActionRequest("PICKUP", null, Map.of("targetId", targetId));
-    ItemData item = new ItemData(targetId, "Rock", Collections.emptyList(), "RESOURCE", 0.1, null, null, null);
+    ItemData item = new ItemData(
+        targetId,
+        "Rock",
+        java.util.Set.of(),
+        "RESOURCE",
+        "A solid rock",
+        0.1,
+        null,
+        null,
+        null
+    );
 
     when(citizenPort.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)).thenReturn(true);
     when(worldPort.removeObject(targetId)).thenReturn(item);
@@ -76,7 +84,17 @@ class PickupActionHandlerTest {
   void testCurrencyPickupInterceptor() {
     String targetId = "bag1";
     ActionRequest request = new ActionRequest("PICKUP", null, Map.of("targetId", targetId));
-    ItemData coinBag = new ItemData(targetId, "Coin Bag", List.of("coin_container"), "COIN", 0.08, null, null, 50.0);
+    ItemData coinBag = new ItemData(
+        targetId,
+        "Coin Bag",
+        java.util.Set.of("coin_container"),
+        "COIN",
+        "A bag of coins",
+        0.08,
+        null,
+        null,
+        50.0
+    );
 
     when(citizenPort.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)).thenReturn(true);
     when(worldPort.removeObject(targetId)).thenReturn(coinBag);

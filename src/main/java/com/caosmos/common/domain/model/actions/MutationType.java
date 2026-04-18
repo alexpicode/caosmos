@@ -6,5 +6,6 @@ public enum MutationType {
   SPAWN,
   DESTROY,
   TRANSFORM,
-  MODIFY_CITIZEN
+  MODIFY_CITIZEN,
+  SET_DESCRIPTION
 }

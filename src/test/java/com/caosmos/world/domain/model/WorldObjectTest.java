@@ -17,6 +17,7 @@ class WorldObjectTest {
         "NATURE",
         new Vector3(10, 0, 10),
         Set.of(),
+        "A large oak tree",
         null,
         null, // targetZoneId
         2.0,
@@ -37,6 +38,7 @@ class WorldObjectTest {
         "FURNITURE",
         new Vector3(0, 0, 0),
         Set.of(),
+        "A sturdy wooden bench",
         null,
         null, // targetZoneId
         null,
@@ -55,7 +57,7 @@ class WorldObjectTest {
   void testDefaultPointIntersection() {
     WorldObject obj = new WorldObject(
         "test-obj", "Test", "TEST", new Vector3(0, 0, 0),
-        Set.of(), null, null, null, null, null, null
+        Set.of(), "Test Description", null, null, null, null, null, null
     );
 
     assertTrue(obj.intersects(new Vector3(0.05, 0, 0.05)), "Point very close to center should intersect");

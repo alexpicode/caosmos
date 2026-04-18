@@ -3,9 +3,12 @@ package com.caosmos.actions.application.handlers;
 import com.caosmos.actions.domain.ActionHandler;
 import com.caosmos.actions.domain.ActionThresholds;
 import com.caosmos.common.domain.contracts.CitizenPort;
+import com.caosmos.common.domain.contracts.CreativeObservationPort;
 import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.model.actions.ActionIntent;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
+import com.caosmos.common.domain.service.SanityChecker;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,8 +17,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExamineActionHandler implements ActionHandler {
 
-  private final WorldPort worldService;
-  private final CitizenPort citizenService;
+  private final WorldPort worldPort;
+  private final CitizenPort citizenPort;
+  private final SanityChecker sanityChecker;
+  private final CreativeObservationPort creativeObservationPort;
 
   @Override
   public String getActionType() {
@@ -30,14 +35,25 @@ public class ExamineActionHandler implements ActionHandler {
       return ActionResult.failure("Target ID is required for EXAMINE", getActionType());
     }
 
-    // Check proximity
-    if (!citizenService.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_EXAMINE)) {
-      return ActionResult.failure("You are too far from " + targetId + " to examine it closely.", getActionType());
+    // 1. Physical Validation (Gatekeeping)
+    ActionIntent intent = new ActionIntent(
+        citizenId,
+        getActionType(),
+        targetId,
+        null, null, null, // Context tags Resolved by the Adapter/Director
+        citizenPort.getPosition(citizenId),
+        worldPort.getObjectPosition(targetId).orElse(null)
+    );
+
+    var validationError = sanityChecker.validate(intent, citizenPort, worldPort);
+    if (validationError.isPresent()) {
+      return ActionResult.failure(validationError.get(), getActionType());
     }
 
-    String details = worldService.examineObject(targetId);
-    citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_EXAMINE);
+    // 2. Resource Consumption (Physical effort)
+    citizenPort.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_EXAMINE);
 
-    return ActionResult.success("Examined " + targetId + ": " + details, getActionType());
+    // 3. Delegate Creative Resolution
+    return creativeObservationPort.observe(citizenId, request);
   }
 }

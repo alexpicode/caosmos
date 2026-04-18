@@ -5,21 +5,25 @@ spawnables:
     name: "Ash"
     tags: [ "ash", "powder", "non-flammable" ]
     category: "RESOURCE"
+    description: "A pile of grey ash, still warm to the touch."
     radius: 0.1
   FIREWOOD:
     name: "Firewood"
     tags: [ "wood", "flammable", "fuel" ]
     category: "RESOURCE"
+    description: "A bundle of dry firewood, ready for a campfire."
     radius: 0.15
   STONE_DEBRIS:
     name: "Stone Debris"
     tags: [ "stone", "rubble", "heavy" ]
     category: "RESOURCE"
+    description: "A jagged piece of stone debris."
     radius: 0.2
   COIN_BAG:
     name: "Coin Bag"
     tags: [ "coin_container", "valuable" ]
     category: "COIN"
+    description: "A small leather bag filled with clinking coins."
     radius: 0.08
     amount: 10.0
 

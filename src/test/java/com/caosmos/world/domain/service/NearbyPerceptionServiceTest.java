@@ -175,6 +175,7 @@ class NearbyPerceptionServiceTest {
         "TEST_OBJECT",
         new Vector3(x, 0, z),
         Set.of(),
+        "Test description",
         zoneId,
         null, // targetZoneId
         0.1,  // radius

@@ -9,6 +9,7 @@ public class ItemTemplate {
   private String name;
   private List<String> tags;
   private String category;
+  private String description;
   private Double radius;
   private Double width;
   private Double length;

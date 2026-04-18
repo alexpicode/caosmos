@@ -13,6 +13,7 @@
         "nature",
         "tree"
       ],
+      "description": "A tall, sturdy oak with thick branches and deep green leaves.",
       "radius": 1.0
     },
     {
@@ -28,6 +29,7 @@
         "furniture",
         "rest"
       ],
+      "description": "A simple wooden bench, weathered by time but still comfortable.",
       "width": 2.0,
       "length": 0.8
     },
@@ -44,6 +46,7 @@
         "water",
         "decoration"
       ],
+      "description": "A magnificent stone fountain. Water flows gracefully from the central sculpture.",
       "radius": 3.0
     },
     {
@@ -59,6 +62,7 @@
         "water",
         "resource"
       ],
+      "description": "An old stone well. You can hear the echo of dripping water coming from the depths.",
       "radius": 1.5
     },
     {
@@ -75,6 +79,7 @@
         "shop",
         "glass"
       ],
+      "description": "A clean glass door that gives way to the local grocery store.",
       "radius": 0.5,
       "parentZoneId": "market",
       "targetZoneId": "grocery_store_interior"
@@ -111,6 +116,7 @@
         "house",
         "wood"
       ],
+      "description": "A solid oak door with a small iron handle, marking the entrance to Alice's house.",
       "radius": 0.5,
       "parentZoneId": "residential_zone",
       "targetZoneId": "alice_house_interior"
@@ -129,6 +135,7 @@
         "crafting",
         "construction"
       ],
+      "description": "A heavy iron hammer for blacksmithing and construction work.",
       "radius": 0.2,
       "parentZoneId": "alice_house_interior"
     },
@@ -146,6 +153,7 @@
         "woodcutting",
         "weapon"
       ],
+      "description": "A sharp axe with a wooden handle, ideal for felling trees or defense.",
       "radius": 0.2,
       "parentZoneId": "alice_house_interior"
     },
@@ -163,6 +171,7 @@
         "mining",
         "weapon"
       ],
+      "description": "A heavy steel pickaxe, its tip is worn from striking solid rock.",
       "radius": 0.2
     },
     {
@@ -179,6 +188,7 @@
         "fishing",
         "food"
       ],
+      "description": "A long flexible rod with a reinforced line and a small hook.",
       "radius": 0.2
     },
     {
@@ -195,6 +205,7 @@
         "gardening",
         "digging"
       ],
+      "description": "A small hand shovel, perfect for transplanting herbs and digging small holes.",
       "radius": 0.2,
       "parentZoneId": "alice_house_interior"
     },
@@ -213,6 +224,7 @@
         "warmth",
         "light"
       ],
+      "description": "A small stone pit with burning logs. It provides warmth and a flickering orange light.",
       "radius": 1.0
     },
     {
@@ -229,6 +241,7 @@
         "container",
         "security"
       ],
+      "description": "A sturdy wooden chest with iron reinforcements and a heavy lid.",
       "width": 1.0,
       "length": 0.6,
       "parentZoneId": "alice_house_interior"
@@ -265,6 +278,7 @@
         "metalwork",
         "tool"
       ],
+      "description": "A massive steel anvil, deeply anchored to a wooden stump.",
       "radius": 0.5,
       "parentZoneId": "blacksmith"
     },
@@ -298,6 +312,7 @@
         "nature",
         "food"
       ],
+      "description": "A dense bush full of small, dark blue berries.",
       "radius": 0.8
     },
     {
@@ -314,6 +329,7 @@
         "tree",
         "food"
       ],
+      "description": "An apple tree with heavy branches, some red fruits are visible among the leaves.",
       "radius": 1.0
     },
     {
@@ -330,6 +346,7 @@
         "food",
         "foraging"
       ],
+      "description": "A cluster of wild mushrooms growing in the shade.",
       "radius": 1.2
     },
     {
@@ -347,6 +364,7 @@
         "medicine",
         "gardening"
       ],
+      "description": "A well-kept garden with rows of aromatic and medicinal herbs.",
       "width": 3.0,
       "length": 3.0
     },

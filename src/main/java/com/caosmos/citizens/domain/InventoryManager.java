@@ -75,6 +75,7 @@ public class InventoryManager {
       if (inOther != null && itemId.equals(inOther.id())) {
         itemToEquip = new ItemData(
             inOther.id(), inOther.name(), inOther.tags(), inOther.category(),
+            inOther.description(),
             inOther.radius(), inOther.width(), inOther.length(), inOther.amount()
         );
         // Remove from other hand first
@@ -104,6 +105,7 @@ public class InventoryManager {
         itemToEquip.name(),
         itemToEquip.tags(),
         itemToEquip.category(),
+        itemToEquip.description(),
         itemToEquip.radius(),
         itemToEquip.width(),
         itemToEquip.length(),
@@ -144,6 +146,7 @@ public class InventoryManager {
             item.name(),
             item.tags(),
             item.category(),
+            item.description(),
             item.radius(),
             item.width(),
             item.length(),

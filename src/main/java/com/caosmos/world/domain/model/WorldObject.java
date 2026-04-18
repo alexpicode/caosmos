@@ -20,6 +20,7 @@ public class WorldObject implements WorldElement {
       String category,
       Vector3 position,
       Set<String> tags,
+      String description,
       String parentZoneId,
       String targetZoneId,
       Double radius,
@@ -30,6 +31,7 @@ public class WorldObject implements WorldElement {
     this.id = id;
     this.name = name;
     this.category = category;
+    this.description = description;
     this.position = position;
     setTags(tags);
     this.parentZoneId = parentZoneId;
@@ -43,6 +45,7 @@ public class WorldObject implements WorldElement {
   private String id;
   private String name;
   private String category;
+  private String description;
   private Vector3 position;
   private Set<String> tags;
   private Double amount;
@@ -77,6 +80,11 @@ public class WorldObject implements WorldElement {
   public synchronized void transform(String newName, Set<String> newTags) {
     this.name = newName;
     setTags(newTags);
+    this.description = null;
+  }
+
+  public synchronized void setDescription(String description) {
+    this.description = description;
   }
 
   private String parentZoneId;

@@ -18,7 +18,6 @@ import com.caosmos.world.domain.service.SpeechManager;
 import com.caosmos.world.domain.service.ZoneManager;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -139,6 +138,16 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
+  public void updateObjectDescription(String objectId, String description) {
+    spatialHash.getById(objectId).ifPresent(entity -> {
+      if (entity instanceof WorldObject obj) {
+        obj.setDescription(description);
+        log.debug("Updated description for object {}", objectId);
+      }
+    });
+  }
+
+  @Override
   public void removeObjectTag(String objectId, String tag) {
     spatialHash.getById(objectId).ifPresent(entity -> {
       if (entity instanceof WorldObject obj) {
@@ -168,8 +177,9 @@ public class WorldAdapter implements WorldPort {
           ItemData data = new ItemData(
               obj.getId(),
               obj.getName(),
-              new ArrayList<>(obj.getTags()),
+              obj.getTags(),
               obj.getCategory(),
+              obj.getDescription(),
               obj.getRadius(),
               obj.getWidth(),
               obj.getLength(),
@@ -187,7 +197,7 @@ public class WorldAdapter implements WorldPort {
 
     // 1. Detect the zone at the spawn position to ensure visibility
     String zoneId = zoneManager.findZoneAt(pos, null)
-        .map(com.caosmos.world.domain.model.Zone::getId)
+        .map(Zone::getId)
         .orElse(null);
 
     // 2. Create the WorldObject with technical properties from ItemData
@@ -196,7 +206,8 @@ public class WorldAdapter implements WorldPort {
         data.name(),
         data.category(),
         pos,
-        new HashSet<>(data.tags()),
+        data.tags(),
+        data.description(),
         zoneId,
         null, // targetZoneId (not a gateway)
         data.radius(),
@@ -214,13 +225,6 @@ public class WorldAdapter implements WorldPort {
     // Basic implementation: for now, everything is walkable
     // TODO In a real scenario, this would check collision maps or world state
     return true;
-  }
-
-  @Override
-  public String examineObject(String objectId) {
-    // TODO Examine object in the world
-    log.debug("Examining object {}", objectId);
-    return "You see a " + objectId; // Mock description
   }
 
   @Override

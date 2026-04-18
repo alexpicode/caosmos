@@ -17,6 +17,8 @@ public interface WorldPort {
 
   void removeObjectTag(String objectId, String tag);
 
+  void updateObjectDescription(String objectId, String description);
+
   void transformObject(String objectId, String newEntityType, Set<String> newTags);
 
   ItemData removeObject(String objectId);
@@ -24,8 +26,6 @@ public interface WorldPort {
   void spawnObject(Vector3 pos, ItemData data);
 
   boolean isWalkable(Vector3 pos);
-
-  String examineObject(String objectId);
 
   void interactWithObject(String objectId);
 

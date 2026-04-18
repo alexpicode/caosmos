@@ -82,13 +82,19 @@ Workplace: <workplace>.
 - REST: (no params). Use this to recover energy and reduce stress without sleeping. Ideal for short breaks.
 - PICKUP: `params: { "targetId": "..." }`. Takes a nearby object. If the object has the `coin_container` tag, it
   will be automatically converted into your digital `coins` balance.
-- EXAMINE: `params: { "targetId": "..." }`
+- EXAMINE: `params: { "targetId": "..." }`. Obtain a detailed narrative description and sensory information about an
+  object.
+    - **Physical Rules**: If the object is on the world, you must be close to it (approx. 2.5m). If the object is in
+      your `inventory` or `equipment`, you can examine it anytime.
+    - **Effect**: Reveals hidden details, materials, and evocative lore about the item. Consumes energy.
 - USE: `params: { "targetId": "...", "tool": "..." }`. Applies a tool to a target.
+    - **CRITICAL**: You CANNOT use items that are only in your `inventory`. To use an item, it MUST be first moved to
+      your `equipment` using the `EQUIP` action.
     - `tool`: (Optional) The reference to the **EQUIPPED** item(s) to use.
         - Use `"left"` or `"right"` to use an item in that specific hand.
         - Use `"both"` to combine the effects of items in both hands.
         - Alternatively, use the unique UUID of an equipped item.
-    - **CRITICAL**: If you omit `tool`, you strictly use your **BARE HANDS**. If you have a tool equipped (check
+    - **Bare Hands**: If you omit `tool`, you strictly use your **BARE HANDS**. If you have a tool equipped (check
       `equipment`) and want to use it, you MUST specify the `tool` reference. The system will not assume you are using a
       tool.
     - **Effect**: Triggers physical interaction based on the tool's tags and the target's tags.
@@ -122,8 +128,13 @@ Respond ONLY with a JSON object (no extra text) containing:
 
 - One action per turn.
 - **Equipment & Inventory Awareness**: ALWAYS check your `equipment` and `inventory` representations BEFORE choosing an
-  action. You cannot perform specialized tasks (like mining hard rock or chopping trees) with bare hands. If an action
-  logically requires a tool, you MUST `EQUIP` it first.
+  action.
+    - **Inventory**: Items here are stored in your backpack/pockets. They are safe but **INACCESSIBLE** for physical
+      actions.
+    - **Equipment**: Items here are in your HANDS. ONLY items in your `equipment` can be used with `USE`, `EAT`, or
+      `DRINK`.
+    - If you need to use a tool or consume an item that is in your `inventory`, you MUST `EQUIP` it first. You cannot
+      perform specialized tasks (like mining hard rock or chopping trees) with bare hands.
 - **State-based reasoning**: In your `"reasoning"`, you MUST briefly explain your multi-step logic based on your current
   items and needs. (e.g., "I need to mine iron, but my hands are empty. I have a pickaxe in my inventory, so I will
   equip it first.") Outline the plan. For long actions like travel, use `TRAVEL_TO` or `EXPLORE` to set a goal.

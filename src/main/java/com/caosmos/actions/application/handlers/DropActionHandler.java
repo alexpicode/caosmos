@@ -9,7 +9,7 @@ import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -57,11 +57,12 @@ public class DropActionHandler implements ActionHandler {
         ItemData coinBag = new ItemData(
             "coin_bag_" + UUID.randomUUID().toString().substring(0, 8),
             "Coin Bag",
-            List.of("coin_container", "valuable"),
+            Set.of("coin_container", "valuable"),
             "COIN",
+            "A small bag with " + amount + " clinking coins inside.",
             0.08,
-            null,
-            null,
+            null, // width
+            null, // length
             amount
         );
         worldService.spawnObject(citizenPos, coinBag);

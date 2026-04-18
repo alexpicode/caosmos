@@ -56,7 +56,17 @@ class EffectResolverTest {
 
   @Test
   void shouldResolveDestroyWithFallback() {
-    ItemData removedItem = new ItemData("obj1", "Log", List.of("burnable"), "RESOURCE", 0.1, null, null, null);
+    ItemData removedItem = new ItemData(
+        "obj1",
+        "Log",
+        java.util.Set.of("burnable"),
+        "RESOURCE",
+        "A heavy wooden log",
+        0.1,
+        null,
+        null,
+        null
+    );
     when(worldPort.removeObject("obj1")).thenReturn(removedItem);
     when(registryConfig.getDestructionFallbacks()).thenReturn(Map.of("burnable", "ASH"));
     ItemTemplate ashTemplate = new ItemTemplate();

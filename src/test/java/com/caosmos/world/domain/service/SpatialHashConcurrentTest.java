@@ -27,7 +27,7 @@ class SpatialHashConcurrentTest {
             WorldObject obj = new WorldObject(
                 id, "Obj-" + id, "RESOURCE",
                 new Vector3(Math.random() * 100, 0, Math.random() * 100),
-                java.util.Set.of(), null, null, null, null, null, null
+                java.util.Set.of(), "Concurrent Test Obj", null, null, null, null, null, null
             );
 
             // Randomly perform different operations

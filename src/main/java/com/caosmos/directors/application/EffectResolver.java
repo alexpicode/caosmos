@@ -58,6 +58,7 @@ public class EffectResolver {
       case TRANSFORM -> handleTransform(mut);
       case SPAWN -> handleSpawn(citizenId, mut);
       case MODIFY_CITIZEN -> handleModifyCitizen(citizenId, mut);
+      case SET_DESCRIPTION -> worldPort.updateObjectDescription(mut.targetId(), mut.value());
     }
   }
 
@@ -179,8 +180,9 @@ public class EffectResolver {
     ItemData data = new ItemData(
         typeKey + "_" + UUID.randomUUID().toString().substring(0, 8),
         template.getName(),
-        template.getTags(),
+        new HashSet<>(template.getTags()),
         template.getCategory(),
+        template.getDescription(),
         template.getRadius(),
         template.getWidth(),
         template.getLength(),

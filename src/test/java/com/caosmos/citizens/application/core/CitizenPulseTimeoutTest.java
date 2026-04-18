@@ -2,6 +2,7 @@ package com.caosmos.citizens.application.core;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -19,6 +20,7 @@ import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.CurrentState;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
+import com.caosmos.common.domain.contracts.SimulationClock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +39,7 @@ class CitizenPulseTimeoutTest {
   private PulseConfiguration pulseConfiguration;
   private EntityTelemetryService telemetryService;
   private ConversationManager conversationManager;
+  private SimulationClock simulationClock;
   private CitizenPulse citizenPulse;
 
   @BeforeEach
@@ -48,6 +51,7 @@ class CitizenPulseTimeoutTest {
     physiologicalMotor = mock(PhysiologicalMotor.class, RETURNS_DEEP_STUBS);
     telemetryService = mock(EntityTelemetryService.class);
     conversationManager = mock(ConversationManager.class);
+    simulationClock = mock(SimulationClock.class);
     pulseConfiguration = new PulseConfiguration(10, mock(Resource.class), mock(Resource.class), 20);
 
     when(citizen.getCitizenProfile().identity().name()).thenReturn("TestCitizen");
@@ -85,7 +89,8 @@ class CitizenPulseTimeoutTest {
         physiologicalMotor,
         pulseConfiguration,
         telemetryService,
-        conversationManager
+        conversationManager,
+        simulationClock
     );
   }
 
@@ -114,6 +119,6 @@ class CitizenPulseTimeoutTest {
     // Wait, cancelTask arguments depend on what handleInterruption sends.
     verify(decisionMaker, times(1)).makeDecision(any(), any(), any());
     // Also verify taskManager execution is NEVER called because physiological crisis aborts execution
-    verify(taskManager, never()).executeActiveTask(any(), any());
+    verify(taskManager, never()).executeActiveTask(any(), any(), anyDouble());
   }
 }

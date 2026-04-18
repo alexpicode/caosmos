@@ -1,12 +1,13 @@
 package com.caosmos.citizens.domain.model.perception;
 
-import java.util.List;
+import java.util.Set;
 
 public record EquippedItem(
     String id,
     String name,
-    List<String> tags,
+    Set<String> tags,
     String category,
+    String description,
     Double radius,
     Double width,
     Double length,
