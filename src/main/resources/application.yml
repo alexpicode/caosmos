@@ -33,6 +33,7 @@ caosmos:
     max-ticks-without-decision: 60    # Maximum number of marks without the LLM having made a decision
     max-conversation-participants: 4  # Maximum number of participants in a single conversation session
   world:
+    max-instant-coverage-area: 100.0  # Zones smaller than this are fully explored upon entry
     max-vision-distance: 30.0         # Maximum distance for searching nearby objects
     time:
       time-scale: 60.0                # 1 real second = 60 simulation seconds (1 minute)

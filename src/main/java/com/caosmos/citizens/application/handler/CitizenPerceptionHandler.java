@@ -6,6 +6,7 @@ import com.caosmos.citizens.domain.model.perception.FullPerception;
 import com.caosmos.citizens.domain.model.perception.MentalMap;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.ReflexResult;
+import com.caosmos.citizens.domain.model.perception.RememberedPOI;
 import com.caosmos.citizens.domain.model.perception.SpeechMessage;
 import com.caosmos.common.domain.contracts.SimulationClock;
 import com.caosmos.common.domain.contracts.WorldPerceptionProvider;
@@ -14,6 +15,7 @@ import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.SpeechTone;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldPerception;
+import com.caosmos.common.domain.model.world.ZoneMetadata;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,10 +110,40 @@ public class CitizenPerceptionHandler {
 
   private void synchronizeSpatialContext(Citizen citizen, Vector3 position, WorldPerception perception) {
     if (perception != null && perception.location() != null) {
-      citizen.enterZone(perception.location().zoneId(), perception.location().zone());
+      String zoneId = perception.location().zoneId();
+      String zoneName = perception.location().zone();
+
+      citizen.enterZone(zoneId, zoneName);
+
+      // --- Exploration Logic ---
+      if (zoneId != null) {
+        ZoneMetadata meta = worldPort.getZoneMetadata(zoneId).orElse(null);
+        if (meta != null) {
+          // 1. Enter zone in tracker
+          boolean canSeeAll = "INTERIOR".equals(meta.zoneType()) &&
+              worldPort.canSeeEntireZone(position, zoneId, 30.0); // visionRadius = 30.0
+
+          citizen.exploration().enterZone(meta, canSeeAll);
+
+          // 2. Update exploration sweep if interior and not fully explored
+          if ("INTERIOR".equals(meta.zoneType()) && !canSeeAll) {
+            citizen.exploration().updateExploration(zoneId, position, 30.0, meta.width(), meta.length());
+          }
+
+          // 3. Register POIs from perception
+          perception.nearbyElements().stream()
+              .filter(e -> EntityType.OBJECT == e.type())
+              .filter(e -> e.tags() != null && !e.tags().isEmpty()) // Significant if it has tags
+              .forEach(e -> citizen.exploration().registerPOI(
+                  zoneId, new RememberedPOI(
+                      e.id(), e.name(), e.category(), e.tags(), e.direction()
+                  )
+              ));
+        }
+      }
     }
 
-    MentalMap mentalMap = mentalMapper.calculate(citizen, position);
+    MentalMap mentalMap = mentalMapper.calculate(citizen, position, perception);
     citizen.updateMentalMap(mentalMap);
   }
 }

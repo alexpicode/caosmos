@@ -1,22 +1,33 @@
 package com.caosmos.citizens.domain.model.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
 import com.caosmos.citizens.domain.model.perception.Status;
 import com.caosmos.citizens.domain.task.TravelToTask;
+import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.model.world.CollisionResult;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.Collections;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class TravelToTaskTest {
 
   private Citizen citizen;
   private TravelToTask task;
+
+  @Mock
+  private WorldPort worldPort;
 
   @BeforeEach
   void setUp() {
@@ -28,7 +39,12 @@ class TravelToTaskTest {
     CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Normal", "manifest-1", 0.0);
 
     citizen = new Citizen(uuid, profile);
-    task = new TravelToTask(new Vector3(100, 0, 100), "target-1");
+
+    // Default mock behavior: no collision, just return target position
+    lenient().when(worldPort.validateMovement(any(), any(), any()))
+        .thenAnswer(invocation -> new CollisionResult(invocation.getArgument(1), false));
+
+    task = new TravelToTask(new Vector3(100, 0, 100), "target-1", worldPort);
   }
 
   @Test
@@ -38,10 +54,10 @@ class TravelToTaskTest {
 
     Status status = citizen.getPerception().status();
 
-    // Navigation energy cost: -1.5/h
-    assertEquals(100.0 - 1.5, status.energy(), 0.01);
-    // Navigation hunger cost: +1.0/h
-    assertEquals(1.0, status.hunger(), 0.01);
+    // Navigation energy cost: -2.0/h
+    assertEquals(100.0 - 2.0, status.energy(), 0.01);
+    // Navigation hunger increase: +2.0/h
+    assertEquals(0.0 + 2.0, status.hunger(), 0.01);
   }
 
   @Test

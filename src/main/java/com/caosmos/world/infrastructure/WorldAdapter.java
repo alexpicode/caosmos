@@ -2,12 +2,14 @@ package com.caosmos.world.infrastructure;
 
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.items.ItemData;
+import com.caosmos.common.domain.model.world.CollisionResult;
 import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
 import com.caosmos.common.domain.model.world.GatewayTransition;
 import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneMetadata;
 import com.caosmos.common.domain.model.world.ZoneType;
 import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.model.Zone;
@@ -15,6 +17,8 @@ import com.caosmos.world.domain.service.EnvironmentNormalizer;
 import com.caosmos.world.domain.service.EnvironmentService;
 import com.caosmos.world.domain.service.SpatialHash;
 import com.caosmos.world.domain.service.SpeechManager;
+import com.caosmos.world.domain.service.VisualCoverageCalculator;
+import com.caosmos.world.domain.service.ZoneCollisionService;
 import com.caosmos.world.domain.service.ZoneManager;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +41,8 @@ public class WorldAdapter implements WorldPort {
   private final SpeechManager speechManager;
   private final EnvironmentService environmentService;
   private final EnvironmentNormalizer environmentNormalizer;
+  private final ZoneCollisionService zoneCollisionService;
+  private final VisualCoverageCalculator visualCoverageCalculator;
 
   @Override
   public boolean isNearObjectWithTag(Vector3 position, String tag, double maxDistance) {
@@ -260,5 +266,41 @@ public class WorldAdapter implements WorldPort {
     return spatialHash.getById(objectId)
         .map(WorldElement::getTags)
         .orElse(Collections.emptySet());
+  }
+
+  @Override
+  public CollisionResult validateMovement(Vector3 from, Vector3 to, String zoneId) {
+    if (zoneId == null) {
+      return new CollisionResult(to, false);
+    }
+    return zoneManager.getZone(zoneId)
+        .map(zone -> zoneCollisionService.validateMovement(from, to, zone))
+        .orElse(new CollisionResult(to, false));
+  }
+
+  @Override
+  public boolean canSeeEntireZone(Vector3 observerPos, String zoneId, double visionRadius) {
+    if (zoneId == null) {
+      return false;
+    }
+    return zoneManager.getZone(zoneId)
+        .map(zone -> visualCoverageCalculator.canSeeEntireZone(observerPos, zone, visionRadius))
+        .orElse(false);
+  }
+
+  @Override
+  public Optional<ZoneMetadata> getZoneMetadata(String zoneId) {
+    if (zoneId == null) {
+      return Optional.of(new ZoneMetadata(null, "Open World", ZoneType.EXTERIOR.name(), "WORLD", 0.0, 0.0));
+    }
+    return zoneManager.getZone(zoneId)
+        .map(zone -> new ZoneMetadata(
+            zone.getId(),
+            zone.getName(),
+            zone.getZoneType().name(),
+            zone.getCategory(),
+            zone.getWidth(),
+            zone.getLength()
+        ));
   }
 }

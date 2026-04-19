@@ -37,9 +37,7 @@ public class Citizen implements WorldElement {
   private final BiologyManager biologyManager;
   private final InventoryManager inventoryManager;
   private final EconomyManager economyManager;
-
-  @Getter
-  private final Set<String> visitedZoneIds = new HashSet<>();
+  private final ExplorationTracker explorationTracker;
 
   @Getter
   private CurrentState currentState;
@@ -50,6 +48,7 @@ public class Citizen implements WorldElement {
     this.biologyManager = new BiologyManager(citizenProfile.status());
     this.inventoryManager = new InventoryManager(20);
     this.economyManager = new EconomyManager(citizenProfile.coins() != null ? citizenProfile.coins() : 0.0);
+    this.explorationTracker = new ExplorationTracker();
 
     // Initialize position from BaseLocation
     Vector3 initialPosition = null;
@@ -82,6 +81,10 @@ public class Citizen implements WorldElement {
 
   public EconomyManager economy() {
     return economyManager;
+  }
+
+  public ExplorationTracker exploration() {
+    return explorationTracker;
   }
 
   // --- Convenience Methods ---
@@ -251,15 +254,15 @@ public class Citizen implements WorldElement {
   }
 
   public boolean isZoneVisited(String zoneId) {
-    return zoneId != null && visitedZoneIds.contains(zoneId);
+    return explorationTracker.isZoneVisited(zoneId);
+  }
+
+  public Set<String> getVisitedZoneIds() {
+    return explorationTracker.getVisitedZoneIds();
   }
 
   public synchronized void enterZone(String zoneId, String zoneName) {
     this.currentState.setCurrentZoneId(zoneId);
     this.currentState.setCurrentZone(zoneName);
-
-    if (zoneId != null) {
-      this.visitedZoneIds.add(zoneId.toLowerCase());
-    }
   }
 }

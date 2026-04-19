@@ -5,6 +5,8 @@ import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
+import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.model.world.CollisionResult;
 import com.caosmos.common.domain.model.world.Vector3;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +24,15 @@ public class ExploreTask implements Task {
   @Getter
   private final String targetCategory;
   private final String reason;
+  private final WorldPort worldPort;
   private Vector3 startPosition;
   private Vector3 targetPosition;
 
-  public ExploreTask(Vector3 direction, String targetCategory, String reason) {
+  public ExploreTask(Vector3 direction, String targetCategory, String reason, WorldPort worldPort) {
     this.directionNormalized = direction.normalize();
     this.targetCategory = targetCategory != null ? targetCategory.toLowerCase() : null;
     this.reason = reason;
+    this.worldPort = worldPort;
   }
 
   @Override
@@ -78,7 +82,17 @@ public class ExploreTask implements Task {
     double newZ = currentPos.z() + (targetPosition.z() - currentPos.z()) * ratio;
 
     Vector3 newPos = new Vector3(newX, newY, newZ);
-    citizen.getCurrentState().setPosition(newPos);
+
+    // Validate collision
+    String currentZoneId = citizen.getCurrentState().getCurrentZoneId();
+    CollisionResult collision = worldPort.validateMovement(currentPos, newPos, currentZoneId);
+
+    citizen.getCurrentState().setPosition(collision.clampedPosition());
+
+    if (collision.wasBlocked()) {
+      log.info("Citizen {} exploration blocked by interior boundary.", citizen.getUuid());
+      return toActiveTask(citizen).withCompleted(true).withGoal("Blocked by wall");
+    }
 
     return toActiveTask(citizen);
   }

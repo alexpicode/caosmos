@@ -340,7 +340,7 @@ public class CitizenAdapter implements CitizenPort {
   @Override
   public void assignTravelToTask(UUID citizenId, Vector3 target, String targetId) {
     log.debug("Setting TravelTo task for citizen {} to {}", citizenId, target);
-    registerAndSyncTask(citizenId, new TravelToTask(target, targetId));
+    registerAndSyncTask(citizenId, new TravelToTask(target, targetId, worldPort));
   }
 
   @Override
@@ -352,7 +352,7 @@ public class CitizenAdapter implements CitizenPort {
         targetCategory,
         reason
     );
-    registerAndSyncTask(citizenId, new ExploreTask(direction, targetCategory, reason));
+    registerAndSyncTask(citizenId, new ExploreTask(direction, targetCategory, reason, worldPort));
   }
 
   @Override

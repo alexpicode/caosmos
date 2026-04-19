@@ -5,6 +5,8 @@ import com.caosmos.citizens.domain.PhysiologicalThresholds;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.FullPerception;
+import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.model.world.CollisionResult;
 import com.caosmos.common.domain.model.world.Vector3;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,10 +20,12 @@ public class TravelToTask implements Task {
 
   private final Vector3 target;
   private final String targetId;
+  private final WorldPort worldPort;
 
-  public TravelToTask(Vector3 target, String targetId) {
+  public TravelToTask(Vector3 target, String targetId, WorldPort worldPort) {
     this.target = target;
     this.targetId = targetId;
+    this.worldPort = worldPort;
   }
 
   @Override
@@ -68,7 +72,17 @@ public class TravelToTask implements Task {
     double newZ = currentPos.z() + (target.z() - currentPos.z()) * ratio;
 
     Vector3 newPos = new Vector3(newX, newY, newZ);
-    citizen.getCurrentState().setPosition(newPos);
+
+    // Validate collision
+    String currentZoneId = citizen.getCurrentState().getCurrentZoneId();
+    CollisionResult collision = worldPort.validateMovement(currentPos, newPos, currentZoneId);
+
+    citizen.getCurrentState().setPosition(collision.clampedPosition());
+
+    if (collision.wasBlocked()) {
+      log.info("Citizen {} path blocked by interior boundary.", citizen.getUuid());
+      return toActiveTask(citizen).withCompleted(true).withGoal("Path blocked by interior boundary");
+    }
 
     log.debug("Citizen {} moved towards {}. New pos: {}", citizen.getUuid(), target, newPos);
 

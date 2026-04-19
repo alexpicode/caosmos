@@ -36,12 +36,12 @@ class SleepTaskTest {
 
     Status status = citizen.getPerception().status();
 
-    // Energy recovery rate: 10/h
-    assertEquals(20.0 + 10.0, status.energy(), 0.01);
+    // Energy recovery rate: 18.5/h
+    assertEquals(20.0 + 18.5, status.energy(), 0.01);
     // Stress reduction rate: -5/h
     assertEquals(50.0 - 5.0, status.stress(), 0.01);
-    // Hunger increase rate: 0.2/h
-    assertEquals(50.0 + 0.2, status.hunger(), 0.01);
+    // Hunger increase rate: 0.5/h
+    assertEquals(50.0 + 0.5, status.hunger(), 0.01);
   }
 
   @Test

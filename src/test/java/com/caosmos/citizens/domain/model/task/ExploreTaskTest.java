@@ -2,6 +2,8 @@ package com.caosmos.citizens.domain.model.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 
 import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenProfile;
@@ -9,16 +11,25 @@ import com.caosmos.citizens.domain.model.perception.ActiveTask;
 import com.caosmos.citizens.domain.model.perception.Identity;
 import com.caosmos.citizens.domain.model.perception.Status;
 import com.caosmos.citizens.domain.task.ExploreTask;
+import com.caosmos.common.domain.contracts.WorldPort;
+import com.caosmos.common.domain.model.world.CollisionResult;
 import com.caosmos.common.domain.model.world.Vector3;
 import java.util.Collections;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class ExploreTaskTest {
 
   private Citizen citizen;
   private ExploreTask task;
+
+  @Mock
+  private WorldPort worldPort;
 
   @BeforeEach
   void setUp() {
@@ -29,8 +40,13 @@ class ExploreTaskTest {
     CitizenProfile profile = new CitizenProfile(identity, initialStatus, base, "Adventurous", "manifest-1", 0.0);
 
     citizen = new Citizen(uuid, profile);
+
+    // Default mock behavior: no collision, just return target position
+    lenient().when(worldPort.validateMovement(any(), any(), any()))
+        .thenAnswer(invocation -> new CollisionResult(invocation.getArgument(1), false));
+
     // Explore North (0, 0, 1)
-    task = new ExploreTask(new Vector3(0, 0, 1), null, null);
+    task = new ExploreTask(new Vector3(0, 0, 1), null, null, worldPort);
   }
 
   @Test

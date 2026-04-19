@@ -11,10 +11,13 @@ import com.caosmos.citizens.domain.model.CitizenProfile;
 import com.caosmos.citizens.domain.model.perception.Identity;
 import com.caosmos.citizens.domain.model.perception.PerceptionEvaluation;
 import com.caosmos.citizens.domain.model.perception.Status;
+import com.caosmos.citizens.domain.task.ExploreTask;
+import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.Location;
 import com.caosmos.common.domain.model.world.NearbyElement;
+import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldDate;
 import com.caosmos.common.domain.model.world.WorldPerception;
 import com.caosmos.common.domain.model.world.ZoneType;
@@ -24,7 +27,11 @@ import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class PerceptionMonitorTest {
 
   private PerceptionMonitor monitor;
@@ -34,6 +41,9 @@ class PerceptionMonitorTest {
 
   private TaskRegistry taskRegistry;
   private SocialHeuristicsEngine socialHeuristicsEngine;
+
+  @Mock
+  private WorldPort worldPort;
 
   @BeforeEach
   void setUp() {
@@ -174,10 +184,11 @@ class PerceptionMonitorTest {
   void shouldCompleteSearchWhenEnteringTargetCategoryZone() {
     // Arrange
     taskRegistry.register(
-        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
-            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+        citizen.getUuid(), new ExploreTask(
+            new Vector3(1, 0, 0),
             "MINING",
-            "Looking for gold"
+            "Looking for gold",
+            worldPort
         )
     );
 
@@ -203,10 +214,11 @@ class PerceptionMonitorTest {
     citizen.enterZone("zone-mine", "Gold Mine");
 
     taskRegistry.register(
-        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
-            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+        citizen.getUuid(), new ExploreTask(
+            new Vector3(1, 0, 0),
             "MINING",
-            "Looking for gold"
+            "Looking for gold",
+            worldPort
         )
     );
 
@@ -229,10 +241,11 @@ class PerceptionMonitorTest {
   void shouldCompleteSearchWhenSeeingTargetCategoryObject() {
     // Arrange
     taskRegistry.register(
-        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
-            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+        citizen.getUuid(), new ExploreTask(
+            new Vector3(1, 0, 0),
             "TOOL",
-            "Looking for a pickaxe"
+            "Looking for a pickaxe",
+            worldPort
         )
     );
 
@@ -269,10 +282,11 @@ class PerceptionMonitorTest {
   void shouldCompleteSearchWhenTargetZoneIsNearby() {
     // Arrange
     taskRegistry.register(
-        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
-            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+        citizen.getUuid(), new ExploreTask(
+            new Vector3(1, 0, 0),
             "MARKET",
-            "Looking for a market"
+            "Looking for a market",
+            worldPort
         )
     );
 
@@ -309,10 +323,11 @@ class PerceptionMonitorTest {
   void shouldPrioritizeSearchTargetOverNovelty() {
     // Arrange: Enter a NEW zone that is also the target category
     taskRegistry.register(
-        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
-            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+        citizen.getUuid(), new ExploreTask(
+            new Vector3(1, 0, 0),
             "MINING",
-            "Looking for gold"
+            "Looking for gold",
+            worldPort
         )
     );
 
@@ -340,10 +355,11 @@ class PerceptionMonitorTest {
   void shouldPrioritizeSearchTargetOverInterestingObject() {
     // Arrange: See an interesting object AND the target object
     taskRegistry.register(
-        citizen.getUuid(), new com.caosmos.citizens.domain.task.ExploreTask(
-            new com.caosmos.common.domain.model.world.Vector3(1, 0, 0),
+        citizen.getUuid(), new ExploreTask(
+            new Vector3(1, 0, 0),
             "TOOL",
-            "Looking for a pickaxe"
+            "Looking for a pickaxe",
+            worldPort
         )
     );
 

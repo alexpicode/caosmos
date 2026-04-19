@@ -1,11 +1,13 @@
 package com.caosmos.common.domain.contracts;
 
 import com.caosmos.common.domain.model.items.ItemData;
+import com.caosmos.common.domain.model.world.CollisionResult;
 import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
 import com.caosmos.common.domain.model.world.GatewayTransition;
 import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneMetadata;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,4 +54,10 @@ public interface WorldPort {
   SortedSet<EnvironmentImpactTag> getNormalizedEnvironmentTags(String zoneId);
 
   Set<String> getObjectTags(String objectId);
+
+  CollisionResult validateMovement(Vector3 from, Vector3 to, String zoneId);
+
+  boolean canSeeEntireZone(Vector3 observerPos, String zoneId, double visionRadius);
+
+  Optional<ZoneMetadata> getZoneMetadata(String zoneId);
 }

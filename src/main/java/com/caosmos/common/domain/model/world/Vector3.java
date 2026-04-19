@@ -36,4 +36,36 @@ public record Vector3(
     }
     return new Vector3(x / mag, y / mag, z / mag);
   }
+
+  /**
+   * Linear interpolation: this + t * (other - this)
+   */
+  public Vector3 lerp(Vector3 other, double t) {
+    return new Vector3(
+        this.x + (other.x - this.x) * t,
+        this.y + (other.y - this.y) * t,
+        this.z + (other.z - this.z) * t
+    );
+  }
+
+  /**
+   * Vector addition
+   */
+  public Vector3 add(Vector3 other) {
+    return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
+  }
+
+  /**
+   * Vector subtraction
+   */
+  public Vector3 subtract(Vector3 other) {
+    return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+  }
+
+  /**
+   * Scalar multiplication
+   */
+  public Vector3 scale(double factor) {
+    return new Vector3(this.x * factor, this.y * factor, this.z * factor);
+  }
 }
