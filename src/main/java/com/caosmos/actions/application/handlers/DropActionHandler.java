@@ -65,7 +65,8 @@ public class DropActionHandler implements ActionHandler {
             null, // length
             amount
         );
-        worldService.spawnObject(citizenPos, coinBag);
+        String currentZoneId = citizenService.getCurrentZoneId(citizenId);
+        worldService.spawnObject(citizenPos, currentZoneId, coinBag);
         citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_DROP);
         return ActionResult.success("Dropped " + amount + " coins", getActionType());
       } else {
@@ -77,7 +78,8 @@ public class DropActionHandler implements ActionHandler {
 
     if (item != null) {
       Vector3 citizenPos = citizenService.getPosition(citizenId);
-      worldService.spawnObject(citizenPos, item);
+      String currentZoneId = citizenService.getCurrentZoneId(citizenId);
+      worldService.spawnObject(citizenPos, currentZoneId, item);
       citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_DROP);
       return ActionResult.success("Dropped " + item.name(), getActionType());
     } else {

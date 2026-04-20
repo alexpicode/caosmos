@@ -62,6 +62,8 @@ public interface CitizenPort {
 
   boolean isNear(UUID citizenId, String targetId, double maxDistance);
 
+  boolean isNearObjectWithTag(UUID citizenId, String tag, double maxDistance);
+
   boolean isItemEquippedWithTag(UUID citizenId, String tag);
 
   Set<String> getEquippedItemTags(UUID citizenId, String itemId);

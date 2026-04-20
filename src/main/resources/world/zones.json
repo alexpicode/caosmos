@@ -93,7 +93,7 @@
       "name": "Blacksmith Vault",
       "parentZoneId": "blacksmith",
       "type": "INTERIOR",
-      "category": "MINING",
+      "category": "HIDDEN",
       "isEntryRestricted": true,
       "physicalTags": [
         "vault",
@@ -165,7 +165,7 @@
       "type": "INTERIOR",
       "category": "MINING",
       "parentZoneId": null,
-      "isEntryRestricted": false,
+      "isEntryRestricted": true,
       "physicalTags": [
         "mine",
         "rocky",

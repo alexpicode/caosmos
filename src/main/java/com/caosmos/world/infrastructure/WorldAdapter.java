@@ -45,13 +45,14 @@ public class WorldAdapter implements WorldPort {
   private final VisualCoverageCalculator visualCoverageCalculator;
 
   @Override
-  public boolean isNearObjectWithTag(Vector3 position, String tag, double maxDistance) {
+  public boolean isNearObjectWithTag(Vector3 position, String currentZoneId, String tag, double maxDistance) {
     if (tag == null) {
       return false;
     }
     String normalizedTag = tag.toLowerCase();
     return spatialHash.getNearbyEntities(position, maxDistance).stream()
         .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
+        .filter(entity -> isAccessible(entity, currentZoneId))
         .anyMatch(entity -> entity.getTags().contains(normalizedTag));
   }
 
@@ -72,9 +73,10 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
-  public boolean isNearObject(Vector3 position, String objectId, double maxDistance) {
+  public boolean isNearObject(Vector3 position, String currentZoneId, String objectId, double maxDistance) {
     return spatialHash.getById(objectId)
         .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
+        .filter(entity -> isAccessible(entity, currentZoneId))
         .map(entity -> {
           if (entity instanceof WorldObject obj) {
             if (obj.intersects(position)) {
@@ -93,6 +95,37 @@ public class WorldAdapter implements WorldPort {
           return entity.getPosition().distanceTo2D(position) <= maxDistance;
         })
         .orElse(false);
+  }
+
+  private boolean isAccessible(WorldElement target, String observerZoneId) {
+    String elementZoneId = target.getZoneId();
+
+    // 1. Same zone: Always accessible
+    if (Objects.equals(elementZoneId, observerZoneId)) {
+      return true;
+    }
+
+    // 2. Strict Interior isolation: If target is in an Interior, observer MUST be in the same zone
+    // We check this by looking up the zone type
+    if (elementZoneId != null) {
+      Optional<Zone> zone = zoneManager.getZone(elementZoneId);
+      if (zone.isPresent() && ZoneType.INTERIOR == zone.get().getZoneType()) {
+        return false;
+      }
+    }
+
+    // 3. Fallback for Exteriors: If target is in an Exterior, we allow access if the observer 
+    // is in the same zone or in a child Interior (e.g. reachable through a door/window)
+    // For now, let's keep it simple: if either is Interior and they don't match, block.
+    if (observerZoneId != null) {
+      Optional<Zone> observerZone = zoneManager.getZone(observerZoneId);
+      if (observerZone.isPresent() && ZoneType.INTERIOR == observerZone.get().getZoneType()) {
+        // From inside an Interior, you can't reach Exterior objects
+        return false;
+      }
+    }
+
+    return true; // Both are exterior and don't match? Potentially possible (siblings)
   }
 
   @Override
@@ -198,13 +231,17 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
-  public void spawnObject(Vector3 pos, ItemData data) {
-    log.info("Spawning object {} ({}) at {}", data.id(), data.name(), pos);
+  public void spawnObject(Vector3 pos, String currentZoneId, ItemData data) {
+    log.info("Spawning object {} ({}) at {} in zone {}", data.id(), data.name(), pos, currentZoneId);
 
-    // 1. Detect the zone at the spawn position to ensure visibility
-    String zoneId = zoneManager.findZoneAt(pos, null)
-        .map(Zone::getId)
-        .orElse(null);
+    // 1. We prioritize the passed currentZoneId to ensure logical consistency (e.g. dropping inside a house)
+    // If null, we try to detect it, but it's better to pass it from the citizen context.
+    String zoneId = currentZoneId;
+    if (zoneId == null) {
+      zoneId = zoneManager.findZoneAt(pos, null)
+          .map(Zone::getId)
+          .orElse(null);
+    }
 
     // 2. Create the WorldObject with technical properties from ItemData
     WorldObject newObj = new WorldObject(

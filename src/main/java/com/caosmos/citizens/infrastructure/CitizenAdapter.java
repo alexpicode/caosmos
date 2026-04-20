@@ -46,7 +46,15 @@ public class CitizenAdapter implements CitizenPort {
   @Override
   public boolean isNear(UUID citizenId, String targetId, double maxDistance) {
     Vector3 pos = getPosition(citizenId);
-    return worldPort.isNearObject(pos, targetId, maxDistance);
+    String currentZoneId = getCurrentZoneId(citizenId);
+    return worldPort.isNearObject(pos, currentZoneId, targetId, maxDistance);
+  }
+
+  @Override
+  public boolean isNearObjectWithTag(UUID citizenId, String tag, double maxDistance) {
+    Vector3 pos = getPosition(citizenId);
+    String currentZoneId = getCurrentZoneId(citizenId);
+    return worldPort.isNearObjectWithTag(pos, currentZoneId, tag, maxDistance);
   }
 
   @Override

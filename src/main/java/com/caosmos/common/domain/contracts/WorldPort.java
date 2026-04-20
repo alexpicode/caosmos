@@ -25,7 +25,7 @@ public interface WorldPort {
 
   ItemData removeObject(String objectId);
 
-  void spawnObject(Vector3 pos, ItemData data);
+  void spawnObject(Vector3 pos, String currentZoneId, ItemData data);
 
   boolean isWalkable(Vector3 pos);
 
@@ -39,13 +39,13 @@ public interface WorldPort {
 
   String getZoneName(String zoneId);
 
-  boolean isNearObjectWithTag(Vector3 position, String tag, double maxDistance);
+  boolean isNearObjectWithTag(Vector3 position, String currentZoneId, String tag, double maxDistance);
 
   boolean checkCollision(Vector3 position);
 
   List<String> getZoneTagsAt(Vector3 position);
 
-  boolean isNearObject(Vector3 position, String objectId, double maxDistance);
+  boolean isNearObject(Vector3 position, String currentZoneId, String objectId, double maxDistance);
 
   void spawnSpeech(SpeechElement speech);
 

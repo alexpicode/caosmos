@@ -113,7 +113,7 @@ public class NearbyPerceptionService {
     }
 
     // Rule: Cannot see INSIDE an interior if we are not in it
-    if (ZoneType.INTERIOR == elementZone.getZoneType()) {
+    if (ZoneType.INTERIOR == elementZone.getZoneType() && !Objects.equals(elementZoneId, currentZoneId)) {
       return false;
     }
 
@@ -127,10 +127,32 @@ public class NearbyPerceptionService {
   }
 
   public boolean isZoneVisible(Zone targetZone, Zone currentZone, Map<String, Zone> allZones) {
+    if (targetZone.isEntryRestricted() && !isObserverInside(targetZone, currentZone, allZones)) {
+      return false;
+    }
+
     if (!isHierarchicallyRelevant(targetZone, currentZone, allZones)) {
       return false;
     }
     return isAllowedByInteriorRule(targetZone, currentZone);
+  }
+
+  private boolean isObserverInside(Zone targetZone, Zone currentZone, Map<String, Zone> allZones) {
+    if (currentZone == null) {
+      return false;
+    }
+    if (Objects.equals(targetZone.getId(), currentZone.getId())) {
+      return true;
+    }
+    // Check if currentZone is a descendant of targetZone
+    String parentId = currentZone.getParentZoneId();
+    while (parentId != null) {
+      if (Objects.equals(targetZone.getId(), parentId)) {
+        return true;
+      }
+      parentId = allZones.containsKey(parentId) ? allZones.get(parentId).getParentZoneId() : null;
+    }
+    return false;
   }
 
   private boolean isHierarchicallyRelevant(Zone zone, Zone currentZone, Map<String, Zone> allZones) {

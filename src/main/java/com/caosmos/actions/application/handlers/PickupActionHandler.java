@@ -55,7 +55,8 @@ public class PickupActionHandler implements ActionHandler {
         return ActionResult.success("Picked up " + item.name(), getActionType());
       } else {
         // Return to world if inventory full
-        worldService.spawnObject(citizenService.getPosition(citizenId), item);
+        String currentZoneId = citizenService.getCurrentZoneId(citizenId);
+        worldService.spawnObject(citizenService.getPosition(citizenId), currentZoneId, item);
         return ActionResult.failure("Inventory is full or could not pick up " + item.name(), getActionType());
       }
     } else {

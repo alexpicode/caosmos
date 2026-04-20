@@ -13,6 +13,7 @@ import com.caosmos.common.domain.model.actions.MutationType;
 import com.caosmos.common.domain.model.actions.StateMutation;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.directors.domain.model.ItemTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -75,13 +76,17 @@ class EffectResolverTest {
     ashTemplate.setCategory("RESOURCE");
     ashTemplate.setRadius(0.1);
     when(registryConfig.getSpawnables()).thenReturn(Map.of("ASH", ashTemplate));
-    when(worldPort.getObjectPosition("obj1")).thenReturn(java.util.Optional.of(new Vector3(10, 0, 10)));
+
+    WorldElement mockElement = mock(WorldElement.class);
+    when(mockElement.getPosition()).thenReturn(new Vector3(10, 0, 10));
+    when(mockElement.getZoneId()).thenReturn("test_zone");
+    when(worldPort.getObject("obj1")).thenReturn(java.util.Optional.of(mockElement));
 
     StateMutation mut = new StateMutation("obj1", MutationType.DESTROY, null, null);
     effectResolver.resolve(citizenId, List.of(mut));
 
     verify(worldPort).removeObject("obj1");
-    verify(worldPort).spawnObject(eq(new Vector3(10, 0, 10)), any(ItemData.class));
+    verify(worldPort).spawnObject(eq(new Vector3(10, 0, 10)), eq("test_zone"), any(ItemData.class));
   }
 
   @Test
@@ -107,11 +112,12 @@ class EffectResolverTest {
     template.setRadius(0.15);
     when(registryConfig.getSpawnables()).thenReturn(Map.of("FIREWOOD", template));
     when(citizenPort.getPosition(citizenId)).thenReturn(new Vector3(5, 0, 5));
+    when(citizenPort.getCurrentZoneId(citizenId)).thenReturn("residential_zone");
 
     StateMutation mut = new StateMutation(null, MutationType.SPAWN, "FIREWOOD", null);
     effectResolver.resolve(citizenId, List.of(mut));
 
-    verify(worldPort).spawnObject(eq(new Vector3(5, 0, 5)), any(ItemData.class));
+    verify(worldPort).spawnObject(eq(new Vector3(5, 0, 5)), eq("residential_zone"), any(ItemData.class));
   }
 
   @Test

@@ -7,11 +7,13 @@ import com.caosmos.common.domain.model.actions.MutationType;
 import com.caosmos.common.domain.model.actions.StateMutation;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.directors.domain.model.ItemTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +65,10 @@ public class EffectResolver {
   }
 
   private void handleDestroy(StateMutation mut) {
-    // 1. Capture position before removal
-    Vector3 pos = worldPort.getObjectPosition(mut.targetId()).orElse(new Vector3(0, 0, 0));
+    // 1. Capture metadata before removal
+    Optional<WorldElement> elementOpt = worldPort.getObject(mut.targetId());
+    Vector3 pos = elementOpt.map(WorldElement::getPosition).orElse(new Vector3(0, 0, 0));
+    String currentZoneId = elementOpt.map(WorldElement::getZoneId).orElse(null);
 
     // 2. Remove the object
     ItemData removed = worldPort.removeObject(mut.targetId());
@@ -85,7 +89,7 @@ public class EffectResolver {
           log.info("Matter conservation: spawning fallback {} for destroyed object with tag {}", fallbackType, tag);
           ItemTemplate template = registryConfig.getSpawnables().get(fallbackType);
           if (template != null) {
-            spawnFromTemplate(fallbackType, template, pos);
+            spawnFromTemplate(fallbackType, template, pos, currentZoneId);
           }
           break; // Only one fallback
         }
@@ -117,10 +121,12 @@ public class EffectResolver {
     String typeKey = mut.key();
     Vector3 pos = citizenPort.getPosition(citizenId); // Default to citizen position if targetPos not in mut
 
+    String currentZoneId = citizenPort.getCurrentZoneId(citizenId);
+
     // Tier 1: Registry
     ItemTemplate template = registryConfig.getSpawnables() != null ? registryConfig.getSpawnables().get(typeKey) : null;
     if (template != null) {
-      spawnFromTemplate(typeKey, template, pos);
+      spawnFromTemplate(typeKey, template, pos, currentZoneId);
       return;
     }
 
@@ -129,7 +135,7 @@ public class EffectResolver {
       try {
         ItemTemplate generated = objectMapper.readValue(mut.value(), ItemTemplate.class);
         applyTier2Defaults(generated);
-        spawnFromTemplate(typeKey, generated, pos);
+        spawnFromTemplate(typeKey, generated, pos, currentZoneId);
       } catch (JsonProcessingException e) {
         log.error("Failed to parse Tier 2 SPAWN data: {}", mut.value());
       }
@@ -184,7 +190,7 @@ public class EffectResolver {
     }
   }
 
-  private void spawnFromTemplate(String typeKey, ItemTemplate template, Vector3 pos) {
+  private void spawnFromTemplate(String typeKey, ItemTemplate template, Vector3 pos, String currentZoneId) {
     ItemData data = new ItemData(
         typeKey + "_" + UUID.randomUUID().toString().substring(0, 8),
         template.getName(),
@@ -196,7 +202,7 @@ public class EffectResolver {
         template.getLength(),
         template.getAmount()
     );
-    worldPort.spawnObject(pos, data);
+    worldPort.spawnObject(pos, currentZoneId, data);
   }
 
   private void applyTier2Defaults(ItemTemplate generated) {

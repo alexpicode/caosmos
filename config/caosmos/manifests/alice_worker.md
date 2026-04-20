@@ -15,6 +15,7 @@ status:
   energy: 100
   stress: 0
 base_location: { x: 0, y: 0, z: 0 }
+coins: 100
 ---
 
 # Personality

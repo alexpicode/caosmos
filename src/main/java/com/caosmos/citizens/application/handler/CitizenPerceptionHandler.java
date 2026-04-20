@@ -125,8 +125,8 @@ public class CitizenPerceptionHandler {
 
           citizen.exploration().enterZone(meta, canSeeAll);
 
-          // 2. Update exploration sweep if interior and not fully explored
-          if ("INTERIOR".equals(meta.zoneType()) && !canSeeAll) {
+          // 2. Update exploration sweep if not fully explored
+          if (!canSeeAll) {
             citizen.exploration().updateExploration(zoneId, position, 30.0, meta.width(), meta.length());
           }
 

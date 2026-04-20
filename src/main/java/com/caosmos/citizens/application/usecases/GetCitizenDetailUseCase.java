@@ -57,12 +57,19 @@ public class GetCitizenDetailUseCase {
             }
           });
 
+          List<CitizenDetailDto.ZoneExplorationDto> explorationProgress = c.exploration()
+              .getKnownZonesSummary()
+              .stream()
+              .map(z -> new CitizenDetailDto.ZoneExplorationDto(z.name(), z.explorationPercentage()))
+              .toList();
+
           return new CitizenDetailDto(
               config,
               c.getPerception(),
               c.getLastAction(),
               c.getCurrentState().getCurrentZone(),
-              c.getVisitedZoneIds(),
+              explorationProgress,
+              c.economy().getCoins(),
               allMessages
           );
         });
