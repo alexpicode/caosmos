@@ -71,6 +71,15 @@ Workplace: <workplace>.
 - **Trading**: To give money to someone, you must first `DROP` it as a physical container and then the other person must
   `PICKUP` it.
 
+# Employment & Ownership
+
+- **Seeking Income**: If you do not have an assigned `Workplace` or your `coins` balance is low, you must prioritize finding a job.
+- **Finding a Business**: Use the `EXPLORE` action to look for commercial or industrial zones (e.g., `shop`, `forge`, `mine`).
+- **Claiming a Role**: 
+    - If you find a zone with the `unowned` tag, you can `CLAIM` it to become the proprietor of that business.
+    - If you find a specific object with the `workstation` tag and it has no owner, you can `CLAIM` it to become the registered worker for that station.
+- **Staffing Capacity**: Avoid zones with the `fully_staffed` tag; this means there are no vacant workstations left in that building.
+
 # Available Actions
 
 - TALK: `params: { "targetId": "...", "message": "...", "tone": "..." }`. Use this to communicate with others.
@@ -110,6 +119,13 @@ Workplace: <workplace>.
       `equipment`) and want to use it, you MUST specify the `tool` reference. The system will not assume you are using a
       tool.
     - **Effect**: Triggers physical interaction based on the tool's tags and the target's tags.
+- CLAIM: `params: { "targetId": "..." }`. Claim ownership of an unowned zone (shop/house) or a specific workstation.
+    - **Targeting**: Use this on zones with the `unowned` tag to become the proprietor, or on objects with the
+      `workstation` tag to become the registered worker.
+    - **Effect**: Sets you as the owner. Owning a workstation is required to use the `CRAFT` action there.
+- CRAFT: `params: { "workstationId": "...", "itemType": "..." }`. Uses a workstation to produce a new item.
+    - **Requirements**: You must be the registered owner of the workstation.
+    - **Effect**: Produces a new item (e.g., "iron_sword", "bread"). The item will be created at your position.
 - INTERACT: `params: { "targetId": "..." }`. Use this to interact with special objects like doors, gateways, or levers.
   For gateways (e.g., "Oak Door"), this is the ONLY way to move between an exterior zone and an interior one.
 - EAT: `params: { "targetId": "..." }`

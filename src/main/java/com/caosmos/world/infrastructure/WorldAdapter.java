@@ -255,14 +255,16 @@ public class WorldAdapter implements WorldPort {
 
     Set<String> tags = new HashSet<>(data.tags());
 
-    // Ownership Inheritance Logic
+    // Ownership Inheritance Logic: only in INTERIOR zones (private property/businesses)
     boolean alreadyHasOwner = tags.stream().anyMatch(t -> t.startsWith(WorldConstants.PREFIX_OWNER));
     if (!alreadyHasOwner && currentZoneId != null) {
       zoneManager.getZone(currentZoneId).ifPresent(zone -> {
-        zone.getTags().stream()
-            .filter(t -> t.startsWith(WorldConstants.PREFIX_OWNER))
-            .findFirst()
-            .ifPresent(tags::add);
+        if ("INTERIOR".equalsIgnoreCase(zone.getCategory())) {
+          zone.getTags().stream()
+              .filter(t -> t.startsWith(WorldConstants.PREFIX_OWNER))
+              .findFirst()
+              .ifPresent(tags::add);
+        }
       });
     }
 

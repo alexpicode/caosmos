@@ -7,6 +7,9 @@ import com.caosmos.citizens.domain.Citizen;
 import com.caosmos.citizens.domain.model.CitizenState;
 import com.caosmos.citizens.domain.model.perception.CitizenPerception;
 import com.caosmos.citizens.domain.model.perception.LastAction;
+import com.caosmos.citizens.domain.model.perception.MentalMap;
+import com.caosmos.citizens.domain.model.perception.RememberedPOI;
+import com.caosmos.citizens.domain.model.perception.ZoneMemory;
 import com.caosmos.common.application.ai.SystemPromptTemplatePort;
 import com.caosmos.common.domain.contracts.ActionPort;
 import com.caosmos.common.domain.contracts.JsonSerializer;
@@ -14,8 +17,14 @@ import com.caosmos.common.domain.contracts.ThinkingProvider;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
 import com.caosmos.common.domain.model.agents.AgentAction;
+import com.caosmos.common.domain.model.world.NearbyElement;
+import com.caosmos.common.domain.model.world.WorldConstants;
+import com.caosmos.common.domain.model.world.WorldPerception;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -107,7 +116,11 @@ public class CitizenDecisionMaker {
     selfMap.put("equipment", perception.equipment());
     selfMap.put("inventory", perception.inventory());
     selfMap.put("position", perception.position());
-    selfMap.put("mental_map", perception.mentalMap());
+
+    // Filter tags from Mental Map
+    MentalMap filteredMentalMap = filterMentalMap(perception.mentalMap());
+    selfMap.put("mental_map", filteredMentalMap);
+
     String selfJson = jsonSerializer.toJson(selfMap);
     log.trace("Self JSON: {}", selfJson);
 
@@ -126,10 +139,23 @@ public class CitizenDecisionMaker {
 
     // Use world perception if available in context
     if (context.fullPerception() != null) {
-      messageMap.put("world_json", jsonSerializer.toJson(context.fullPerception().world()));
+      WorldPerception world = context.fullPerception().world();
+      List<NearbyElement> filteredNearby = world.nearbyElements().stream()
+          .map(this::filterElementTags)
+          .toList();
+
+      WorldPerception filteredWorld = new WorldPerception(
+          world.date(),
+          world.location(),
+          world.environment(),
+          filteredNearby,
+          world.categoriesForExplore()
+      );
+
+      messageMap.put("world_json", jsonSerializer.toJson(filteredWorld));
       messageMap.put(
           "explore_categories_json",
-          jsonSerializer.toJson(context.fullPerception().world().categoriesForExplore())
+          jsonSerializer.toJson(world.categoriesForExplore())
       );
     } else {
       messageMap.put("world_json", "{}");
@@ -187,6 +213,68 @@ public class CitizenDecisionMaker {
         response.reasoning(),
         result.message() != null ? result.message() : response.reasoning(),
         response.params()
+    );
+  }
+
+  private MentalMap filterMentalMap(MentalMap mentalMap) {
+    if (mentalMap == null) {
+      return null;
+    }
+
+    ZoneMemory currentZoneMemory = mentalMap.currentZoneMemory();
+    if (currentZoneMemory != null && currentZoneMemory.rememberedPOIs() != null) {
+      List<RememberedPOI> filteredPOIs = currentZoneMemory.rememberedPOIs().stream()
+          .map(poi -> {
+            Set<String> filteredTags = poi.tags().stream()
+                .filter(tag -> !tag.startsWith(WorldConstants.PREFIX_OWNER))
+                .collect(Collectors.toSet());
+            return new RememberedPOI(poi.id(), poi.name(), poi.category(), filteredTags, poi.relativeDirection());
+          })
+          .toList();
+
+      currentZoneMemory = new ZoneMemory(
+          currentZoneMemory.zoneId(),
+          currentZoneMemory.name(),
+          currentZoneMemory.zoneType(),
+          currentZoneMemory.category(),
+          currentZoneMemory.exploration(),
+          filteredPOIs
+      );
+    }
+
+    return new MentalMap(
+        mentalMap.home(),
+        mentalMap.nearestCity(),
+        currentZoneMemory,
+        mentalMap.knownZones()
+    );
+  }
+
+  private NearbyElement filterElementTags(NearbyElement element) {
+    if (element.tags() == null || element.tags().isEmpty()) {
+      return element;
+    }
+
+    Set<String> filteredTags = element.tags().stream()
+        .filter(tag -> !tag.startsWith(WorldConstants.PREFIX_OWNER))
+        .collect(Collectors.toSet());
+
+    if (filteredTags.size() == element.tags().size()) {
+      return element;
+    }
+
+    return new NearbyElement(
+        element.id(),
+        element.name(),
+        element.category(),
+        element.type(),
+        element.zoneType(),
+        element.distance(),
+        element.direction(),
+        filteredTags,
+        element.sourceId(),
+        element.targetId(),
+        element.message()
     );
   }
 }
