@@ -97,6 +97,16 @@ public class Zone implements WorldElement {
         point.z() >= center.z() - halfLength && point.z() <= center.z() + halfLength;
   }
 
+  /**
+   * Calculates the distance to the zone's perimeter. If the point is inside, the distance is 0.
+   */
+  @Override
+  public double distanceTo2D(Vector3 point) {
+    double dx = Math.max(0, Math.abs(point.x() - center.x()) - width / 2.0);
+    double dz = Math.max(0, Math.abs(point.z() - center.z()) - length / 2.0);
+    return Math.sqrt(dx * dx + dz * dz);
+  }
+
   public synchronized void setPhysicalTags(Set<String> physicalTags) {
     this.physicalTags = normalizeTags(physicalTags);
   }

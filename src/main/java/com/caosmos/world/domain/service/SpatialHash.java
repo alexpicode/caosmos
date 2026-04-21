@@ -95,7 +95,7 @@ public class SpatialHash implements WorldRegistry {
         (key, cell) -> {
           if (cell != null) {
             for (WorldElement obj : cell) {
-              if (obj.contains(position) || position.distanceTo2D(obj.getPosition()) <= radius) {
+              if (obj.contains(position) || obj.distanceTo2D(position) <= radius) {
                 result.add(obj);
               }
             }

@@ -82,17 +82,10 @@ public class WorldAdapter implements WorldPort {
             if (obj.intersects(position)) {
               return true;
             }
-            double dist = obj.getPosition().distanceTo2D(position);
-            double sizeOffset = 0;
-            if (obj.getRadius() != null) {
-              sizeOffset = obj.getRadius();
-            } else if (obj.getWidth() != null && obj.getLength() != null) {
-              sizeOffset = Math.max(obj.getWidth(), obj.getLength()) / 2.0;
-            }
-            return dist <= (maxDistance + sizeOffset);
+            return obj.distanceTo2D(position) <= maxDistance;
           }
           // Generic distance check for non-WorldObjects (like Citizens)
-          return entity.getPosition().distanceTo2D(position) <= maxDistance;
+          return entity.distanceTo2D(position) <= maxDistance;
         })
         .orElse(false);
   }

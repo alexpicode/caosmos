@@ -57,7 +57,7 @@ public class NearbyPerceptionService {
         }
       }
 
-      double distance = position.distanceTo2D(element.getPosition());
+      double distance = element.distanceTo2D(position);
       String direction = directionCalculator.getCardinalDirection(position, element.getPosition());
 
       elements.add(element.toNearbyElement(distance, direction));

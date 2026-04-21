@@ -35,6 +35,14 @@ public interface WorldElement {
   }
 
   /**
+   * Returns the 2D distance from the given point to the nearest physical boundary of this element. Default
+   * implementation returns the distance to the center position.
+   */
+  default double distanceTo2D(Vector3 point) {
+    return point.distanceTo2D(getPosition());
+  }
+
+  /**
    * Returns true if this element can only be perceived from within its own zone.
    */
   default boolean isLimitedToZone() {

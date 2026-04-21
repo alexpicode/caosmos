@@ -61,7 +61,7 @@ public class ZoneManager {
   public Optional<Zone> findNearestZoneWithTag(Vector3 position, String tag) {
     return zones.stream()
         .filter(z -> z.getTags() != null && z.getTags().stream().anyMatch(t -> t.equalsIgnoreCase(tag)))
-        .min(Comparator.comparingDouble(z -> position.distanceTo2D(z.getCenter())));
+        .min(Comparator.comparingDouble(z -> z.distanceTo2D(position)));
   }
 
   public Optional<Zone> findNearestCity(Vector3 position) {

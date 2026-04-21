@@ -125,25 +125,28 @@ public class WorldObject implements WorldElement {
     return (radius != null && radius > 0) || (width != null && length != null && width > 0 && length > 0);
   }
 
+  @Override
+  public double distanceTo2D(Vector3 point) {
+    // 1. Circular collision
+    if (radius != null && radius > 0) {
+      return Math.max(0, position.distanceTo2D(point) - radius);
+    }
+
+    // 2. Rectangular collision (AABB)
+    if (width != null && length != null && width > 0 && length > 0) {
+      double dx = Math.max(0, Math.abs(point.x() - position.x()) - width / 2.0);
+      double dz = Math.max(0, Math.abs(point.z() - position.z()) - length / 2.0);
+      return Math.sqrt(dx * dx + dz * dz);
+    }
+
+    // Default: Point-based
+    return position.distanceTo2D(point);
+  }
+
   public boolean intersects(Vector3 point) {
     if (point == null) {
       return false;
     }
-
-    // 1. Circular collision check
-    if (radius != null && radius > 0) {
-      return position.distanceTo2D(point) <= radius;
-    }
-
-    // 2. Rectangular collision check (AABB)
-    if (width != null && length != null && width > 0 && length > 0) {
-      double halfWidth = width / 2.0;
-      double halfLength = length / 2.0;
-      return point.x() >= position.x() - halfWidth && point.x() <= position.x() + halfWidth &&
-          point.z() >= position.z() - halfLength && point.z() <= position.z() + halfLength;
-    }
-
-    // Default: Point-based (no collision volume)
-    return position.distanceTo2D(point) < 0.1;
+    return distanceTo2D(point) < 0.01;
   }
 }
