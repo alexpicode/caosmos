@@ -48,7 +48,7 @@ public class NearbyPerceptionService {
 
       // 1. Visibility rules
       if (element.isLimitedToZone()) {
-        if (!java.util.Objects.equals(element.getZoneId(), currentZoneId)) {
+        if (!Objects.equals(element.getZoneId(), currentZoneId)) {
           continue;
         }
       } else {
@@ -86,12 +86,12 @@ public class NearbyPerceptionService {
     String elementZoneId = element.getZoneId();
     String currentZoneId = currentZone != null ? currentZone.getId() : null;
 
-    // 1. Same zone (or both at root): Always visible
+    // 1. Same zone: Always visible
     if (Objects.equals(elementZoneId, currentZoneId)) {
       return true;
     }
 
-    // Perception Bridge (Gateway Visibility)
+    // Perception Bridge (Gateway Visibility) - Gateways are always visible
     if (element instanceof WorldObject obj && Objects.equals(obj.getTargetZoneId(), currentZoneId)) {
       return true;
     }
@@ -101,97 +101,104 @@ public class NearbyPerceptionService {
       return isZoneVisible(targetZone, currentZone, zoneMap);
     }
 
-    // 3. Oclusion rules for Objects (Entities)
+    // 3. Occlusion rules for Objects/Entities
     Zone elementZone = zoneMap.get(elementZoneId);
     if (elementZone == null) {
       return false;
     }
 
-    // Must be in a connected zone
+    // Must be in a visible connected zone in general terms
     if (!isZoneVisible(elementZone, currentZone, zoneMap)) {
       return false;
     }
 
     // Rule: Cannot see INSIDE an interior if we are not in it
     if (ZoneType.INTERIOR == elementZone.getZoneType() && !Objects.equals(elementZoneId, currentZoneId)) {
-      return false;
+      if (elementZone.isEntryRestricted()) {
+        return false;
+      }
+      // If not restricted, can only see inside from its direct parent
+      if (!Objects.equals(elementZone.getParentZoneId(), currentZoneId)) {
+        return false;
+      }
     }
 
-    // Rule: Cannot see OUTSIDE from an interior
+    // Rule: Cannot see OUTSIDE from an interior (strict isolation from exterior)
     if (currentZone != null && ZoneType.INTERIOR == currentZone.getZoneType()
         && ZoneType.EXTERIOR == elementZone.getZoneType()) {
-      return false;
+      if (currentZone.isEntryRestricted()) {
+        return false;
+      }
+      // If not restricted, can only see outside the direct parent
+      if (!Objects.equals(currentZone.getParentZoneId(), elementZoneId)) {
+        return false;
+      }
     }
 
     return true;
   }
 
   public boolean isZoneVisible(Zone targetZone, Zone currentZone, Map<String, Zone> allZones) {
-    if (targetZone.isEntryRestricted() && !isObserverInside(targetZone, currentZone, allZones)) {
-      return false;
-    }
-
-    if (!isHierarchicallyRelevant(targetZone, currentZone, allZones)) {
-      return false;
-    }
-    return isAllowedByInteriorRule(targetZone, currentZone);
-  }
-
-  private boolean isObserverInside(Zone targetZone, Zone currentZone, Map<String, Zone> allZones) {
     if (currentZone == null) {
-      return false;
+      return targetZone.getParentZoneId() == null;
     }
+
     if (Objects.equals(targetZone.getId(), currentZone.getId())) {
       return true;
     }
-    // Check if currentZone is a descendant of targetZone
+
+    boolean isTargetInterior = ZoneType.INTERIOR == targetZone.getZoneType();
+    boolean isCurrentInterior = ZoneType.INTERIOR == currentZone.getZoneType();
+
+    if (isTargetInterior) {
+      // Rule: Citizen should only see the interior zone if they are INSIDE it.
+      if (isObserverInside(targetZone, currentZone, allZones)) {
+        return true;
+      }
+
+      // Exception: If the interior zone does not have restricted entry, 
+      // they can see the zone (e.g. from its doorway). Only visible from its direct parent.
+      if (!targetZone.isEntryRestricted()) {
+        return Objects.equals(targetZone.getParentZoneId(), currentZone.getId());
+      }
+      return false;
+    } else {
+      if (isCurrentInterior) {
+        // Rule: From an interior, citizen can only see the exterior parent if the interior isn't restricted
+        if (currentZone.isEntryRestricted()) {
+          return false;
+        }
+        return Objects.equals(currentZone.getParentZoneId(), targetZone.getId());
+      } else {
+        // From an exterior, citizen can see hierarchically relevant exterior zones
+        return isHierarchicallyRelevantExteriors(targetZone, currentZone);
+      }
+    }
+  }
+
+  private boolean isHierarchicallyRelevantExteriors(Zone targetZone, Zone currentZone) {
+    // Direct Parent
+    if (Objects.equals(currentZone.getParentZoneId(), targetZone.getId())) {
+      return true;
+    }
+    // Direct Children
+    if (Objects.equals(targetZone.getParentZoneId(), currentZone.getId())) {
+      return true;
+    }
+    // Siblings
+    return Objects.equals(currentZone.getParentZoneId(), targetZone.getParentZoneId());
+  }
+
+  private boolean isObserverInside(Zone targetZone, Zone currentZone, Map<String, Zone> allZones) {
     String parentId = currentZone.getParentZoneId();
     while (parentId != null) {
       if (Objects.equals(targetZone.getId(), parentId)) {
         return true;
       }
-      parentId = allZones.containsKey(parentId) ? allZones.get(parentId).getParentZoneId() : null;
+      Zone parent = allZones.get(parentId);
+      parentId = parent != null ? parent.getParentZoneId() : null;
     }
     return false;
-  }
-
-  private boolean isHierarchicallyRelevant(Zone zone, Zone currentZone, Map<String, Zone> allZones) {
-    if (currentZone == null) {
-      return zone.getParentZoneId() == null;
-    }
-
-    // Direct Parent
-    if (currentZone.getParentZoneId() != null && currentZone.getParentZoneId().equals(zone.getId())) {
-      return true;
-    }
-
-    // Direct Children
-    if (zone.getParentZoneId() != null && zone.getParentZoneId().equals(currentZone.getId())) {
-      return true;
-    }
-
-    // Siblings: Only if Exterior (Open Sight)
-    if (ZoneType.EXTERIOR == currentZone.getZoneType()) {
-      if (currentZone.getParentZoneId() == null && zone.getParentZoneId() == null) {
-        return true;
-      }
-      return currentZone.getParentZoneId() != null && currentZone.getParentZoneId().equals(zone.getParentZoneId());
-    }
-
-    return false;
-  }
-
-  private boolean isAllowedByInteriorRule(Zone zone, Zone currentZone) {
-    if (currentZone == null || ZoneType.INTERIOR != currentZone.getZoneType()) {
-      return true;
-    }
-
-    // If current is INTERIOR, hide EXTERIOR except parent
-    if (ZoneType.EXTERIOR == zone.getZoneType()) {
-      return currentZone.getParentZoneId() != null && currentZone.getParentZoneId().equals(zone.getId());
-    }
-
-    return true;
   }
 
   private List<NearbyElement> processZones(List<NearbyElement> zoneElements) {
