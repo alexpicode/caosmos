@@ -147,6 +147,6 @@ public class WorldObject implements WorldElement {
     if (point == null) {
       return false;
     }
-    return distanceTo2D(point) < 0.01;
+    return distanceTo2D(point) < 0.1;
   }
 }

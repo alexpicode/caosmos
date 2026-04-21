@@ -114,25 +114,13 @@ public class NearbyPerceptionService {
 
     // Rule: Cannot see INSIDE an interior if we are not in it
     if (ZoneType.INTERIOR == elementZone.getZoneType() && !Objects.equals(elementZoneId, currentZoneId)) {
-      if (elementZone.isEntryRestricted()) {
-        return false;
-      }
-      // If not restricted, can only see inside from its direct parent
-      if (!Objects.equals(elementZone.getParentZoneId(), currentZoneId)) {
-        return false;
-      }
+      return false;
     }
 
     // Rule: Cannot see OUTSIDE from an interior (strict isolation from exterior)
     if (currentZone != null && ZoneType.INTERIOR == currentZone.getZoneType()
         && ZoneType.EXTERIOR == elementZone.getZoneType()) {
-      if (currentZone.isEntryRestricted()) {
-        return false;
-      }
-      // If not restricted, can only see outside the direct parent
-      if (!Objects.equals(currentZone.getParentZoneId(), elementZoneId)) {
-        return false;
-      }
+      return false;
     }
 
     return true;
