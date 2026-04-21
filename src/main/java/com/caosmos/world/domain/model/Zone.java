@@ -115,6 +115,22 @@ public class Zone implements WorldElement {
     this.contextualTags = normalizeTags(contextualTags);
   }
 
+  public synchronized void addTag(String tag) {
+    if (tag == null) {
+      return;
+    }
+    this.contextualTags.add(tag.toLowerCase());
+  }
+
+  public synchronized void removeTag(String tag) {
+    if (tag == null) {
+      return;
+    }
+    String normalized = tag.toLowerCase();
+    this.contextualTags.remove(normalized);
+    this.physicalTags.remove(normalized);
+  }
+
   public Set<String> getEffectiveTags(Map<String, Zone> allZones) {
     Set<String> effectiveTags = getTags();
     if (parentZoneId != null && allZones.containsKey(parentZoneId)) {

@@ -45,14 +45,14 @@ class EffectResolverTest {
   void shouldResolveAddTag() {
     StateMutation mut = new StateMutation("obj1", MutationType.ADD_TAG, "burning", null);
     effectResolver.resolve(citizenId, List.of(mut));
-    verify(worldPort).addObjectTag("obj1", "burning");
+    verify(worldPort).addTag("obj1", "burning");
   }
 
   @Test
   void shouldResolveRemoveTag() {
     StateMutation mut = new StateMutation("obj1", MutationType.REMOVE_TAG, "wet", null);
     effectResolver.resolve(citizenId, List.of(mut));
-    verify(worldPort).removeObjectTag("obj1", "wet");
+    verify(worldPort).removeTag("obj1", "wet");
   }
 
   @Test

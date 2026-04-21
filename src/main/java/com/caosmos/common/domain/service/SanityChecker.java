@@ -4,7 +4,11 @@ import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionIntent;
 import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.WorldConstants;
+import com.caosmos.common.domain.model.world.WorldElement;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -50,7 +54,58 @@ public class SanityChecker {
       }
     }
 
+    // 4. Semantic Locks (Physical Protection)
+    // We only hard-block actions if the target is explicitly LOCKED.
+    // If it's just OWNED but NOT LOCKED, we allow it (emergence/stealing).
+    if (isProtectedAction(intent.verb())) {
+      var element = worldPort.getElement(intent.targetId());
+      if (element.isPresent() && element.get().getTags().contains(WorldConstants.TAG_LOCKED)) {
+        Optional<String> ownershipError = validateOwnership(intent.citizenId(), intent.targetId(), worldPort);
+        if (ownershipError.isPresent()) {
+          return Optional.of("This is locked.");
+        }
+      }
+    }
+
     // Additional checks for energy can be added here
+    return Optional.empty();
+  }
+
+  // Helper methods for future use (e.g. Crime system or explicit locks)
+  private boolean isProtectedAction(String verb) {
+    if (verb == null) {
+      return false;
+    }
+    String v = verb.toUpperCase();
+    return v.equals("USE") || v.equals("INTERACT");
+  }
+
+  private Optional<String> validateOwnership(UUID citizenId, String targetId, WorldPort worldPort) {
+    var elementOpt = worldPort.getElement(targetId);
+    if (elementOpt.isEmpty()) {
+      return Optional.empty();
+    }
+
+    WorldElement element = elementOpt.get();
+    String citizenOwnerTag = WorldConstants.PREFIX_OWNER + citizenId.toString();
+
+    // 1. Direct ownership
+    Set<String> tags = element.getTags();
+    boolean hasOwner = tags.stream().anyMatch(t -> t.startsWith(WorldConstants.PREFIX_OWNER));
+    if (hasOwner && !tags.contains(citizenOwnerTag)) {
+      return Optional.of("This belongs to someone else.");
+    }
+
+    // 2. Zone ownership (Inherited protection)
+    String zoneId = element.getZoneId();
+    if (zoneId != null) {
+      Set<String> zoneTags = worldPort.getObjectTags(zoneId);
+      boolean zoneHasOwner = zoneTags.stream().anyMatch(t -> t.startsWith(WorldConstants.PREFIX_OWNER));
+      if (zoneHasOwner && !zoneTags.contains(citizenOwnerTag)) {
+        return Optional.of("You don't have permission to do that in this property.");
+      }
+    }
+
     return Optional.empty();
   }
 }

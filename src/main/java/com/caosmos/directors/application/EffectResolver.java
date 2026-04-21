@@ -54,8 +54,8 @@ public class EffectResolver {
     }
 
     switch (type) {
-      case ADD_TAG -> worldPort.addObjectTag(mut.targetId(), mut.key());
-      case REMOVE_TAG -> worldPort.removeObjectTag(mut.targetId(), mut.key());
+      case ADD_TAG -> worldPort.addTag(mut.targetId(), mut.key());
+      case REMOVE_TAG -> worldPort.removeTag(mut.targetId(), mut.key());
       case DESTROY -> handleDestroy(mut);
       case TRANSFORM -> handleTransform(mut);
       case SPAWN -> handleSpawn(citizenId, mut);

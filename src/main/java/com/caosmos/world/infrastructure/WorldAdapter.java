@@ -8,6 +8,7 @@ import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
 import com.caosmos.common.domain.model.world.GatewayTransition;
 import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.common.domain.model.world.WorldConstants;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.common.domain.model.world.ZoneMetadata;
 import com.caosmos.common.domain.model.world.ZoneType;
@@ -21,7 +22,9 @@ import com.caosmos.world.domain.service.VisualCoverageCalculator;
 import com.caosmos.world.domain.service.ZoneCollisionService;
 import com.caosmos.world.domain.service.ZoneManager;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -133,6 +136,11 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
+  public Optional<WorldElement> getElement(String elementId) {
+    return spatialHash.getById(elementId);
+  }
+
+  @Override
   public Optional<GatewayTransition> getGatewayTransition(String gatewayId, String currentZoneId) {
     return spatialHash.getById(gatewayId)
         .filter(entity -> entity instanceof WorldObject)
@@ -160,11 +168,17 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
-  public void addObjectTag(String objectId, String tag) {
-    spatialHash.getById(objectId).ifPresent(entity -> {
+  public void addTag(String elementId, String tag) {
+    if (elementId == null || tag == null) {
+      return;
+    }
+    spatialHash.getById(elementId).ifPresent(entity -> {
       if (entity instanceof WorldObject obj) {
         obj.addTag(tag);
-        log.debug("Added tag '{}' to object {}", tag, objectId);
+        log.debug("Added tag '{}' to object {}", tag, elementId);
+      } else if (entity instanceof Zone zone) {
+        zone.addTag(tag);
+        log.debug("Added tag '{}' to zone {}", tag, elementId);
       }
     });
   }
@@ -180,11 +194,17 @@ public class WorldAdapter implements WorldPort {
   }
 
   @Override
-  public void removeObjectTag(String objectId, String tag) {
-    spatialHash.getById(objectId).ifPresent(entity -> {
+  public void removeTag(String elementId, String tag) {
+    if (elementId == null || tag == null) {
+      return;
+    }
+    spatialHash.getById(elementId).ifPresent(entity -> {
       if (entity instanceof WorldObject obj) {
         obj.removeTag(tag);
-        log.debug("Removed tag '{}' from object {}", tag, objectId);
+        log.debug("Removed tag '{}' from object {}", tag, elementId);
+      } else if (entity instanceof Zone zone) {
+        zone.removeTag(tag);
+        log.debug("Removed tag '{}' from zone {}", tag, elementId);
       }
     });
   }
@@ -225,26 +245,35 @@ public class WorldAdapter implements WorldPort {
 
   @Override
   public void spawnObject(Vector3 pos, String currentZoneId, ItemData data) {
+    if (data == null) {
+      return;
+    }
     log.info("Spawning object {} ({}) at {} in zone {}", data.id(), data.name(), pos, currentZoneId);
 
     // 1. We prioritize the passed currentZoneId to ensure logical consistency (e.g. dropping inside a house)
     // If null, we try to detect it, but it's better to pass it from the citizen context.
-    String zoneId = currentZoneId;
-    if (zoneId == null) {
-      zoneId = zoneManager.findZoneAt(pos, null)
-          .map(Zone::getId)
-          .orElse(null);
+
+    Set<String> tags = new HashSet<>(data.tags());
+
+    // Ownership Inheritance Logic
+    boolean alreadyHasOwner = tags.stream().anyMatch(t -> t.startsWith(WorldConstants.PREFIX_OWNER));
+    if (!alreadyHasOwner && currentZoneId != null) {
+      zoneManager.getZone(currentZoneId).ifPresent(zone -> {
+        zone.getTags().stream()
+            .filter(t -> t.startsWith(WorldConstants.PREFIX_OWNER))
+            .findFirst()
+            .ifPresent(tags::add);
+      });
     }
 
-    // 2. Create the WorldObject with technical properties from ItemData
     WorldObject newObj = new WorldObject(
         data.id(),
         data.name(),
         data.category(),
         pos,
-        data.tags(),
+        tags,
         data.description(),
-        zoneId,
+        currentZoneId,
         null, // targetZoneId (not a gateway)
         data.radius(),
         data.width(),
@@ -254,6 +283,7 @@ public class WorldAdapter implements WorldPort {
 
     // 3. Register in the spatial hash
     spatialHash.register(newObj);
+    log.info("Spawned object {} ({}) at {} in zone {}", data.name(), data.id(), pos, currentZoneId);
   }
 
   @Override
@@ -316,6 +346,16 @@ public class WorldAdapter implements WorldPort {
     return zoneManager.getZone(zoneId)
         .map(zone -> visualCoverageCalculator.canSeeEntireZone(observerPos, zone, visionRadius))
         .orElse(false);
+  }
+
+  @Override
+  public Collection<WorldElement> getElementsInZone(String zoneId) {
+    if (zoneId == null) {
+      return Collections.emptyList();
+    }
+    return spatialHash.getAllEntities().stream()
+        .filter(e -> zoneId.equals(e.getZoneId()))
+        .toList();
   }
 
   @Override

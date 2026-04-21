@@ -8,6 +8,7 @@ import com.caosmos.common.domain.model.world.SpeechElement;
 import com.caosmos.common.domain.model.world.Vector3;
 import com.caosmos.common.domain.model.world.WorldElement;
 import com.caosmos.common.domain.model.world.ZoneMetadata;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,9 +16,9 @@ import java.util.SortedSet;
 
 public interface WorldPort {
 
-  void addObjectTag(String objectId, String tag);
+  void addTag(String elementId, String tag);
 
-  void removeObjectTag(String objectId, String tag);
+  void removeTag(String elementId, String tag);
 
   void updateObjectDescription(String objectId, String description);
 
@@ -34,6 +35,8 @@ public interface WorldPort {
   Optional<Vector3> getObjectPosition(String objectId);
 
   Optional<WorldElement> getObject(String objectId);
+
+  Optional<WorldElement> getElement(String elementId);
 
   Optional<GatewayTransition> getGatewayTransition(String gatewayId, String currentZoneId);
 
@@ -58,6 +61,8 @@ public interface WorldPort {
   CollisionResult validateMovement(Vector3 from, Vector3 to, String zoneId);
 
   boolean canSeeEntireZone(Vector3 observerPos, String zoneId, double visionRadius);
+
+  Collection<WorldElement> getElementsInZone(String zoneId);
 
   Optional<ZoneMetadata> getZoneMetadata(String zoneId);
 }
