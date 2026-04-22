@@ -26,7 +26,7 @@ spring:
 caosmos:
   manifests:
     external-path: config/caosmos/manifests
-    internal-path: #src/main/resources/manifests
+#    internal-path: src/main/resources/manifests
   citizen:
     pulse-frequency: 5                # Frequency in simulation ticks for citizen life cycle pulses
     walking-speed: 1.4                # Standard walking speed in m/s

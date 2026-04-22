@@ -23,10 +23,15 @@ public class ManifestFileSystemResolver {
   private final Path internalManifestsPath;
 
   public ManifestFileSystemResolver(ManifestProperties manifestProperties) {
-    this.externalManifestsPath = Paths.get(System.getProperty("user.dir"))
-                                      .resolve(manifestProperties.getExternalPath());
-    this.internalManifestsPath = Paths.get(System.getProperty("user.dir"))
-                                      .resolve(manifestProperties.getInternalPath());
+    String externalPath = manifestProperties.getExternalPath();
+    this.externalManifestsPath = (externalPath != null && !externalPath.trim().isEmpty())
+        ? Paths.get(System.getProperty("user.dir")).resolve(externalPath)
+        : null;
+
+    String internalPath = manifestProperties.getInternalPath();
+    this.internalManifestsPath = (internalPath != null && !internalPath.trim().isEmpty())
+        ? Paths.get(System.getProperty("user.dir")).resolve(internalPath)
+        : null;
   }
 
   /**
@@ -36,16 +41,20 @@ public class ManifestFileSystemResolver {
    * @return Path to the manifest file, or null if not found
    */
   public Path findManifestPath(String manifestName) {
-    Path externalPath = externalManifestsPath.resolve(manifestName);
-    if (Files.exists(externalPath)) {
-      log.debug("[RESOLVER] Found manifest in external path: {}", externalPath);
-      return externalPath;
+    if (externalManifestsPath != null) {
+      Path externalPath = externalManifestsPath.resolve(manifestName);
+      if (Files.exists(externalPath)) {
+        log.debug("[RESOLVER] Found manifest in external path: {}", externalPath);
+        return externalPath;
+      }
     }
 
-    Path internalPath = internalManifestsPath.resolve(manifestName);
-    if (Files.exists(internalPath)) {
-      log.debug("[RESOLVER] Found manifest in internal path: {}", internalPath);
-      return internalPath;
+    if (internalManifestsPath != null) {
+      Path internalPath = internalManifestsPath.resolve(manifestName);
+      if (Files.exists(internalPath)) {
+        log.debug("[RESOLVER] Found manifest in internal path: {}", internalPath);
+        return internalPath;
+      }
     }
 
     log.debug("[RESOLVER] Manifest not found: {}", manifestName);
@@ -59,14 +68,20 @@ public class ManifestFileSystemResolver {
   public Stream<Path> getAllManifestPaths() throws IOException {
     // First collect all external manifests
     Set<String> externalManifestNames = new HashSet<>();
-    Stream<Path> externalManifests = getManifestsFromPath(externalManifestsPath)
-        .stream()
-        .peek(path -> externalManifestNames.add(path.getFileName().toString()));
+    Stream<Path> externalManifests = Stream.empty();
+    if (externalManifestsPath != null) {
+      externalManifests = getManifestsFromPath(externalManifestsPath)
+          .stream()
+          .peek(path -> externalManifestNames.add(path.getFileName().toString()));
+    }
 
     // Then collect internal manifests that don't exist in external
-    Stream<Path> internalManifests = getManifestsFromPath(internalManifestsPath)
-        .stream()
-        .filter(internalPath -> !externalManifestNames.contains(internalPath.getFileName().toString()));
+    Stream<Path> internalManifests = Stream.empty();
+    if (internalManifestsPath != null) {
+      internalManifests = getManifestsFromPath(internalManifestsPath)
+          .stream()
+          .filter(internalPath -> !externalManifestNames.contains(internalPath.getFileName().toString()));
+    }
 
     return Stream.concat(externalManifests, internalManifests);
   }
