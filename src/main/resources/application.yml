@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: caosmos
+  config:
+    import: optional:classpath:spawnable-registry.yml
+  ai:
+    #    ollama:
+    #      base-url: http://localhost:11434
+    #      chat:
+    #        model: frob/qwen3.5-instruct
+    #        #        model: qwen3.5
+    #        options:
+    #          temperature: 0.4
+    #          num-ctx: 2048                     # Context window size
+    google:
+      genai:
+        api-key: "${GOOGLE_AI_API_KEY}"
+        chat:
+          options:
+            model: "${GOOGLE_AI_MODEL}"
+            response-mime-type: "application/json"
+            temperature: 0.4
+            top-p: 0.9
+            max-output-tokens: 1500
+
+caosmos:
+  manifests:
+    external-path: config/caosmos/manifests
+    internal-path: #src/main/resources/manifests
+  citizen:
+    pulse-frequency: 5                # Frequency in simulation ticks for citizen life cycle pulses
+    walking-speed: 1.4                # Standard walking speed in m/s
+    max-ticks-without-decision: 60    # Maximum number of marks without the LLM having made a decision
+    max-conversation-participants: 4  # Maximum number of participants in a single conversation session
+  world:
+    max-instant-coverage-area: 100.0  # Zones smaller than this are fully explored upon entry
+    max-vision-distance: 30.0         # Maximum distance for searching nearby objects
+    time:
+      time-scale: 60.0                # 1 real second = 60 simulation seconds (1 minute)
+      start-day: 1                    # Initial simulation day
+      start-hour: 8                   # Initial simulation hour (8:00 AM)
+    weather-states:
+      CLEAR:
+        min-duration-minutes: 120
+        max-duration-minutes: 480
+        transitions:
+          CLEAR: 0.8
+          CLOUDY: 0.2
+      CLOUDY:
+        min-duration-minutes: 60
+        max-duration-minutes: 240
+        transitions:
+          CLEAR: 0.4
+          CLOUDY: 0.4
+          FOG: 0.1
+          RAINY: 0.1
+      FOG:
+        min-duration-minutes: 30
+        max-duration-minutes: 120
+        transitions:
+          CLOUDY: 0.3
+          FOG: 0.7
+      RAINY:
+        min-duration-minutes: 30
+        max-duration-minutes: 180
+        transitions:
+          CLOUDY: 0.5
+          RAINY: 0.4
+          STORM: 0.1
+      STORM:
+        min-duration-minutes: 15
+        max-duration-minutes: 60
+        transitions:
+          RAINY: 0.7
+          STORM: 0.3
+    speech-ttl-ticks: 2               # Number of ticks a speech element lives before auto-removal
+  directors:
+    observer:
+      style: "concise, technical and descriptive of physical properties"  # Style for AI generated descriptions
+
+logging:
+  level:
+    org.springframework.ai.ollama: DEBUG
+    com.caosmos: TRACE

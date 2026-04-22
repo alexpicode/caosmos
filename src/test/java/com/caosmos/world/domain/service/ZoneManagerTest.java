@@ -1,0 +1,290 @@
+package com.caosmos.world.domain.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.NearbyElement;
+import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.common.domain.model.world.WorldElement;
+import com.caosmos.common.domain.model.world.ZoneType;
+import com.caosmos.world.domain.model.Zone;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class ZoneManagerTest {
+
+  private ZoneManager zoneManager;
+  private SpatialHash spatialHash;
+
+  @BeforeEach
+  void setUp() {
+    spatialHash = new SpatialHash();
+    zoneManager = new ZoneManager(spatialHash);
+  }
+
+  @Test
+  void testFindZoneAt_Simple() {
+    Zone zone = new Zone(
+        "z1",
+        "Zone 1",
+        null,
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+    zoneManager.addZone(zone);
+
+    Optional<Zone> found = zoneManager.findZoneAt(new Vector3(0, 0, 0), null);
+    assertTrue(found.isPresent());
+    assertEquals("z1", found.get().getId());
+  }
+
+  @Test
+  void testFindZoneAt_HierarchyPriority() {
+    Zone outer = new Zone(
+        "outer",
+        "Outer",
+        null,
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of("outer_tag"),
+        false,
+        new Vector3(0, 0, 0),
+        20,
+        20
+    );
+    Zone inner = new Zone(
+        "inner",
+        "Inner",
+        "outer",
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of("inner_tag"),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+
+    zoneManager.addZone(outer);
+    zoneManager.addZone(inner);
+
+    // Position inside both zones should return the inner one (deeper)
+    Optional<Zone> found = zoneManager.findZoneAt(new Vector3(0, 0, 0), null);
+    assertTrue(found.isPresent());
+    assertEquals("inner", found.get().getId());
+  }
+
+  @Test
+  void testFindZoneAt_RestrictedEntry() {
+    Zone outer = new Zone(
+        "outer",
+        "Outer",
+        null,
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        20,
+        20
+    );
+    Zone restricted = new Zone(
+        "restricted",
+        "Restricted",
+        "outer",
+        ZoneType.INTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of(),
+        true,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+
+    zoneManager.addZone(outer);
+    zoneManager.addZone(restricted);
+
+    // Position inside restricted zone, but no currentZoneId provided -> returns outer
+    Optional<Zone> foundNoAccess = zoneManager.findZoneAt(new Vector3(0, 0, 0), null);
+    assertTrue(foundNoAccess.isPresent());
+    assertEquals("outer", foundNoAccess.get().getId());
+
+    // Position inside restricted zone, with currentZoneId matching -> returns restricted
+    Optional<Zone> foundWithAccess = zoneManager.findZoneAt(new Vector3(0, 0, 0), "restricted");
+    assertTrue(foundWithAccess.isPresent());
+    assertEquals("restricted", foundWithAccess.get().getId());
+  }
+
+  @Test
+  void testEffectiveTags() {
+    Zone root = new Zone(
+        "root",
+        "Root",
+        null,
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of("a"),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+    Zone child = new Zone(
+        "child",
+        "Child",
+        "root",
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of("b"),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+    Zone grandchild = new Zone(
+        "grandchild",
+        "Grandchild",
+        "child",
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of("c"),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+
+    zoneManager.addZone(root);
+    zoneManager.addZone(child);
+    zoneManager.addZone(grandchild);
+
+    Set<String> tags = grandchild.getEffectiveTags(zoneManager.getZoneMap());
+    assertEquals(3, tags.size());
+    assertTrue(tags.contains("a"));
+    assertTrue(tags.contains("b"));
+    assertTrue(tags.contains("c"));
+  }
+
+  @Test
+  void testHierarchyDepth() {
+    Zone root = new Zone(
+        "root",
+        "Root",
+        null,
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+    Zone child = new Zone(
+        "child",
+        "Child",
+        "root",
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+
+    zoneManager.addZone(root);
+    zoneManager.addZone(child);
+
+    assertEquals(0, root.getHierarchyDepth(zoneManager.getZoneMap()));
+    assertEquals(1, child.getHierarchyDepth(zoneManager.getZoneMap()));
+  }
+
+  @Test
+  void testClearZones_DoesNotClearOtherEntities() {
+    // 1. Register a non-zone entity directly in spatialHash
+    WorldElement entity = new WorldElement() {
+      @Override
+      public String getId() {
+        return "e1";
+      }
+
+      @Override
+      public EntityType getType() {
+        return EntityType.OBJECT;
+      }
+
+      @Override
+      public String getName() {
+        return "Entity 1";
+      }
+
+      @Override
+      public Vector3 getPosition() {
+        return new Vector3(5, 0, 5);
+      }
+
+      @Override
+      public String getZoneId() {
+        return "outer";
+      }
+
+      @Override
+      public String getCategory() {
+        return "DECOR";
+      }
+
+      @Override
+      public NearbyElement toNearbyElement(double distance, String direction) {
+        return null;
+      }
+    };
+    spatialHash.register(entity);
+
+    // 2. Add a zone via zoneManager
+    Zone zone = new Zone(
+        "z1",
+        "Zone 1",
+        null,
+        ZoneType.EXTERIOR,
+        "TEST",
+        Set.of(),
+        Set.of(),
+        false,
+        new Vector3(0, 0, 0),
+        10,
+        10
+    );
+    zoneManager.addZone(zone);
+
+    // 3. Verify both are there
+    assertEquals(2, spatialHash.getAllEntities().size());
+
+    // 4. Clear zones
+    zoneManager.clearZones();
+
+    // 5. Verify only the zone is gone, the entity remains
+    Collection<WorldElement> remaining = spatialHash.getAllEntities();
+    assertEquals(1, remaining.size());
+    assertTrue(remaining.stream().anyMatch(e -> e.getId().equals("e1")));
+    assertTrue(remaining.stream().noneMatch(e -> e.getId().equals("z1")));
+  }
+}

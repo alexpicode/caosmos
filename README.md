@@ -1,0 +1,139 @@
+<p align="center">
+  <img src="docs/assets/caosmos_banner_1.png" alt="Caosmos Banner" width="100%">
+</p>
+
+# 🪐 Caosmos
+
+<p align="center">
+  <b>A high-performance simulation engine for living worlds, powered by autonomous AI agents.</b>
+</p>
+
+<p align="center">
+  <a href="https://openjdk.org/projects/jdk/25/"><img src="https://img.shields.io/badge/Java-25-orange?style=for-the-badge&logo=java" alt="Java Version"></a>
+  <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-4.0.3-brightgreen?style=for-the-badge&logo=springboot" alt="Spring Boot"></a>
+  <a href="https://spring.io/projects/spring-modulith"><img src="https://img.shields.io/badge/Spring%20Modulith-2.0.3-blue?style=for-the-badge" alt="Spring Modulith"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg?style=for-the-badge" alt="License"></a>
+</p>
+
+---
+
+## 🎭 The Philosophy: Beyond Traditional RPGs
+
+Caosmos rejects the "static stage" approach of traditional RPGs. In this world:
+
+- **🚫 No "Prop" NPCs**: There are no static characters waiting for a quest trigger. Every citizen is a fully autonomous entity with its own biology, needs, and cognitive cycle.
+- **🔄 Persistent World State**: Every action leaves a mark. If an agent chops a tree and drops the wood, that wood remains in the world. Other citizens can perceive it, pick it up, or use it later, creating an emergent chain of events.
+- **🎭 Emergent Narratives**: Stories aren't written; they are lived. Narrative in Caosmos is the unplanned result of hundreds of autonomous agents pursuing their own goals and interacting with a reactive world.
+- **🏗️ Semantic Foundation**: We prioritize meaning over raw data. Everything in the world—from a "rusty sword" to a "crowded tavern"—is defined semantically, allowing AI agents to reason about their environment with human-like logic.
+
+---
+
+## 🚀 Key Features
+
+### 🧠 Autonomous Cognitive Agents
+Each citizen has a dedicated **Virtual Thread** (Project Loom) running a cognitive loop powered by LLMs (Google GenAI / Ollama). They perceive the environment semantically, reason about their goals, and execute actions.
+
+### ⏱️ Tick-Based High-Concurrency Engine
+A robust simulation loop that leverages Java 25's lightweight concurrency to simulate hundreds of agents simultaneously without CPU bottlenecks.
+
+### 👁️ Spatial Semantic Perception
+Advanced spatial hashing and zone management translate 3D geometry into semantic data. Agents don't see "X:10, Z:20"; they see "A [Heavy] [Rusty] Iron Sword near the [Blacksmith] forge."
+
+### 🎭 Creative Directors & Wisdom Cache
+Complex interactions (e.g., "Use [Magic Wand] on [Frozen Lake]") are arbitrated by AI "Directors." To ensure performance, results are hashed and stored in the **Wisdom Cache**, making future identical interactions instantaneous.
+
+### 💬 Dynamic Social & Conversation System
+Agents engage in multi-participant conversation sessions. A social heuristics engine determines when an agent should respond, listen, or let a conversation naturally end based on contextual relevance.
+
+### 📝 Hot-Reloadable Manifests
+Agents and world profiles are defined via hybrid Markdown files (YAML frontmatter + Markdown body). You can tweak an agent's personality or stats on the fly, and the simulation will hot-reload them without requiring a restart.
+
+### 🗺️ Task & Exploration System
+Citizens can undertake long-duration tasks—like traveling across zones, working, or resting. They maintain an internal mental map of the world and track their exploration progress across different environments.
+
+### 🏡 Organic Property & Ownership
+The engine enforces logical boundaries and object ownership. Agents can claim interior zones or items, and the spatial perception system ensures these boundaries dictate who can see, interact with, or modify objects.
+
+---
+
+## 🛠️ How it Works: The Cognitive Loop
+
+Each agent follows a continuous cycle of perception and action, decoupled from the main simulation tick for maximum efficiency.
+
+```mermaid
+graph TD
+    A[Tick Signal] --> B{Agent Pulse}
+    B --> C[Sensorial Perception]
+    C --> D[Mental Map Update]
+    D --> E[LLM Reasoning]
+    E --> F[Action Dispatch]
+    F --> G[World State Mutation]
+    G --> A
+```
+
+---
+
+## 📁 Project Architecture
+
+Caosmos is built as a **Modular Monolith** using **Clean Architecture** and **Spring Modulith**.
+
+| Module | Responsibility |
+| :--- | :--- |
+| `common` | Shared Kernel, Virtual Thread management, and the Master Clock. |
+| `citizens` | Biology, Task management, and Cognitive Cycles. |
+| `world` | Spatial Hash, Zones, and Perception Providers. |
+| `actions` | Strategy-based handlers for every possible world interaction. |
+| `directors` | Creative arbitration and descriptive observation logic. |
+
+---
+
+## 🚦 Quick Start
+
+### Prerequisites
+- **JDK 25** (Mandatory for Virtual Threads).
+- **Docker** (For local LLM support via Ollama).
+- **Google GenAI API Key** (Optional).
+
+### Installation
+
+1. **Clone & Enter**:
+   ```bash
+   git clone https://github.com/Alexpi8/caosmos.git
+   cd caosmos
+   ```
+
+2. **Setup Backend**:
+   - For **Local AI**: `docker-compose up -d ollama`
+   - For **Cloud AI**: `export SPRING_AI_GOOGLE_GENAI_API_KEY=your_key`
+
+3. **Launch the Universe**:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+### 🛰️ Interactive API
+Explore the live simulation state and trigger actions manually via the Swagger UI:
+👉 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+---
+
+## ⚙️ Configuration
+
+Override these in `application.yml` or via Environment Variables:
+- `GOOGLE_AI_MODEL`: Set your preferred Gemini model (e.g., `gemini-1.5-flash`).
+- `citizen.pulse-frequency`: Adjust how many ticks pass between agent "thoughts".
+- `world.time.time-scale`: Control the speed of simulated time.
+
+---
+
+## 🤝 Contributing
+
+We welcome explorers and architects! 
+1. Check the [ARCHITECTURE.md](docs/ARCHITECTURE.md) for deep-dives.
+2. Open an issue or submit a PR for new `ActionHandlers` or `Directors`.
+
+---
+
+<p align="center">
+  <i>Built with ❤️ for the future of emergent AI simulations.</i>
+</p>

@@ -2,16 +2,16 @@ package com.caosmos;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.modulith.Modulith;
 
+@ConfigurationPropertiesScan
+@Modulith(sharedModules = "common")
 @SpringBootApplication
-@Configuration
-@ComponentScan(basePackages = "com.caosmos")
 public class CaosmosApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CaosmosApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(CaosmosApplication.class, args);
+  }
 
 }
