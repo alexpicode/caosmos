@@ -9,6 +9,11 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Alexpi8/caosmos-ui">🖥️ <b>Visual Interface (Caosmos UI)</b></a> | 
+  <a href="docs/ARCHITECTURE.md">🏗️ <b>Technical Architecture</b></a>
+</p>
+
+<p align="center">
   <a href="https://openjdk.org/projects/jdk/25/"><img src="https://img.shields.io/badge/Java-25-orange?style=for-the-badge&logo=java" alt="Java Version"></a>
   <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-4.0.3-brightgreen?style=for-the-badge&logo=springboot" alt="Spring Boot"></a>
   <a href="https://spring.io/projects/spring-modulith"><img src="https://img.shields.io/badge/Spring%20Modulith-2.0.3-blue?style=for-the-badge" alt="Spring Modulith"></a>
