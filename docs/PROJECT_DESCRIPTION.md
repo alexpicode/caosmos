@@ -1,113 +1,112 @@
-# Documento de Referencia Maestra para Asistentes de IA (Vibe Coding)
+# Master Reference Document for AI Assistants (Vibe Coding)
 
 > [!IMPORTANT]
-> **INSTRUCCIÓN PARA LA IA LECTORA**: Este documento define las reglas de negocio, la arquitectura y la filosofía del *
-*"Proyecto Caosmos"**. Usa esta información como verdad absoluta para cualquier generación de código, diseño de bases de
-> datos o lógica de sistemas solicitada por el usuario. No asumas patrones de RPG tradicionales; enfócate en la
-> simulación
-> sistémica emergente.
+> **INSTRUCTION FOR READER AI**: This document defines the business rules, architecture, and philosophy of the *
+*"Caosmos Project"**. Use this information as absolute truth for any code generation, database design, or system
+> logic requested by the user. Do not assume traditional RPG patterns; focus on emergent
+> systemic simulation.
 
 ---
 
-## 1. Visión Global y Filosofía
+## 1. Global Vision and Philosophy
 
-Caosmos no es un RPG tradicional, es una **Simulación de Vida Persistente** (Mundo Vivo) y una economía de agentes. El
-mundo es un ecosistema autónomo basado en matemáticas, necesidades lógicas y físicas emergentes.
+Caosmos is not a traditional RPG, it is a **Persistent Life Simulation** (Living World) and an agent economy. The
+world is an autonomous ecosystem based on mathematics, logical needs, and emergent physics.
 
-* **Rechazo del "Decorado"**: No hay NPCs estáticos esperando al jugador. Si un árbol cae, el servidor calcula la madera
-  y un leñador la recoge, esté el jugador o no.
-* **Fase 1 (Baseline Orgánico)**: Construcción del ecosistema base. Economía, logística y sociedad funcionando como un
-  reloj mediante agentes autónomos.
-* **Fase 2 (La Anomalía)**: Entrada del Jugador. El jugador no es el "héroe predestinado", sino una **Fuerza Disruptiva
-  **. Debe insertarse en la cadena de suministro, manipular el mercado o alterar la logística. El mundo reacciona de
-  forma sistémica, no guiada por scripts.
+* **Rejection of "Props"**: There are no static NPCs waiting for the player. If a tree falls, the server calculates the wood
+  and a woodcutter collects it, whether the player is present or not.
+* **Phase 1 (Organic Baseline)**: Construction of the base ecosystem. Economy, logistics, and society functioning like a
+  clock through autonomous agents.
+* **Phase 2 (The Anomaly)**: Player Entry. The player is not the "predestined hero," but a **Disruptive Force
+  **. They must insert themselves into the supply chain, manipulate the market, or alter logistics. The world reacts
+  systemically, not guided by scripts.
 
-## 2. Stack Tecnológico y Arquitectura Base
+## 2. Technology Stack and Base Architecture
 
-El sistema opera bajo un modelo **Client-Server Headless**, donde el motor lógico es independiente de la representación
-gráfica.
+The system operates under a **Headless Client-Server** model, where the logic engine is independent of the graphical
+representation.
 
-* **Lenguaje**: Java 25.
-* **Concurrencia**: **Virtual Threads (Project Loom)** estrictamente. Cada agente tiene su propio hilo virtual para
-  procesos cognitivos sin bloquear la CPU física.
-* **Framework Core**: Spring Boot 4 + Spring Modulith.
-* **Inteligencia Artificial**: **Spring AI 2.0** (Modelos masivos para micro-agentes, Reasoning models para directores,
-  Function Calling para acciones físicas).
-* **Arquitectura**: Clean Architecture + Vertical Slicing.
+* **Language**: Java 25.
+* **Concurrency**: **Virtual Threads (Project Loom)** strictly. Each agent has its own virtual thread for
+  cognitive processes without blocking the physical CPU.
+* **Core Framework**: Spring Boot 4 + Spring Modulith.
+* **Artificial Intelligence**: **Spring AI 2.0** (Massive models for micro-agents, Reasoning models for directors,
+  Function Calling for physical actions).
+* **Architecture**: Clean Architecture + Vertical Slicing.
 
-## 3. Sistemas Core (Motor de Simulación)
+## 3. Core Systems (Simulation Engine)
 
-### 3.1. Percepción Semántica y Espacio (`world` / `logistics`)
+### 3.1. Semantic Perception and Space (`world` / `logistics`)
 
-El LLM de un NPC no puede hacer trigonometría. El servidor debe traducir el mundo 3D a conceptos semánticos.
+An NPC's LLM cannot do trigonometry. The server must translate the 3D world into semantic concepts.
 
-* **Geometría**: Ejes de Unity (X, Z para plano; Y para elevación). 1 Unidad = 1 Metro.
-* **Spatial Hash Grid**: El mundo se divide en *Chunks* para optimizar la búsqueda de entidades cercanas (evitando
-  iteración O(N^2)).
-* **Buffer Sensorial**: El `PerceptionProvider` convierte las distancias matemáticas en un JSON relativo que se inyecta
-  en el prompt del agente (ej. azimut a "Norte", distancia a "Cerca", elevación a "Por encima de ti").
+* **Geometry**: Unity axes (X, Z for plane; Y for elevation). 1 Unit = 1 Meter.
+* **Spatial Hash Grid**: The world is divided into *Chunks* to optimize nearby entity search (avoiding
+  O(N^2) iteration).
+* **Sensory Buffer**: The `PerceptionProvider` converts mathematical distances into a relative JSON that is injected
+  into the agent's prompt (e.g., azimuth to "North", distance to "Near", elevation to "Above you").
 
-### 3.2. Configuración de Agentes (Manifiestos)
+### 3.2. Agent Configuration (Manifests)
 
-Los NPCs se definen mediante archivos híbridos Markdown (`.md`) almacenados en una carpeta externa para permitir *
-*Hot-Reload** sin recompilar el `.jar`.
+NPCs are defined via hybrid Markdown files (`.md`) stored in an external folder to allow *
+*Hot-Reload** without recompiling the `.jar`.
 
-* **Frontmatter (YAML)**: Parseado con Jackson a Java Records. Contiene datos físicos del NPC.
-* **Body (Markdown)**: Define la personalidad y directrices. Se inyecta directamente como `SystemPromptTemplate` en
+* **Frontmatter (YAML)**: Parsed with Jackson to Java Records. Contains NPC physical data.
+* **Body (Markdown)**: Defines personality and guidelines. Injected directly as `SystemPromptTemplate` in
   Spring AI.
 
-### 3.3. Acciones y Física Semántica (Motor de Consecuencias)
+### 3.3. Actions and Semantic Physics (Consequence Engine)
 
-Los agentes no tienen verbos pre-programados rígidos. Funciona por **Affordances (Tags Semánticos)**. Un NPC ve un ID de
-objeto y sus tags (ej. `[frágil]`, `[combustible]`).
+Agents have no rigid pre-programmed verbs. It works by **Affordances (Semantic Tags)**. An NPC sees an object ID
+and its tags (e.g., `[fragile]`, `[flammable]`).
 
-* **ActionIntent**: El LLM devuelve su intención (`verb`, `targetId`, `toolId`).
-* **ActionDispatcher**: Filtra la acción en Java (Sanity Check: rango, raycast de visión).
-* **Arbitraje IA**: Si la acción interactúa de forma novedosa (ej. "Quemar" con "Magia" sobre "Agua"), se envía al
-  `DirectorArbitrator` (un LLM juez) junto con el estado del entorno.
-* **WisdomCache**: Para no saturar la API de IA, el veredicto del Arbitrador se hashea (SHA-256 de la
-  Acción+Objetos+Entorno Normalizado) y se guarda. La próxima vez que alguien intente lo mismo, se resuelve
-  determinísticamente en milisegundos.
+* **ActionIntent**: The LLM returns its intention (`verb`, `targetId`, `toolId`).
+* **ActionDispatcher**: Filters the action in Java (Sanity Check: range, vision raycast).
+* **AI Arbitration**: If the action interacts in a novel way (e.g., "Burn" with "Magic" on "Water"), it is sent to
+  `DirectorArbitrator` (an LLM judge) along with the environment state.
+* **WisdomCache**: To avoid saturating the AI API, the Arbitrator's verdict is hashed (SHA-256 of
+  Action+Objects+Normalized Environment) and saved. The next time someone attempts the same, it resolves
+  deterministically in milliseconds.
 
-### 3.4. Navegación y Movimiento Continuo
+### 3.4. Navigation and Continuous Movement
 
-El movimiento no es teletransporte. Es físico y lleva tiempo real.
+Movement is not teleportation. It is physical and takes real time.
 
-* **Estado `IN_TRANSIT`**: Un agente en movimiento interpola matemáticamente (Lerp) su posición en cada Tick basándose
-  en su `BaseSpeed` y el `DeltaTime`.
-* **Interrupciones**: Si un agente en tránsito detecta una amenaza, pasa a `EVALUATING_THREAT`, detiene el cálculo
-  matemático y consulta de emergencia al LLM ("Huir" o "Atacar").
+* **State `MOVING`**: A moving agent mathematically interpolates (Lerps) its position each Tick based
+  on its `walkingSpeed` and `dt`.
+* **Interruptions**: If an agent in transit detects a threat, it switches to `INTERRUPTED`, stops the mathematical
+  calculation and makes an emergency LLM query ("Flee" or "Attack").
 
-## 4. La Jerarquía de Agentes
+## 4. The Agent Hierarchy
 
-### 4.1. Micro-Agentes (Citizens)
+### 4.1. Micro-Agents (Citizens)
 
-Son los habitantes del mundo. Orquestados por un `CitizenPulse` (su ciclo de consciencia).
+They are the world's inhabitants. Orchestrated by a `CitizenPulse` (their consciousness cycle).
 
-* **Estados de Máquina**: `IDLE`, `IN_TRANSIT`, `THINKING` (esperando al LLM asíncronamente), `BUSY`.
-* Solo consultan al LLM cuando es estrictamente necesario (`IDLE` o interrupciones severas).
+* **Machine States**: `IDLE`, `MOVING`, `THINKING` (waiting for the LLM asynchronously), `INTERRUPTED`, `BUSY`, `TALKING`.
+* They only consult the LLM when strictly necessary (`IDLE` or severe interruptions).
 
-### 4.2. Macro-Agentes (El Cónclave de los Dioses)
+### 4.2. Macro-Agents (The Conclave of Gods)
 
-LLMs de escala temporal amplia (semanas/meses) que buscan la homeostasis del mundo, no el bienestar individual.
+Wide temporal scale LLMs (weeks/months) that seek world homeostasis, not individual well-being.
 
-* **Dios Primordial (El Ecosistema)**: Dicta edictos supremos. Protege la "Anomalía" (El Jugador) asegurando que no se
-  quede bloqueado irreversiblemente.
-* **Dios de Recursos (La Vida)**: Genera abundancia, pero castiga la sobreexplotación.
-* **Dios de Riesgo (El Conflicto/El Depredador)**: Introduce bandidos, lobos o amenazas en rutas comerciales para evitar
-  el estancamiento utópico.
-* **Dios de Mercado (El Economista)**: Induce recesiones o inflación según el flujo del oro global.
+* **Primordial God (The Ecosystem)**: Dictates supreme edicts. Protects the "Anomaly" (The Player) ensuring they don't
+  get irreversibly stuck.
+* **Resource God (Life)**: Generates abundance, but punishes overexploitation.
+* **Risk God (Conflict/The Predator)**: Introduces bandits, wolves, or threats on trade routes to avoid
+  utopian stagnation.
+* **Market God (The Economist)**: Induces recessions or inflation based on global gold flow.
 
-## 5. Glosario Técnico para la IA
+## 5. Technical Glossary for AI
 
-| Término                     | Definición                                                                                                                                     |
-|:----------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
-| **Tick**                    | El pulso temporal del servidor.                                                                                                                |
-| **Slice**                   | Módulo aislado de la Clean Architecture según Spring Modulith.                                                                                 |
-| **Affordance / Tag**        | Etiqueta descriptiva (ej. `[pesado]`) que permite al LLM inferir usos de objetos sin código específico.                                        |
-| **WisdomCache**             | El sistema de aprendizaje del servidor que convierte fallos de caché (consultas LLM costosas) en aciertos de caché (determinismo instantáneo). |
-| **Vector Social / Hobbies** | Metadatos de NPCs que el jugador puede explotar para ingeniería social.                                                                        |
+| Term                       | Definition                                                                                                                                     |
+|:---------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
+| **Tick**                   | The server's temporal pulse.                                                                                                                |
+| **Slice**                  | Isolated module of Clean Architecture per Spring Modulith.                                                                                 |
+| **Affordance / Tag**       | Descriptive tag (e.g., `[heavy]`) that allows the LLM to infer object uses without specific code.                                        |
+| **WisdomCache**            | The server's learning system that converts cache misses (expensive LLM queries) into cache hits (instant determinism). |
+| **Social Vector / Hobbies** | NPC metadata that the player can exploit for social engineering.                                                                        |
 
 ---
 
-**Fin del Contexto.** Actúa basándote en estos principios para las siguientes instrucciones.
+**End of Context.** Act based on these principles for the following instructions.
