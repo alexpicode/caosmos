@@ -5,7 +5,7 @@ import com.caosmos.common.domain.model.world.WorldConstants;
 import com.caosmos.world.application.dto.ZoneDto;
 import com.caosmos.world.domain.model.Zone;
 import com.caosmos.world.domain.service.ZoneManager;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -14,13 +14,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GetWorldZonesUseCase {
+public class GetWorldZoneDetailUseCase {
 
   private final ZoneManager zoneManager;
   private final CitizenRegistry citizenRegistry;
 
-  public List<ZoneDto> execute() {
-    return zoneManager.getAllZones().stream().map(this::mapToDto).toList();
+  public Optional<ZoneDto> execute(String id) {
+    Optional<Zone> zoneOpt = zoneManager.getZone(id);
+    if (zoneOpt.isEmpty()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(mapToDto(zoneOpt.get()));
   }
 
   private ZoneDto mapToDto(Zone zone) {
