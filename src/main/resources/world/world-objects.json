@@ -1,8 +1,8 @@
 {
   "worldObjects": [
     {
-      "id": "directional_sign1",
-      "name": "Directional Sign",
+      "id": "great_sun_clock",
+      "name": "The Great Sun Clock",
       "category": "DECORATION",
       "position": {
         "x": 0,
@@ -10,726 +10,694 @@
         "z": 0
       },
       "tags": [
-        "sign",
-        "information",
-        "navigation"
+        "stone",
+        "landmark",
+        "public_knowledge"
       ],
-      "description": "A wooden signpost with directional markings. To the north lies the mine, to the south the forest, to the east the industrial zone, and to the west the residential zone.",
-      "radius": 0.5,
-      "parentZoneId": "town"
+      "description": "A massive horizontal stone clock that marks the hours using the shadow of a central column.",
+      "radius": 4.0,
+      "parentZoneId": "central_plaza"
     },
     {
-      "id": "tree1",
-      "name": "Oak Tree",
-      "category": "NATURE",
+      "id": "edict_board",
+      "name": "Edict Board",
+      "category": "DECORATION",
       "position": {
-        "x": -60,
-        "y": 0,
-        "z": 40
-      },
-      "tags": [
-        "nature",
-        "tree"
-      ],
-      "description": "A tall, sturdy oak with thick branches and deep green leaves.",
-      "radius": 1.0,
-      "parentZoneId": "park"
-    },
-    {
-      "id": "bench1",
-      "name": "Park Bench",
-      "category": "FURNITURE",
-      "position": {
-        "x": -60,
+        "x": 0,
         "y": 0,
         "z": 20
       },
       "tags": [
-        "furniture",
-        "rest"
+        "wooden",
+        "informative",
+        "navigation_aid"
       ],
-      "description": "A simple wooden bench, weathered by time but still comfortable.",
-      "width": 2.0,
-      "length": 0.8,
-      "parentZoneId": "park"
+      "description": "A sturdy wooden board where official laws and navigation signs are posted.",
+      "width": 4.0,
+      "length": 0.5,
+      "parentZoneId": "central_plaza"
     },
     {
-      "id": "fountain1",
-      "name": "Central Fountain",
+      "id": "plaza_street_lamp",
+      "name": "Plaza Street Lamp",
       "category": "DECORATION",
       "position": {
-        "x": 0,
+        "x": 15,
         "y": 0,
-        "z": 0
+        "z": 15
       },
       "tags": [
-        "water",
-        "decoration"
+        "iron",
+        "light_source",
+        "public"
       ],
-      "description": "A magnificent stone fountain. Water flows gracefully from the central sculpture.",
-      "radius": 3.0,
-      "parentZoneId": "town"
+      "description": "A tall iron lamp that illuminates the central plaza during the night.",
+      "radius": 0.5,
+      "parentZoneId": "central_plaza"
     },
     {
-      "id": "well1",
-      "name": "Water Well",
-      "category": "WATER_SOURCE",
+      "id": "clock_tower_door",
+      "name": "Clock Tower Entrance",
+      "category": "GATEWAY",
       "position": {
-        "x": -20,
+        "x": 0,
         "y": 0,
         "z": 30
       },
       "tags": [
-        "water",
-        "resource"
+        "iron",
+        "door",
+        "entrance"
       ],
-      "description": "An old stone well. You can hear the echo of dripping water coming from the depths.",
-      "radius": 1.5,
-      "parentZoneId": "park"
+      "description": "A heavy iron door leading into the interior of the city's main clock tower.",
+      "width": 2.0,
+      "length": 0.5,
+      "parentZoneId": "central_plaza",
+      "targetZoneId": "clock_tower"
     },
     {
-      "id": "grocery_store_door",
-      "name": "Glass Door",
+      "id": "archives_door",
+      "name": "Archives Entrance",
       "category": "GATEWAY",
       "position": {
-        "x": 60,
+        "x": 0,
         "y": 0,
-        "z": 12.5
+        "z": 90
       },
       "tags": [
-        "entrance",
-        "shop",
-        "glass"
+        "wooden",
+        "door",
+        "entrance"
       ],
-      "description": "A clean glass door that gives way to the local grocery store.",
-      "radius": 0.5,
-      "parentZoneId": "market",
-      "targetZoneId": "grocery_store_interior"
+      "description": "A solid wooden door that opens into the quiet Villa Clara archives.",
+      "width": 2.0,
+      "length": 0.5,
+      "parentZoneId": "administrative_district_north",
+      "targetZoneId": "villa_clara_archives"
+    },
+    {
+      "id": "oak_desk",
+      "name": "Oak Desk",
+      "category": "WORKSTATION",
+      "position": {
+        "x": 5,
+        "y": 0,
+        "z": 105
+      },
+      "tags": [
+        "wooden",
+        "workstation",
+        "heavy"
+      ],
+      "description": "A solid oak desk used by archivists for studying ancient records.",
+      "width": 2.0,
+      "length": 1.0,
+      "parentZoneId": "villa_clara_archives"
+    },
+    {
+      "id": "clinic_door",
+      "name": "Healing Clinic Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 130
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "The main entrance to the municipal clinic, known for its sterile environment.",
+      "width": 2.0,
+      "length": 0.5,
+      "parentZoneId": "administrative_district_north",
+      "targetZoneId": "healing_clinic"
+    },
+    {
+      "id": "bandage_briefcase",
+      "name": "Bandage Briefcase",
+      "category": "STORAGE",
+      "position": {
+        "x": -5,
+        "y": 0,
+        "z": 145
+      },
+      "tags": [
+        "leather",
+        "container",
+        "medical",
+        "tool"
+      ],
+      "description": "A leather briefcase containing various medical supplies and bandages.",
+      "radius": 0.4,
+      "parentZoneId": "healing_clinic"
+    },
+    {
+      "id": "watchtower_door",
+      "name": "Watchtower Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 192.5
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance"
+      ],
+      "description": "An iron-reinforced door that leads to the top of the administrative watchtower.",
+      "width": 2.0,
+      "length": 0.5,
+      "parentZoneId": "administrative_district_north",
+      "targetZoneId": "watchtower"
+    },
+    {
+      "id": "agricultural_hand_axe",
+      "name": "Agricultural Hand Axe",
+      "category": "TOOL",
+      "position": {
+        "x": 10,
+        "y": 0,
+        "z": -120
+      },
+      "tags": [
+        "iron",
+        "tool",
+        "sharp",
+        "unowned"
+      ],
+      "description": "A sharp hand axe used for various farming and maintenance tasks.",
+      "radius": 0.3,
+      "parentZoneId": "agricultural_belt_south"
+    },
+    {
+      "id": "granary_gate",
+      "name": "Granary Main Gate",
+      "category": "GATEWAY",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -90
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "A wide wooden gate designed for the transport of grain into the community storage.",
+      "width": 4.0,
+      "length": 0.5,
+      "parentZoneId": "agricultural_belt_south",
+      "targetZoneId": "community_granary"
+    },
+    {
+      "id": "grain_sack",
+      "name": "Grain Sack",
+      "category": "RESOURCE",
+      "position": {
+        "x": 5,
+        "y": 0,
+        "z": -105
+      },
+      "tags": [
+        "fabric",
+        "food",
+        "heavy"
+      ],
+      "description": "A heavy fabric sack filled with harvested grain.",
+      "radius": 0.6,
+      "parentZoneId": "community_granary"
+    },
+    {
+      "id": "farm_door",
+      "name": "Farm Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -150
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "The wooden entrance to the Prosperous Farm residence.",
+      "width": 2.0,
+      "length": 0.5,
+      "parentZoneId": "agricultural_belt_south",
+      "targetZoneId": "prosperous_farm"
+    },
+    {
+      "id": "market_west_door",
+      "name": "Market West Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": 55,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "The main western gate that welcomes shoppers into the bustling municipal market.",
+      "width": 0.5,
+      "length": 4.0,
+      "parentZoneId": "commercial_industrial_district_east",
+      "targetZoneId": "municipal_market"
+    },
+    {
+      "id": "commercial_scale",
+      "name": "Commercial Scale",
+      "category": "WORKSTATION",
+      "position": {
+        "x": 75,
+        "y": 0,
+        "z": 10
+      },
+      "tags": [
+        "iron",
+        "workstation",
+        "measurement"
+      ],
+      "description": "A precise iron scale used in the market for weighing goods.",
+      "width": 1.0,
+      "length": 1.0,
+      "parentZoneId": "municipal_market"
+    },
+    {
+      "id": "forge_gate",
+      "name": "Forge Gate",
+      "category": "GATEWAY",
+      "position": {
+        "x": 120,
+        "y": 0,
+        "z": 80
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance"
+      ],
+      "description": "A massive iron gate that opens into the heat and smoke of the central forge.",
+      "width": 4.0,
+      "length": 0.5,
+      "parentZoneId": "commercial_industrial_district_east",
+      "targetZoneId": "central_great_forge"
+    },
+    {
+      "id": "forge_hammer",
+      "name": "Forge Hammer",
+      "category": "TOOL",
+      "position": {
+        "x": 125,
+        "y": 0,
+        "z": 105
+      },
+      "tags": [
+        "iron",
+        "tool",
+        "heavy",
+        "workstation_linked"
+      ],
+      "description": "A heavy iron hammer essential for shaping metal at the forge.",
+      "radius": 0.4,
+      "parentZoneId": "central_great_forge"
+    },
+    {
+      "id": "iron_tongs",
+      "name": "Iron Tongs",
+      "category": "TOOL",
+      "position": {
+        "x": 115,
+        "y": 0,
+        "z": 105
+      },
+      "tags": [
+        "iron",
+        "tool",
+        "heat_resistant"
+      ],
+      "description": "Heat-resistant iron tongs used for handling glowing hot metal.",
+      "radius": 0.3,
+      "parentZoneId": "central_great_forge"
+    },
+    {
+      "id": "tavern_door",
+      "name": "Tavern Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": 165,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "The wooden door that leads into the lively atmosphere of 'The Broken Jar'.",
+      "width": 0.5,
+      "length": 2.0,
+      "parentZoneId": "commercial_industrial_district_east",
+      "targetZoneId": "broken_jar_tavern"
+    },
+    {
+      "id": "beer_mug",
+      "name": "Beer Mug",
+      "category": "STORAGE",
+      "position": {
+        "x": 185,
+        "y": 0,
+        "z": 5
+      },
+      "tags": [
+        "ceramic",
+        "container",
+        "drinkable"
+      ],
+      "description": "A ceramic mug filled with fresh beer, common in the local tavern.",
+      "radius": 0.2,
+      "parentZoneId": "broken_jar_tavern"
+    },
+    {
+      "id": "door_house_01",
+      "name": "House 01 Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": -40
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "A simple wooden door leading into detached house 01.",
+      "width": 0.5,
+      "length": 2.0,
+      "parentZoneId": "residential_district_west",
+      "targetZoneId": "detached_house_01"
+    },
+    {
+      "id": "oak_table",
+      "name": "Oak Table",
+      "category": "FURNITURE",
+      "position": {
+        "x": -62,
+        "y": 0,
+        "z": -42
+      },
+      "tags": [
+        "wooden",
+        "structure",
+        "furniture"
+      ],
+      "description": "A sturdy oak table, the centerpiece of the house's living area.",
+      "width": 2.0,
+      "length": 2.0,
+      "parentZoneId": "detached_house_01"
+    },
+    {
+      "id": "door_house_02",
+      "name": "House 02 Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": -20
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "A simple wooden door leading into detached house 02.",
+      "width": 0.5,
+      "length": 2.0,
+      "parentZoneId": "residential_district_west",
+      "targetZoneId": "detached_house_02"
+    },
+    {
+      "id": "door_house_03",
+      "name": "House 03 Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "A simple wooden door leading into detached house 03.",
+      "width": 0.5,
+      "length": 2.0,
+      "parentZoneId": "residential_district_west",
+      "targetZoneId": "detached_house_03"
+    },
+    {
+      "id": "door_house_04",
+      "name": "House 04 Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": 20
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "A simple wooden door leading into detached house 04.",
+      "width": 0.5,
+      "length": 2.0,
+      "parentZoneId": "residential_district_west",
+      "targetZoneId": "detached_house_04"
+    },
+    {
+      "id": "door_house_05",
+      "name": "House 05 Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": 40
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "A simple wooden door leading into detached house 05.",
+      "width": 0.5,
+      "length": 2.0,
+      "parentZoneId": "residential_district_west",
+      "targetZoneId": "detached_house_05"
+    },
+    {
+      "id": "mansion_gate",
+      "name": "Mansion Gate",
+      "category": "GATEWAY",
+      "position": {
+        "x": -130,
+        "y": 0,
+        "z": 100
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance"
+      ],
+      "description": "An iron gate that opens into the luxurious grounds of the nobility mansion.",
+      "width": 0.5,
+      "length": 4.0,
+      "parentZoneId": "residential_district_west",
+      "targetZoneId": "nobility_mansion"
+    },
+    {
+      "id": "library_door",
+      "name": "Library Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": -135,
+        "y": 0,
+        "z": -100
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance"
+      ],
+      "description": "The main entrance to the neighborhood library, smelling of old paper and ink.",
+      "width": 0.5,
+      "length": 2.0,
+      "parentZoneId": "residential_district_west",
+      "targetZoneId": "neighborhood_library"
     },
     {
       "id": "mine_entrance",
       "name": "Mine Entrance",
       "category": "GATEWAY",
       "position": {
-        "x": 0,
+        "x": 140,
         "y": 0,
-        "z": 200
+        "z": 270
       },
       "tags": [
+        "stone",
         "entrance",
         "dark",
-        "tunnel"
+        "path_to_interior"
       ],
-      "radius": 1.0,
-      "parentZoneId": null,
-      "targetZoneId": "mining_zone"
-    },
-    {
-      "id": "alice_house_door",
-      "name": "Oak Door",
-      "category": "GATEWAY",
-      "position": {
-        "x": -250,
-        "y": 0,
-        "z": 44
-      },
-      "tags": [
-        "entrance",
-        "house",
-        "wood"
-      ],
-      "description": "A solid oak door with a small iron handle, marking the entrance to Alice's house.",
-      "radius": 0.5,
-      "parentZoneId": "residential_zone",
-      "targetZoneId": "alice_house_interior"
-    },
-    {
-      "id": "hammer1",
-      "name": "Crafting Hammer",
-      "category": "TOOL",
-      "position": {
-        "x": 2,
-        "y": 0,
-        "z": 72
-      },
-      "tags": [
-        "tool",
-        "crafting",
-        "construction"
-      ],
-      "description": "A heavy iron hammer for blacksmithing and construction work.",
-      "radius": 0.2,
-      "parentZoneId": "alice_house_interior"
-    },
-    {
-      "id": "axe1",
-      "name": "Wood Axe",
-      "category": "TOOL",
-      "position": {
-        "x": -2,
-        "y": 0,
-        "z": 72
-      },
-      "tags": [
-        "tool",
-        "woodcutting",
-        "weapon"
-      ],
-      "description": "A sharp axe with a wooden handle, ideal for felling trees or defense.",
-      "radius": 0.2,
-      "parentZoneId": "alice_house_interior"
-    },
-    {
-      "id": "pickaxe1",
-      "name": "Mining Pickaxe",
-      "category": "TOOL",
-      "position": {
-        "x": 5,
-        "y": 0,
-        "z": 305
-      },
-      "tags": [
-        "tool",
-        "mining",
-        "weapon"
-      ],
-      "description": "A heavy steel pickaxe, its tip is worn from striking solid rock.",
-      "radius": 0.2,
-      "parentZoneId": "mining_zone"
-    },
-    {
-      "id": "fishing_rod1",
-      "name": "Fishing Rod",
-      "category": "TOOL",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": -350
-      },
-      "tags": [
-        "tool",
-        "fishing",
-        "food"
-      ],
-      "description": "A long flexible rod with a reinforced line and a small hook.",
-      "radius": 0.2,
-      "parentZoneId": "forest_zone"
-    },
-    {
-      "id": "shovel1",
-      "name": "Garden Shovel",
-      "category": "TOOL",
-      "position": {
-        "x": -240,
-        "y": 0,
-        "z": 55
-      },
-      "tags": [
-        "tool",
-        "gardening",
-        "digging"
-      ],
-      "description": "A small hand shovel, perfect for transplanting herbs and digging small holes.",
-      "radius": 0.2,
-      "parentZoneId": "alice_house_interior"
-    },
-    {
-      "id": "campfire1",
-      "name": "Campfire",
-      "category": "FIRE",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": -300
-      },
-      "tags": [
-        "fire",
-        "cooking",
-        "warmth",
-        "light"
-      ],
-      "description": "A small stone pit with burning logs. It provides warmth and a flickering orange light.",
-      "radius": 1.0,
-      "parentZoneId": "forest_zone"
-    },
-    {
-      "id": "chest1",
-      "name": "Storage Chest",
-      "category": "STORAGE",
-      "position": {
-        "x": -5,
-        "y": 0,
-        "z": 75
-      },
-      "tags": [
-        "storage",
-        "container",
-        "security"
-      ],
-      "description": "A sturdy wooden chest with iron reinforcements and a heavy lid.",
-      "width": 1.0,
-      "length": 0.6,
-      "parentZoneId": "alice_house_interior"
-    },
-    {
-      "id": "workbench1",
-      "name": "Crafting Table",
-      "category": "WORKSTATION",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": 80
-      },
-      "tags": [
-        "crafting",
-        "furniture",
-        "work"
-      ],
-      "width": 2.0,
+      "description": "The dark, stone-framed opening of the Mine of Laments.",
+      "width": 4.0,
       "length": 1.0,
-      "parentZoneId": "blacksmith"
+      "parentZoneId": "whispering_forest",
+      "targetZoneId": "mine_of_laments"
     },
     {
-      "id": "anvil1",
-      "name": "Blacksmith Anvil",
-      "category": "WORKSTATION",
+      "id": "bright_iron_vein",
+      "name": "Bright Iron Vein",
+      "category": "RESOURCE",
       "position": {
-        "x": 5,
-        "y": 0,
-        "z": 75
-      },
-      "tags": [
-        "crafting",
-        "metalwork",
-        "tool"
-      ],
-      "description": "A massive steel anvil, deeply anchored to a wooden stump.",
-      "radius": 0.5,
-      "parentZoneId": "blacksmith"
-    },
-    {
-      "id": "loom1",
-      "name": "Weaving Loom",
-      "category": "WORKSTATION",
-      "position": {
-        "x": 250,
-        "y": 0,
-        "z": 0
-      },
-      "tags": [
-        "crafting",
-        "textile",
-        "tool"
-      ],
-      "width": 1.8,
-      "length": 1.2,
-      "parentZoneId": "industrial_zone"
-    },
-    {
-      "id": "bush1",
-      "name": "Berry Bush",
-      "category": "NATURE",
-      "position": {
-        "x": 10,
-        "y": 0,
-        "z": -310
-      },
-      "tags": [
-        "nature",
-        "food"
-      ],
-      "description": "A dense bush full of small, dark blue berries.",
-      "radius": 0.8,
-      "parentZoneId": "forest_zone"
-    },
-    {
-      "id": "apple_tree1",
-      "name": "Apple Tree",
-      "category": "NATURE",
-      "position": {
-        "x": -60,
-        "y": 0,
-        "z": -20
-      },
-      "tags": [
-        "nature",
-        "tree",
-        "food"
-      ],
-      "description": "An apple tree with heavy branches, some red fruits are visible among the leaves.",
-      "radius": 1.0,
-      "parentZoneId": "park"
-    },
-    {
-      "id": "mushroom_patch1",
-      "name": "Mushroom Patch",
-      "category": "NATURE",
-      "position": {
-        "x": -10,
-        "y": 0,
-        "z": -290
-      },
-      "tags": [
-        "nature",
-        "food",
-        "foraging"
-      ],
-      "description": "A cluster of wild mushrooms growing in the shade.",
-      "radius": 1.2,
-      "parentZoneId": "forest_zone"
-    },
-    {
-      "id": "herb_garden1",
-      "name": "Herb Garden",
-      "category": "NATURE",
-      "position": {
-        "x": -40,
-        "y": 0,
-        "z": 0
-      },
-      "tags": [
-        "nature",
-        "food",
-        "medicine",
-        "gardening"
-      ],
-      "description": "A well-kept garden with rows of aromatic and medicinal herbs.",
-      "width": 3.0,
-      "length": 3.0,
-      "parentZoneId": "park"
-    },
-    {
-      "id": "bridge1",
-      "name": "Wooden Bridge",
-      "category": "INFRASTRUCTURE",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": -200
-      },
-      "tags": [
-        "infrastructure",
-        "construction",
-        "crossing"
-      ],
-      "width": 4.0,
-      "length": 10.0,
-      "parentZoneId": "forest_zone"
-    },
-    {
-      "id": "lamp_post1",
-      "name": "Street Lamp",
-      "category": "INFRASTRUCTURE",
-      "position": {
-        "x": 20,
-        "y": 0,
-        "z": 20
-      },
-      "tags": [
-        "infrastructure",
-        "light",
-        "safety"
-      ],
-      "radius": 0.3,
-      "parentZoneId": "town"
-    },
-    {
-      "id": "water_tower1",
-      "name": "Water Tower",
-      "category": "INFRASTRUCTURE",
-      "position": {
-        "x": 250,
-        "y": 0,
-        "z": 100
-      },
-      "tags": [
-        "infrastructure",
-        "water",
-        "storage"
-      ],
-      "radius": 4.0,
-      "parentZoneId": "industrial_zone"
-    },
-    {
-      "id": "library_door",
-      "name": "Heavy Library Door",
-      "category": "GATEWAY",
-      "position": {
-        "x": -250,
-        "y": 0,
-        "z": -10
-      },
-      "tags": [
-        "entrance",
-        "library",
-        "stone"
-      ],
-      "radius": 0.5,
-      "parentZoneId": "residential_zone",
-      "targetZoneId": "town_library_interior"
-    },
-    {
-      "id": "blacksmith_door",
-      "name": "Workshop Door",
-      "category": "GATEWAY",
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": 50
-      },
-      "tags": [
-        "entrance",
-        "forge",
-        "iron"
-      ],
-      "radius": 0.5,
-      "parentZoneId": "town",
-      "targetZoneId": "blacksmith"
-    },
-    {
-      "id": "market_stall1",
-      "name": "Farmers Market",
-      "category": "BUILDING",
-      "position": {
-        "x": 60,
-        "y": 0,
-        "z": -20
-      },
-      "tags": [
-        "commerce",
-        "food",
-        "trade"
-      ],
-      "width": 4.0,
-      "length": 3.0,
-      "parentZoneId": "market"
-    },
-    {
-      "id": "stable1",
-      "name": "Horse Stable",
-      "category": "BUILDING",
-      "position": {
-        "x": -250,
-        "y": 0,
-        "z": -50
-      },
-      "tags": [
-        "building",
-        "animals",
-        "transport"
-      ],
-      "width": 10.0,
-      "length": 15.0,
-      "parentZoneId": "residential_zone"
-    },
-    {
-      "id": "rock_formation1",
-      "name": "Rock Formation",
-      "category": "NATURE",
-      "position": {
-        "x": 20,
-        "y": 0,
-        "z": 320
-      },
-      "tags": [
-        "nature",
-        "stone",
-        "resource"
-      ],
-      "radius": 3.5,
-      "parentZoneId": "mining_zone"
-    },
-    {
-      "id": "flower_field1",
-      "name": "Wildflower Field",
-      "category": "NATURE",
-      "position": {
-        "x": -60,
-        "y": 0,
-        "z": -40
-      },
-      "tags": [
-        "nature",
-        "beauty",
-        "foraging"
-      ],
-      "radius": 4.0,
-      "parentZoneId": "park"
-    },
-    {
-      "id": "cave_entrance1",
-      "name": "Cave Entrance",
-      "category": "NATURE",
-      "position": {
-        "x": -30,
-        "y": 0,
-        "z": 280
-      },
-      "tags": [
-        "nature",
-        "exploration",
-        "shelter"
-      ],
-      "radius": 2.5,
-      "parentZoneId": "mining_zone",
-      "targetZoneId": "cave1_interior"
-    },
-    {
-      "id": "compass1",
-      "name": "Navigation Compass",
-      "category": "TOOL",
-      "position": {
-        "x": 260,
-        "y": 0,
-        "z": 10
-      },
-      "tags": [
-        "tool",
-        "navigation",
-        "exploration"
-      ],
-      "radius": 0.1,
-      "parentZoneId": "industrial_zone"
-    },
-    {
-      "id": "lantern1",
-      "name": "Oil Lantern",
-      "category": "TOOL",
-      "position": {
-        "x": -2,
-        "y": 0,
-        "z": 305
-      },
-      "tags": [
-        "tool",
-        "light",
-        "portable"
-      ],
-      "radius": 0.2,
-      "parentZoneId": "mining_zone"
-    },
-    {
-      "id": "rope1",
-      "name": "Climbing Rope",
-      "category": "TOOL",
-      "position": {
-        "x": 8,
+        "x": 150,
         "y": 0,
         "z": 310
       },
       "tags": [
-        "tool",
-        "climbing",
-        "utility"
+        "stone",
+        "resource",
+        "mineable",
+        "iron"
       ],
-      "radius": 0.2,
-      "parentZoneId": "mining_zone"
+      "description": "A natural vein of iron ore that sparkles when light hits it.",
+      "radius": 1.5,
+      "parentZoneId": "mine_of_laments"
     },
     {
-      "id": "map1",
-      "name": "World Map",
+      "id": "dense_coal_vein",
+      "name": "Dense Coal Vein",
+      "category": "RESOURCE",
+      "position": {
+        "x": 130,
+        "y": 0,
+        "z": 320
+      },
+      "tags": [
+        "stone",
+        "resource",
+        "mineable",
+        "fuel"
+      ],
+      "description": "A thick seam of coal embedded in the rock, ready for extraction.",
+      "radius": 2.0,
+      "parentZoneId": "mine_of_laments"
+    },
+    {
+      "id": "ancient_copper_vein",
+      "name": "Ancient Copper Vein",
+      "category": "RESOURCE",
+      "position": {
+        "x": 145,
+        "y": 0,
+        "z": 325
+      },
+      "tags": [
+        "stone",
+        "resource",
+        "mineable",
+        "copper"
+      ],
+      "description": "An outcrop of oxidized copper ore revealing a greenish hue.",
+      "radius": 1.2,
+      "parentZoneId": "mine_of_laments"
+    },
+    {
+      "id": "rusty_mining_pick",
+      "name": "Rusty Mining Pick",
       "category": "TOOL",
       "position": {
-        "x": -250,
+        "x": 142,
         "y": 0,
-        "z": 5
+        "z": 280
       },
       "tags": [
-        "tool",
-        "navigation",
-        "information"
-      ],
-      "radius": 0.1,
-      "parentZoneId": "residential_zone"
-    },
-    {
-      "id": "test_timber_dry",
-      "name": "Dry Timber",
-      "category": "RESOURCE",
-      "position": {
-        "x": -298,
-        "y": 0,
-        "z": 0
-      },
-      "tags": [
-        "wood",
-        "flammable",
-        "dry",
-        "resource"
-      ],
-      "radius": 0.5,
-      "parentZoneId": "residential_zone"
-    },
-    {
-      "id": "test_timber_wet",
-      "name": "Wet Timber",
-      "category": "RESOURCE",
-      "position": {
-        "x": -302,
-        "y": 0,
-        "z": 0
-      },
-      "tags": [
-        "wood",
-        "flammable",
-        "wet",
-        "resource"
-      ],
-      "radius": 0.5,
-      "parentZoneId": "residential_zone"
-    },
-    {
-      "id": "test_iron_scrap",
-      "name": "Rusty Iron Scrap",
-      "category": "RESOURCE",
-      "position": {
-        "x": -300,
-        "y": 0,
-        "z": 2
-      },
-      "tags": [
-        "metal",
         "iron",
-        "resource"
+        "tool",
+        "heavy",
+        "unowned"
       ],
-      "radius": 0.3,
-      "parentZoneId": "residential_zone"
+      "description": "A heavy mining pick with a rusted tip, abandoned in the depths.",
+      "radius": 0.5,
+      "parentZoneId": "mine_of_laments"
     },
     {
-      "id": "test_water_vial",
-      "name": "Vial of Water",
-      "category": "TOOL",
+      "id": "transport_minecart",
+      "name": "Transport Minecart",
+      "category": "STORAGE",
       "position": {
-        "x": -300,
+        "x": 140,
         "y": 0,
-        "z": -2
+        "z": 290
+      },
+      "tags": [
+        "iron",
+        "container",
+        "heavy",
+        "transport"
+      ],
+      "description": "An iron cart on rails used for transporting ore out of the mine.",
+      "width": 2.0,
+      "length": 3.0,
+      "parentZoneId": "mine_of_laments"
+    },
+    {
+      "id": "cave_entrance",
+      "name": "Cave Entrance",
+      "category": "GATEWAY",
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 442.5
+      },
+      "tags": [
+        "stone",
+        "entrance",
+        "natural"
+      ],
+      "description": "A natural stone opening that leads into the damp darkness of the hermit's cave.",
+      "width": 2.0,
+      "length": 0.5,
+      "parentZoneId": "whispering_forest",
+      "targetZoneId": "hermit_cave"
+    },
+    {
+      "id": "crystal_lake",
+      "name": "Crystal Lake",
+      "category": "NATURE",
+      "position": {
+        "x": -120,
+        "y": 0,
+        "z": 480
       },
       "tags": [
         "water",
-        "extinguisher",
-        "liquid",
-        "tool"
+        "source",
+        "cold",
+        "isLandmark"
       ],
-      "radius": 0.1,
-      "parentZoneId": "residential_zone"
-    },
-    {
-      "id": "test_matches",
-      "name": "Box of Matches",
-      "category": "TOOL",
-      "position": {
-        "x": -299,
-        "y": 0,
-        "z": 1
-      },
-      "tags": [
-        "igniter",
-        "fire_source",
-        "flammable",
-        "tool"
-      ],
-      "radius": 0.1,
-      "parentZoneId": "residential_zone"
+      "description": "A clear, cold lake located deep within the forest, serving as a landmark for travelers.",
+      "radius": 25.0,
+      "parentZoneId": "whispering_forest"
     }
   ]
 }
