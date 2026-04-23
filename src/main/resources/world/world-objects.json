@@ -21,7 +21,7 @@
     {
       "id": "edict_board",
       "name": "Edict Board",
-      "category": "DECORATION",
+      "category": "INFORMATIVE",
       "position": {
         "x": 0,
         "y": 0,
@@ -32,7 +32,7 @@
         "informative",
         "navigation_aid"
       ],
-      "description": "A sturdy wooden board where official laws and navigation signs are posted.",
+      "description": "Official navigation sign. From this plaza: NORTH leads to the Administrative District (Clock Tower, Archives, Clinic). SOUTH leads to the Great Sun Clock and the Agricultural Belt (Farms, Granary). EAST points toward the Municipal Market, Great Forge, and Broken Jar Tavern. WEST leads to the Residential District and the Neighborhood Library. FAR NORTH beyond the city lies the Whispering Forest and the Mine of Laments.",
       "width": 4.0,
       "length": 0.5,
       "parentZoneId": "central_plaza"
