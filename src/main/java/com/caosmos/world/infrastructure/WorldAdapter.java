@@ -54,7 +54,8 @@ public class WorldAdapter implements WorldPort {
     }
     String normalizedTag = tag.toLowerCase();
     return spatialHash.getNearbyEntities(position, maxDistance).stream()
-        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
+        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType()
+            || EntityType.ZONE == entity.getType())
         .filter(entity -> isAccessible(entity, currentZoneId))
         .anyMatch(entity -> entity.getTags().contains(normalizedTag));
   }
@@ -78,7 +79,8 @@ public class WorldAdapter implements WorldPort {
   @Override
   public boolean isNearObject(Vector3 position, String currentZoneId, String objectId, double maxDistance) {
     return spatialHash.getById(objectId)
-        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
+        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType()
+            || EntityType.ZONE == entity.getType())
         .filter(entity -> isAccessible(entity, currentZoneId))
         .map(entity -> {
           if (entity instanceof WorldObject obj) {
@@ -87,7 +89,7 @@ public class WorldAdapter implements WorldPort {
             }
             return obj.distanceTo2D(position) <= maxDistance;
           }
-          // Generic distance check for non-WorldObjects (like Citizens)
+          // Generic distance check for non-WorldObjects (Zones, Citizens)
           return entity.distanceTo2D(position) <= maxDistance;
         })
         .orElse(false);
@@ -96,8 +98,11 @@ public class WorldAdapter implements WorldPort {
   private boolean isAccessible(WorldElement target, String observerZoneId) {
     String elementZoneId = target.getZoneId();
 
-    // 1. Same zone: Always accessible
-    if (Objects.equals(elementZoneId, observerZoneId)) {
+    // 1. Same zone or context: Always accessible
+    if (Objects.equals(target.getZoneId(), observerZoneId) || Objects.equals(
+        target.getParentZoneId(),
+        observerZoneId
+    )) {
       return true;
     }
 
@@ -360,7 +365,7 @@ public class WorldAdapter implements WorldPort {
       return Collections.emptyList();
     }
     return spatialHash.getAllEntities().stream()
-        .filter(e -> zoneId.equals(e.getZoneId()))
+        .filter(e -> zoneId.equals(e.getParentZoneId()))
         .toList();
   }
 

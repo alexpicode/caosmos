@@ -71,6 +71,11 @@ public class Zone implements WorldElement {
 
   @Override
   public String getZoneId() {
+    return id;
+  }
+
+  @Override
+  public String getParentZoneId() {
     return parentZoneId;
   }
 
