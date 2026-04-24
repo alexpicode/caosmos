@@ -46,6 +46,7 @@ public class SpeechElement implements WorldElement {
         Math.round(distance * 100.0) / 100.0,
         direction,
         Set.of(tone.getValue()),
+        getZoneId(),
         sourceId,
         targetId,
         message

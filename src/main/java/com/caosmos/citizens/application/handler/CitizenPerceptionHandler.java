@@ -130,22 +130,22 @@ public class CitizenPerceptionHandler {
             citizen.exploration().updateExploration(zoneId, position, 30.0, meta.width(), meta.length());
           }
 
-          // 3. Register POIs from perception
-          perception.nearbyElements().stream()
-              .filter(e -> EntityType.OBJECT == e.type())
-              .filter(e -> e.tags() != null && !e.tags().isEmpty()) // Significant if it has tags
-              .forEach(e -> citizen.exploration().registerPOI(
-                  zoneId, new RememberedPOI(
-                      e.id(), e.name(), e.category(), e.tags(), e.direction()
-                  )
-              ));
-
-          // 4. Pre-register visible nearby zones ("glimpse")
+          // 3. Pre-register visible nearby zones ("glimpse")
           perception.nearbyElements().stream()
               .filter(e -> EntityType.ZONE == e.type())
               .filter(e -> !citizen.isZoneVisited(e.id()))
               .forEach(e -> worldPort.getZoneMetadata(e.id())
                   .ifPresent(zoneMeta -> citizen.exploration().registerZoneAsKnown(zoneMeta)));
+
+          // 4. Register POIs from perception (only static objects)
+          perception.nearbyElements().stream()
+              .filter(e -> EntityType.OBJECT == e.type())
+              .filter(e -> e.tags() != null && e.tags().contains("static"))
+              .forEach(e -> citizen.exploration().registerPOI(
+                  e.zoneId(), new RememberedPOI(
+                      e.id(), e.name(), e.category(), e.tags(), e.direction()
+                  )
+              ));
         }
       }
     }

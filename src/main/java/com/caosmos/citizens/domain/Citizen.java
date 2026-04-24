@@ -128,6 +128,7 @@ public class Citizen implements WorldElement {
         Math.round(distance * 100.0) / 100.0,
         direction,
         getTags(),
+        getZoneId(),
         null, null, null
     );
   }

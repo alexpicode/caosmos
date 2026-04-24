@@ -11,6 +11,7 @@ public record NearbyElement(
     double distance,
     String direction,
     Set<String> tags,
+    String zoneId,
     String sourceId,
     String targetId,
     String message
