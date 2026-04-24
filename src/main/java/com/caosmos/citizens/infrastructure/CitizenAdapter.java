@@ -19,6 +19,7 @@ import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.contracts.WorldRegistry;
 import com.caosmos.common.domain.model.items.ItemData;
 import com.caosmos.common.domain.model.world.Vector3;
+import com.caosmos.common.domain.model.world.WorldConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -315,11 +316,9 @@ public class CitizenAdapter implements CitizenPort {
 
   @Override
   public boolean isInSafeZone(UUID citizenId) {
-    return citizenRegistry.get(citizenId)
-        .map(citizen -> citizen.getCurrentState().getCurrentZone())
-        .map(zoneName -> zoneName != null && zoneName.contains("safe"))
-        .orElse(false);
+    return isInZoneWithTag(citizenId, WorldConstants.TAG_SAFE);
   }
+
 
   @Override
   public void assignSleepTask(UUID citizenId) {

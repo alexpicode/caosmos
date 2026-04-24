@@ -8,6 +8,7 @@ import com.caosmos.common.domain.contracts.WorldPort;
 import com.caosmos.common.domain.model.actions.ActionRequest;
 import com.caosmos.common.domain.model.actions.ActionResult;
 import com.caosmos.common.domain.model.items.ItemData;
+import com.caosmos.common.domain.model.world.WorldConstants;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,8 @@ public class PickupActionHandler implements ActionHandler {
 
     // Check if the object is static
     java.util.Set<String> tags = worldService.getObjectTags(targetId);
-    if (tags != null && tags.contains("static")) {
+    if (tags != null && tags.contains(WorldConstants.TAG_STATIC)) {
+
       return ActionResult.failure("The object " + targetId + " is fixed and cannot be picked up.", getActionType());
     }
 
@@ -47,7 +49,8 @@ public class PickupActionHandler implements ActionHandler {
     ItemData item = worldService.removeObject(targetId);
 
     if (item != null) {
-      if (item.tags().contains("coin_container")) {
+      if (item.tags().contains(WorldConstants.TAG_COIN_CONTAINER)) {
+
         double amount = item.amount() != null ? item.amount() : 0.0;
         economyService.addCoins(citizenId, amount);
         citizenService.consumeEnergy(citizenId, ActionThresholds.ENERGY_COST_PICKUP);
