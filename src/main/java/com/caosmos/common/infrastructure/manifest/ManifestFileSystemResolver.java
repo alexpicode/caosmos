@@ -1,6 +1,6 @@
 package com.caosmos.common.infrastructure.manifest;
 
-import com.caosmos.common.infrastructure.config.CaosmosResourceProperties;
+import com.caosmos.common.application.config.CaosmosResourceProperties;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

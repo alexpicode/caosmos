@@ -1,7 +1,7 @@
 package com.caosmos.world.application;
 
+import com.caosmos.common.application.config.CaosmosResourceProperties;
 import com.caosmos.common.domain.contracts.JsonLoader;
-import com.caosmos.common.infrastructure.config.CaosmosResourceProperties;
 import com.caosmos.world.application.config.WorldObjectsConfig;
 import com.caosmos.world.domain.model.WorldObject;
 import com.caosmos.world.domain.service.SpatialHash;

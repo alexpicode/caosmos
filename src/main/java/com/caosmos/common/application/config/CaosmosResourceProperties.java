@@ -1,4 +1,4 @@
-package com.caosmos.common.infrastructure.config;
+package com.caosmos.common.application.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
