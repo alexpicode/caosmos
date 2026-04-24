@@ -58,8 +58,7 @@ autonomous society.*
 
 ### 🧠 Autonomous Cognitive Agents
 
-Each citizen has a dedicated **Virtual Thread** (Project Loom) running a cognitive loop powered by LLMs (Google GenAI /
-Ollama). They perceive the environment semantically, reason about their goals, and execute actions.
+Each citizen has a dedicated **Virtual Thread** (Project Loom) running a cognitive loop powered by Google Gemini (GenAI). They perceive the environment semantically, reason about their goals, and execute actions.
 
 ### ⏱️ Tick-Based High-Concurrency Engine
 
@@ -149,9 +148,46 @@ To understand the core mechanics of the Caosmos engine, explore our detailed fun
 
 ### Prerequisites
 
-- **JDK 25** (Mandatory for Virtual Threads).
-- **Docker** (For local LLM support via Ollama).
-- **Google GenAI API Key** (Optional).
+- **JDK 25** (Mandatory for Virtual Threads if running locally).
+- **Docker & Docker Compose** (Recommended for easy deployment).
+- **Google GenAI API Key** (Required for AI cognitive cycles).
+
+### 🚀 Fast Track (Docker)
+
+The simplest way to launch the universe:
+
+1. **Setup Env**: `cp .env.example .env` (and add your `GOOGLE_AI_API_KEY`).
+2. **Launch**: `docker-compose up -d`
+3. **Explore**: Open [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+---
+
+## 🐳 Docker Deployment
+
+Caosmos provides a production-ready Docker configuration for consistent environments.
+
+### 1. Configuration
+Manage your setup via the `.env` file:
+- `GOOGLE_AI_API_KEY`: Your Gemini API key.
+- `HOST_PORT`: Port exposed on your machine (default: `8080`).
+- `SPRING_PROFILES_ACTIVE`: Set to `docker` (handled automatically by Compose).
+
+### 2. Commands
+- **Start**: `docker-compose up -d`
+- **Stop**: `docker-compose down`
+- **Rebuild**: `docker-compose up -d --build`
+- **Logs**: `docker-compose logs -f`
+
+### 3. Volumes & Persistence
+The engine uses a bind mount for the configuration directory:
+- `./config:/app/config`: Contains all world and citizen manifests.
+Changes made to files in `./config` on your host machine are immediately reflected inside the container.
+
+---
+
+## 🛠️ Local Development (Manual)
+
+If you prefer to run the engine directly on your host machine:
 
 ### Installation
 
@@ -161,9 +197,8 @@ To understand the core mechanics of the Caosmos engine, explore our detailed fun
    cd caosmos
    ```
 
-2. **Setup Backend**:
-    - For **Local AI**: `docker-compose up -d ollama`
-    - For **Cloud AI**: `export SPRING_AI_GOOGLE_GENAI_API_KEY=your_key`
+2. **Setup AI Backend**:
+    - **Cloud AI**: `export GOOGLE_AI_API_KEY=your_key`
 
 3. **Launch the Universe**:
    ```bash
