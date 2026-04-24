@@ -4,8 +4,17 @@
       "id": "great_sun_clock",
       "name": "The Great Sun Clock",
       "category": "DECORATION",
-      "position": { "x": 0, "y": 0, "z": 0 },
-      "tags": ["stone", "landmark", "public_knowledge"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "stone",
+        "landmark",
+        "public_knowledge",
+        "static"
+      ],
       "description": "A massive horizontal stone clock that marks the hours using the shadow of a central column.",
       "radius": 4.0,
       "parentZoneId": "central_plaza"
@@ -14,8 +23,17 @@
       "id": "edict_board",
       "name": "Edict Board",
       "category": "INFORMATIVE",
-      "position": { "x": 0, "y": 0, "z": 20 },
-      "tags": ["wooden", "informative", "navigation_aid"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 20
+      },
+      "tags": [
+        "wooden",
+        "informative",
+        "navigation_aid",
+        "static"
+      ],
       "description": "Official navigation sign. NORTH: Admin District & Clock Tower. SOUTH: Sun Clock & Agricultural Belt. EAST: Market & Forge. WEST: Residential District. FAR NORTH: Whispering Forest.",
       "width": 4.0,
       "length": 0.5,
@@ -25,8 +43,17 @@
       "id": "plaza_street_lamp",
       "name": "Plaza Street Lamp",
       "category": "DECORATION",
-      "position": { "x": 15, "y": 0, "z": 15 },
-      "tags": ["iron", "light_source", "public"],
+      "position": {
+        "x": 15,
+        "y": 0,
+        "z": 15
+      },
+      "tags": [
+        "iron",
+        "light_source",
+        "public",
+        "static"
+      ],
       "description": "A tall iron lamp that illuminates the central plaza during the night.",
       "radius": 0.5,
       "parentZoneId": "central_plaza"
@@ -35,8 +62,17 @@
       "id": "clock_tower_door",
       "name": "Clock Tower Entrance",
       "category": "GATEWAY",
-      "position": { "x": 0, "y": 0, "z": 30 },
-      "tags": ["iron", "door", "entrance"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 30
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A heavy iron door leading into the interior of the city's main clock tower.",
       "width": 2.0,
       "length": 0.5,
@@ -47,8 +83,17 @@
       "id": "archive_door",
       "name": "Archive Entrance",
       "category": "GATEWAY",
-      "position": { "x": 0, "y": 0, "z": 90 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 90
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The wooden door leading to the city's historical archives.",
       "width": 2.0,
       "length": 0.5,
@@ -59,8 +104,16 @@
       "id": "oak_desk",
       "name": "Oak Desk",
       "category": "FURNITURE",
-      "position": { "x": 5, "y": 0, "z": 105 },
-      "tags": ["wooden", "workstation", "heavy"],
+      "position": {
+        "x": 5,
+        "y": 0,
+        "z": 105
+      },
+      "tags": [
+        "wooden",
+        "workstation",
+        "heavy"
+      ],
       "description": "A solid oak desk used for transcribing and organizing archival records.",
       "width": 2.0,
       "length": 1.0,
@@ -70,8 +123,17 @@
       "id": "clinic_door",
       "name": "Clinic Entrance",
       "category": "GATEWAY",
-      "position": { "x": 0, "y": 0, "z": 130 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 130
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A clean wooden door leading into the healing clinic.",
       "width": 2.0,
       "length": 0.5,
@@ -82,8 +144,17 @@
       "id": "bandage_kit",
       "name": "Bandage Kit",
       "category": "MEDICAL",
-      "position": { "x": -5, "y": 0, "z": 145 },
-      "tags": ["leather", "container", "medical", "tool"],
+      "position": {
+        "x": -5,
+        "y": 0,
+        "z": 145
+      },
+      "tags": [
+        "leather",
+        "container",
+        "medical",
+        "tool"
+      ],
       "description": "A leather case containing sterile bandages and basic medical supplies.",
       "radius": 0.4,
       "parentZoneId": "healing_clinic"
@@ -92,8 +163,17 @@
       "id": "watchtower_door",
       "name": "Watchtower Entrance",
       "category": "GATEWAY",
-      "position": { "x": 0, "y": 0, "z": 192.5 },
-      "tags": ["iron", "door", "entrance"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 192.5
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A reinforced iron door securing the entrance to the watchtower.",
       "width": 2.0,
       "length": 0.5,
@@ -104,8 +184,17 @@
       "id": "agricultural_hand_axe",
       "name": "Agricultural Hand Axe",
       "category": "TOOL",
-      "position": { "x": 10, "y": 0, "z": -120 },
-      "tags": ["iron", "tool", "sharp", "unowned"],
+      "position": {
+        "x": 10,
+        "y": 0,
+        "z": -120
+      },
+      "tags": [
+        "iron",
+        "tool",
+        "sharp",
+        "unowned"
+      ],
       "description": "A simple hand axe used for clearing brush and light woodcutting in the fields.",
       "radius": 0.3,
       "parentZoneId": "agricultural_belt_south"
@@ -114,8 +203,17 @@
       "id": "granary_gate",
       "name": "Granary Gate",
       "category": "GATEWAY",
-      "position": { "x": 0, "y": 0, "z": -90 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -90
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "Large wooden gates that provide access to the community granary.",
       "width": 4.0,
       "length": 0.5,
@@ -126,8 +224,16 @@
       "id": "grain_sack",
       "name": "Grain Sack",
       "category": "RESOURCES",
-      "position": { "x": 5, "y": 0, "z": -105 },
-      "tags": ["fabric", "food", "heavy"],
+      "position": {
+        "x": 5,
+        "y": 0,
+        "z": -105
+      },
+      "tags": [
+        "fabric",
+        "food",
+        "heavy"
+      ],
       "description": "A heavy burlap sack filled with harvested grain.",
       "radius": 0.6,
       "parentZoneId": "community_granary"
@@ -136,8 +242,17 @@
       "id": "farm_door",
       "name": "Farm Entrance",
       "category": "GATEWAY",
-      "position": { "x": 0, "y": 0, "z": -150 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -150
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A rustic wooden door leading into the main farmhouse of 'The Prosperous Farm'.",
       "width": 2.0,
       "length": 0.5,
@@ -148,8 +263,17 @@
       "id": "market_west_door",
       "name": "Market West Entrance",
       "category": "GATEWAY",
-      "position": { "x": 55, "y": 0, "z": 0 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 55,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The main western entrance to the bustling municipal market.",
       "width": 0.5,
       "length": 4.0,
@@ -160,8 +284,17 @@
       "id": "commercial_scale",
       "name": "Commercial Scale",
       "category": "WORKSTATION",
-      "position": { "x": 75, "y": 0, "z": 10 },
-      "tags": ["iron", "workstation", "measurement"],
+      "position": {
+        "x": 75,
+        "y": 0,
+        "z": 10
+      },
+      "tags": [
+        "iron",
+        "workstation",
+        "measurement",
+        "static"
+      ],
       "description": "A precise iron scale used for weighing trade goods in the market.",
       "width": 1.0,
       "length": 1.0,
@@ -171,8 +304,17 @@
       "id": "forge_gate",
       "name": "Forge Main Gate",
       "category": "GATEWAY",
-      "position": { "x": 120, "y": 0, "z": 80 },
-      "tags": ["iron", "door", "entrance"],
+      "position": {
+        "x": 120,
+        "y": 0,
+        "z": 80
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A wide iron gate leading into the intense heat of the Central Great Forge.",
       "width": 4.0,
       "length": 0.5,
@@ -183,8 +325,17 @@
       "id": "forge_hammer",
       "name": "Forge Hammer",
       "category": "TOOL",
-      "position": { "x": 125, "y": 0, "z": 105 },
-      "tags": ["iron", "tool", "heavy", "workstation_linked"],
+      "position": {
+        "x": 125,
+        "y": 0,
+        "z": 105
+      },
+      "tags": [
+        "iron",
+        "tool",
+        "heavy",
+        "workstation_linked"
+      ],
       "description": "A heavy smithing hammer designed for use with the central anvil.",
       "radius": 0.4,
       "parentZoneId": "central_great_forge"
@@ -193,8 +344,16 @@
       "id": "iron_tongs",
       "name": "Iron Tongs",
       "category": "TOOL",
-      "position": { "x": 115, "y": 0, "z": 105 },
-      "tags": ["iron", "tool", "heat_resistant"],
+      "position": {
+        "x": 115,
+        "y": 0,
+        "z": 105
+      },
+      "tags": [
+        "iron",
+        "tool",
+        "heat_resistant"
+      ],
       "description": "Sturdy iron tongs used for handling glowing hot metal.",
       "radius": 0.3,
       "parentZoneId": "central_great_forge"
@@ -203,8 +362,17 @@
       "id": "armory_door",
       "name": "Armory Entrance",
       "category": "GATEWAY",
-      "position": { "x": 112.5, "y": 0, "z": -100 },
-      "tags": ["iron", "door", "entrance"],
+      "position": {
+        "x": 112.5,
+        "y": 0,
+        "z": -100
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A secure iron door leading into 'The Steel Edge Armory'.",
       "width": 0.5,
       "length": 2.0,
@@ -215,8 +383,17 @@
       "id": "armor_stand",
       "name": "Armor Stand",
       "category": "CONTAINER",
-      "position": { "x": 124, "y": 0, "z": -105 },
-      "tags": ["wooden", "container", "gear_display"],
+      "position": {
+        "x": 124,
+        "y": 0,
+        "z": -105
+      },
+      "tags": [
+        "wooden",
+        "container",
+        "gear_display",
+        "static"
+      ],
       "description": "A wooden frame used for displaying and storing suits of armor.",
       "width": 2.0,
       "length": 1.0,
@@ -226,8 +403,16 @@
       "id": "practice_combat_shield",
       "name": "Practice Combat Shield",
       "category": "EQUIPMENT",
-      "position": { "x": 120, "y": 0, "z": -105 },
-      "tags": ["wood", "gear", "defensive"],
+      "position": {
+        "x": 120,
+        "y": 0,
+        "z": -105
+      },
+      "tags": [
+        "wood",
+        "gear",
+        "defensive"
+      ],
       "description": "A circular wooden shield used for combat training.",
       "radius": 0.6,
       "parentZoneId": "steel_edge_armory"
@@ -236,8 +421,17 @@
       "id": "bakery_door",
       "name": "Bakery Entrance",
       "category": "GATEWAY",
-      "position": { "x": 162.5, "y": 0, "z": -100 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 162.5,
+        "y": 0,
+        "z": -100
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A charming wooden door that lets out the smell of fresh bread from the bakery.",
       "width": 0.5,
       "length": 2.0,
@@ -248,8 +442,18 @@
       "id": "industrial_clay_oven",
       "name": "Industrial Clay Oven",
       "category": "WORKSTATION",
-      "position": { "x": 174, "y": 0, "z": -104 },
-      "tags": ["stone", "workstation", "cooking_station", "baking"],
+      "position": {
+        "x": 174,
+        "y": 0,
+        "z": -104
+      },
+      "tags": [
+        "stone",
+        "workstation",
+        "cooking_station",
+        "baking",
+        "static"
+      ],
       "description": "A large stone and clay oven capable of baking many loaves at once.",
       "radius": 1.5,
       "parentZoneId": "crispy_loaf_bakery"
@@ -258,8 +462,16 @@
       "id": "kneading_table",
       "name": "Kneading Table",
       "category": "WORKSTATION",
-      "position": { "x": 170, "y": 0, "z": -100 },
-      "tags": ["wooden", "workstation", "heavy"],
+      "position": {
+        "x": 170,
+        "y": 0,
+        "z": -100
+      },
+      "tags": [
+        "wooden",
+        "workstation",
+        "heavy"
+      ],
       "description": "A large wooden table where dough is prepared and kneaded.",
       "width": 3.0,
       "length": 1.5,
@@ -269,8 +481,16 @@
       "id": "refined_flour_sack",
       "name": "Refined Flour Sack",
       "category": "RESOURCES",
-      "position": { "x": 167, "y": 0, "z": -104 },
-      "tags": ["fabric", "food_ingredient", "resource"],
+      "position": {
+        "x": 167,
+        "y": 0,
+        "z": -104
+      },
+      "tags": [
+        "fabric",
+        "food_ingredient",
+        "resource"
+      ],
       "description": "A sack filled with finely ground white flour.",
       "radius": 0.5,
       "parentZoneId": "crispy_loaf_bakery"
@@ -279,8 +499,17 @@
       "id": "provisions_store_door",
       "name": "Provisions Store Entrance",
       "category": "GATEWAY",
-      "position": { "x": 112.5, "y": 0, "z": -140 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 112.5,
+        "y": 0,
+        "z": -140
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The entrance to 'The Way Provisions Store', stocked for travelers.",
       "width": 0.5,
       "length": 2.0,
@@ -291,8 +520,17 @@
       "id": "tough_leather_backpack",
       "name": "Tough Leather Backpack",
       "category": "CONTAINER",
-      "position": { "x": 124, "y": 0, "z": -144 },
-      "tags": ["leather", "container", "gear", "portable"],
+      "position": {
+        "x": 124,
+        "y": 0,
+        "z": -144
+      },
+      "tags": [
+        "leather",
+        "container",
+        "gear",
+        "portable"
+      ],
       "description": "A high-quality leather backpack designed for long journeys.",
       "radius": 0.4,
       "parentZoneId": "the_way_provisions_store"
@@ -301,8 +539,17 @@
       "id": "metal_canteen",
       "name": "Metal Canteen",
       "category": "CONTAINER",
-      "position": { "x": 120, "y": 0, "z": -144 },
-      "tags": ["iron", "container", "water_source", "portable"],
+      "position": {
+        "x": 120,
+        "y": 0,
+        "z": -144
+      },
+      "tags": [
+        "iron",
+        "container",
+        "water_source",
+        "portable"
+      ],
       "description": "A durable iron canteen for carrying water.",
       "radius": 0.2,
       "parentZoneId": "the_way_provisions_store"
@@ -311,8 +558,17 @@
       "id": "tavern_door",
       "name": "Tavern Entrance",
       "category": "GATEWAY",
-      "position": { "x": 165, "y": 0, "z": 0 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": 165,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A heavy wooden door that muffles the sound of laughter from inside the tavern.",
       "width": 0.5,
       "length": 2.0,
@@ -323,8 +579,17 @@
       "id": "copper_cauldron",
       "name": "Copper Cauldron",
       "category": "WORKSTATION",
-      "position": { "x": 192, "y": 0, "z": 7 },
-      "tags": ["copper", "workstation", "cooking_station"],
+      "position": {
+        "x": 192,
+        "y": 0,
+        "z": 7
+      },
+      "tags": [
+        "copper",
+        "workstation",
+        "cooking_station",
+        "static"
+      ],
       "description": "A large copper pot used for preparing communal meals in the kitchen.",
       "radius": 0.6,
       "parentZoneId": "tavern_kitchen"
@@ -333,8 +598,17 @@
       "id": "house_01_door",
       "name": "House 01 Entrance",
       "category": "GATEWAY",
-      "position": { "x": -54, "y": 0, "z": -40 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": -40
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The front door of detached house number one.",
       "width": 0.5,
       "length": 2.0,
@@ -345,8 +619,17 @@
       "id": "oak_table",
       "name": "Oak Table",
       "category": "FURNITURE",
-      "position": { "x": -62, "y": 0, "z": -42 },
-      "tags": ["wooden", "structure", "furniture"],
+      "position": {
+        "x": -62,
+        "y": 0,
+        "z": -42
+      },
+      "tags": [
+        "wooden",
+        "structure",
+        "furniture",
+        "static"
+      ],
       "description": "A sturdy oak dining table.",
       "width": 2.0,
       "length": 2.0,
@@ -356,8 +639,17 @@
       "id": "house_02_door",
       "name": "House 02 Entrance",
       "category": "GATEWAY",
-      "position": { "x": -54, "y": 0, "z": -20 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": -20
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The front door of detached house number two.",
       "width": 0.5,
       "length": 2.0,
@@ -368,8 +660,17 @@
       "id": "house_03_door",
       "name": "House 03 Entrance",
       "category": "GATEWAY",
-      "position": { "x": -54, "y": 0, "z": 0 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The front door of detached house number three.",
       "width": 0.5,
       "length": 2.0,
@@ -380,8 +681,17 @@
       "id": "house_04_door",
       "name": "House 04 Entrance",
       "category": "GATEWAY",
-      "position": { "x": -54, "y": 0, "z": 20 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": 20
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The front door of detached house number four.",
       "width": 0.5,
       "length": 2.0,
@@ -392,8 +702,17 @@
       "id": "house_05_door",
       "name": "House 05 Entrance",
       "category": "GATEWAY",
-      "position": { "x": -54, "y": 0, "z": 40 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": -54,
+        "y": 0,
+        "z": 40
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The front door of detached house number five.",
       "width": 0.5,
       "length": 2.0,
@@ -404,8 +723,17 @@
       "id": "mansion_gate",
       "name": "Mansion Main Gate",
       "category": "GATEWAY",
-      "position": { "x": -130, "y": 0, "z": 100 },
-      "tags": ["iron", "door", "entrance"],
+      "position": {
+        "x": -130,
+        "y": 0,
+        "z": 100
+      },
+      "tags": [
+        "iron",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "A grand iron gate leading to the nobility mansion.",
       "width": 0.5,
       "length": 4.0,
@@ -416,8 +744,17 @@
       "id": "library_door",
       "name": "Library Entrance",
       "category": "GATEWAY",
-      "position": { "x": -135, "y": 0, "z": -100 },
-      "tags": ["wooden", "door", "entrance"],
+      "position": {
+        "x": -135,
+        "y": 0,
+        "z": -100
+      },
+      "tags": [
+        "wooden",
+        "door",
+        "entrance",
+        "static"
+      ],
       "description": "The quiet entrance to the neighborhood library.",
       "width": 0.5,
       "length": 2.0,
@@ -428,8 +765,18 @@
       "id": "mine_entrance",
       "name": "Mine Entrance",
       "category": "GATEWAY",
-      "position": { "x": 140, "y": 0, "z": 270 },
-      "tags": ["stone", "entrance", "dark", "path_to_interior"],
+      "position": {
+        "x": 140,
+        "y": 0,
+        "z": 270
+      },
+      "tags": [
+        "stone",
+        "entrance",
+        "dark",
+        "path_to_interior",
+        "static"
+      ],
       "description": "The dark, reinforced entrance to the Mine of Laments.",
       "width": 4.0,
       "length": 1.0,
@@ -440,8 +787,18 @@
       "id": "shiny_iron_vein",
       "name": "Shiny Iron Vein",
       "category": "RESOURCES",
-      "position": { "x": 150, "y": 0, "z": 310 },
-      "tags": ["stone", "resource", "mineable", "iron"],
+      "position": {
+        "x": 150,
+        "y": 0,
+        "z": 310
+      },
+      "tags": [
+        "stone",
+        "resource",
+        "mineable",
+        "iron",
+        "static"
+      ],
       "description": "A rich vein of iron ore embedded in the cave wall.",
       "radius": 1.5,
       "parentZoneId": "mine_of_laments"
@@ -450,8 +807,18 @@
       "id": "dense_coal_vein",
       "name": "Dense Coal Vein",
       "category": "RESOURCES",
-      "position": { "x": 130, "y": 0, "z": 320 },
-      "tags": ["stone", "resource", "mineable", "fuel"],
+      "position": {
+        "x": 130,
+        "y": 0,
+        "z": 320
+      },
+      "tags": [
+        "stone",
+        "resource",
+        "mineable",
+        "fuel",
+        "static"
+      ],
       "description": "A thick seam of dark coal ready for extraction.",
       "radius": 2.0,
       "parentZoneId": "mine_of_laments"
@@ -460,8 +827,18 @@
       "id": "ancient_copper_vein",
       "name": "Ancient Copper Vein",
       "category": "RESOURCES",
-      "position": { "x": 145, "y": 0, "z": 325 },
-      "tags": ["stone", "resource", "mineable", "copper"],
+      "position": {
+        "x": 145,
+        "y": 0,
+        "z": 325
+      },
+      "tags": [
+        "stone",
+        "resource",
+        "mineable",
+        "copper",
+        "static"
+      ],
       "description": "An old copper deposit with a greenish tint.",
       "radius": 1.2,
       "parentZoneId": "mine_of_laments"
@@ -470,8 +847,19 @@
       "id": "deep_gold_vein",
       "name": "Deep Gold Vein",
       "category": "RESOURCES",
-      "position": { "x": 160, "y": 0, "z": 330 },
-      "tags": ["stone", "resource", "mineable", "gold", "rare"],
+      "position": {
+        "x": 160,
+        "y": 0,
+        "z": 330
+      },
+      "tags": [
+        "stone",
+        "resource",
+        "mineable",
+        "gold",
+        "rare",
+        "static"
+      ],
       "description": "A rare and glittering vein of gold found deep within the mine.",
       "radius": 0.8,
       "parentZoneId": "mine_of_laments"
@@ -480,8 +868,17 @@
       "id": "steel_miner_pickaxe",
       "name": "Steel Miner's Pickaxe",
       "category": "TOOL",
-      "position": { "x": 142, "y": 0, "z": 280 },
-      "tags": ["iron", "tool", "heavy", "mining_tool"],
+      "position": {
+        "x": 142,
+        "y": 0,
+        "z": 280
+      },
+      "tags": [
+        "iron",
+        "tool",
+        "heavy",
+        "mining_tool"
+      ],
       "description": "A heavy steel pickaxe abandoned by a former miner.",
       "radius": 0.5,
       "parentZoneId": "mine_of_laments"
@@ -490,8 +887,18 @@
       "id": "industrial_transport_cart",
       "name": "Industrial Transport Cart",
       "category": "CONTAINER",
-      "position": { "x": 140, "y": 0, "z": 290 },
-      "tags": ["iron", "container", "heavy", "transport"],
+      "position": {
+        "x": 140,
+        "y": 0,
+        "z": 290
+      },
+      "tags": [
+        "iron",
+        "container",
+        "heavy",
+        "transport",
+        "static"
+      ],
       "description": "A rugged iron cart used for hauling ore out of the mine.",
       "width": 2.0,
       "length": 3.0,
@@ -501,8 +908,17 @@
       "id": "cave_entrance",
       "name": "Cave Entrance",
       "category": "GATEWAY",
-      "position": { "x": 100, "y": 0, "z": 442.5 },
-      "tags": ["stone", "entrance", "natural"],
+      "position": {
+        "x": 100,
+        "y": 0,
+        "z": 442.5
+      },
+      "tags": [
+        "stone",
+        "entrance",
+        "natural",
+        "static"
+      ],
       "description": "The narrow, moss-covered opening leading into the hermit's cave.",
       "width": 2.0,
       "length": 0.5,
@@ -513,8 +929,18 @@
       "id": "crystal_lake",
       "name": "Crystal Lake",
       "category": "LANDMARK",
-      "position": { "x": -120, "y": 0, "z": 480 },
-      "tags": ["water", "source", "cold", "isLandmark"],
+      "position": {
+        "x": -120,
+        "y": 0,
+        "z": 480
+      },
+      "tags": [
+        "water",
+        "source",
+        "cold",
+        "isLandmark",
+        "static"
+      ],
       "description": "A serene and cold lake with crystal clear water deep in the forest.",
       "radius": 25.0,
       "parentZoneId": "whispering_forest"

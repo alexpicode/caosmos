@@ -33,9 +33,14 @@ public class PickupActionHandler implements ActionHandler {
       return ActionResult.failure("Target ID is required for PICKUP", getActionType());
     }
 
-    // Check proximity
     if (!citizenService.isNear(citizenId, targetId, ActionThresholds.PROXIMITY_PICKUP)) {
       return ActionResult.failure("You are too far from " + targetId + " to pick it up.", getActionType());
+    }
+
+    // Check if the object is static
+    java.util.Set<String> tags = worldService.getObjectTags(targetId);
+    if (tags != null && tags.contains("static")) {
+      return ActionResult.failure("The object " + targetId + " is fixed and cannot be picked up.", getActionType());
     }
 
     // First remove from world to get item details
