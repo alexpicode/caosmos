@@ -45,12 +45,12 @@ RUN sed -i 's/\r$//' entrypoint.sh && \
 
 USER spring:spring
 
-# Expose the default Spring Boot port
+# Expose the default Spring Boot port (can be overridden by SERVER_PORT env)
 EXPOSE 8080
 
-# Configure healthcheck
+# Configure healthcheck (overridden by docker-compose)
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD curl -f http://localhost:8080/actuator/health || exit 1
+  CMD curl -f http://localhost:${SERVER_PORT:-8080}/actuator/health || exit 1
 
 # Run the application via entrypoint script
 ENTRYPOINT ["./entrypoint.sh"]
