@@ -1,11 +1,12 @@
 services:
   caosmos:
     # Use 'image' for remote registry or 'build' for local development
-    # image: ghcr.io/alexpi8/caosmos:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: caosmos-engine
+    image: ghcr.io/alexpi8/caosmos:latest
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    # image: caosmos:latest
+    container_name: caosmos
     ports:
       - "${HOST_PORT:-8080}:${CONTAINER_PORT:-8080}"
     env_file:
