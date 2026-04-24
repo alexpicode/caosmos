@@ -139,6 +139,13 @@ public class CitizenPerceptionHandler {
                       e.id(), e.name(), e.category(), e.tags(), e.direction()
                   )
               ));
+
+          // 4. Pre-register visible nearby zones ("glimpse")
+          perception.nearbyElements().stream()
+              .filter(e -> EntityType.ZONE == e.type())
+              .filter(e -> !citizen.isZoneVisited(e.id()))
+              .forEach(e -> worldPort.getZoneMetadata(e.id())
+                  .ifPresent(zoneMeta -> citizen.exploration().registerZoneAsKnown(zoneMeta)));
         }
       }
     }
