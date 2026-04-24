@@ -1,6 +1,6 @@
 package com.caosmos.world.application.usecases;
 
-import com.caosmos.citizens.application.registry.CitizenRegistry;
+import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.world.EntityType;
 import com.caosmos.common.domain.model.world.WorldConstants;
 import com.caosmos.common.domain.model.world.WorldElement;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class GetWorldEntitiesUseCase {
 
   private final SpatialHash spatialHash;
-  private final CitizenRegistry citizenRegistry;
+  private final CitizenPort citizenPort;
 
   public List<WorldEntitySummaryDto> executeSummary(
       Double minX,
@@ -43,9 +43,7 @@ public class GetWorldEntitiesUseCase {
           String ownerName = null;
           if (ownerIdStr != null) {
             try {
-              ownerName = citizenRegistry.get(UUID.fromString(ownerIdStr))
-                  .map(c -> c.getCitizenProfile().identity().name())
-                  .orElse(null); // Return null if owner not found
+              ownerName = citizenPort.getName(UUID.fromString(ownerIdStr));
             } catch (IllegalArgumentException ex) {
               ownerName = null;
             }

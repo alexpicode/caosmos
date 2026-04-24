@@ -1,6 +1,6 @@
 package com.caosmos.world.application.usecases;
 
-import com.caosmos.citizens.application.registry.CitizenRegistry;
+import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.world.WorldConstants;
 import com.caosmos.world.application.dto.ZoneDto;
 import com.caosmos.world.domain.model.Zone;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class GetWorldZoneDetailUseCase {
 
   private final ZoneManager zoneManager;
-  private final CitizenRegistry citizenRegistry;
+  private final CitizenPort citizenPort;
 
   public Optional<ZoneDto> execute(String id) {
     Optional<Zone> zoneOpt = zoneManager.getZone(id);
@@ -38,9 +38,7 @@ public class GetWorldZoneDetailUseCase {
     String ownerName = null;
     if (ownerIdStr != null) {
       try {
-        ownerName = citizenRegistry.get(UUID.fromString(ownerIdStr))
-            .map(c -> c.getCitizenProfile().identity().name())
-            .orElse(null);
+        ownerName = citizenPort.getName(UUID.fromString(ownerIdStr));
       } catch (IllegalArgumentException ex) {
         ownerName = null;
       }

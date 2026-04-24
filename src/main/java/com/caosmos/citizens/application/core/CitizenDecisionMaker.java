@@ -272,6 +272,7 @@ public class CitizenDecisionMaker {
         element.distance(),
         element.direction(),
         filteredTags,
+        element.zoneId(),
         element.sourceId(),
         element.targetId(),
         element.message()
