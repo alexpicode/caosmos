@@ -8,9 +8,9 @@
 
 Caosmos combines two complementary architectural styles:
 
-| Style                                 | Application in Caosmos                                                                                                                                                                              |
-|:---------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Clean Architecture**                 | Each module is organized in three layers: `domain`, `application`, `infrastructure`. Dependencies always point inward (infrastructure → application → domain).                            |
+| Style                                  | Application in Caosmos                                                                                                                                                               |
+|:---------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Clean Architecture**                 | Each module is organized in three layers: `domain`, `application`, `infrastructure`. Dependencies always point inward (infrastructure → application → domain).                       |
 | **Vertical Slicing (Spring Modulith)** | Each business feature (`citizens`, `world`, `actions`, `directors`) is an autonomous module with its own three layers. Modules communicate through the **Shared Kernel** (`common`). |
 
 ```
@@ -65,11 +65,11 @@ module/
 
 ### Responsibility by Layer
 
-| Layer               | Responsibility                                                                                      | Example                                                                                         |
-|:-------------------|:-----------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------|
-| **Domain**         | Pure models, business rules, contracts (ports). **No framework dependencies.**              | `Citizen`, `MasterClock`, `AgentPulse`, `WorldObject`, `Vector3`                                |
+| Layer              | Responsibility                                                                          | Example                                                                                         |
+|:-------------------|:----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------|
+| **Domain**         | Pure models, business rules, contracts (ports). **No framework dependencies.**          | `Citizen`, `MasterClock`, `AgentPulse`, `WorldObject`, `Vector3`                                |
 | **Application**    | Use case orchestration. Coordinates domain and infrastructure via dependency injection. | `CitizenPulse`, `CitizenPopulationService`, `ActionDispatcher`, `SimulationStartupOrchestrator` |
-| **Infrastructure** | Concrete implementations of domain ports. Adapters to frameworks and external services.    | `SpringAiThinkingAdapter`, `SpatialWorldPerceptionProvider`, `MasterTicker`, `AgentLifeManager` |
+| **Infrastructure** | Concrete implementations of domain ports. Adapters to frameworks and external services. | `SpringAiThinkingAdapter`, `SpatialWorldPerceptionProvider`, `MasterTicker`, `AgentLifeManager` |
 
 ### Dependency Constraints
 
@@ -98,13 +98,13 @@ which allows any module to access it without Modulith restrictions.
 
 ### Shared Kernel Content
 
-| Package                | Focus Area                                                                                    | Purpose                                                                                                                                                         |
-|:-----------------------|:----------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `domain.contracts`     | Core capabilities (AI, perception, entities, world ops)                                       | **Ports**: interfaces that define the capabilities the domain needs without knowing the implementation.                                                           |
-| `domain.model`         | Geometric data, action payloads, manifests, perception states                                 | **Value Objects** shared between modules. Immutable (`record`).                                                                                               |
-| `domain.service.core`  | Simulation timekeeping                                                                        | Central simulation clock with synchronization via `ReentrantLock`/`Condition`.                                                                                |
-| `application.*`        | Use cases for startup, agent lifecycle, manifests, AI templates, and telemetry                | Application services and contracts for orchestration and cross-cutting concerns.                                                                                  |
-| `infrastructure`       | Adapters for Spring AI, threading, file system, JSON conversion, and in-memory repositories   | Concrete implementations of domain and application ports.                                                                                                  |
+| Package               | Focus Area                                                                                  | Purpose                                                                                                 |
+|:----------------------|:--------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------|
+| `domain.contracts`    | Core capabilities (AI, perception, entities, world ops)                                     | **Ports**: interfaces that define the capabilities the domain needs without knowing the implementation. |
+| `domain.model`        | Geometric data, action payloads, manifests, perception states                               | **Value Objects** shared between modules. Immutable (`record`).                                         |
+| `domain.service.core` | Simulation timekeeping                                                                      | Central simulation clock with synchronization via `ReentrantLock`/`Condition`.                          |
+| `application.*`       | Use cases for startup, agent lifecycle, manifests, AI templates, and telemetry              | Application services and contracts for orchestration and cross-cutting concerns.                        |
+| `infrastructure`      | Adapters for Spring AI, threading, file system, JSON conversion, and in-memory repositories | Concrete implementations of domain and application ports.                                               |
 
 ---
 
@@ -114,14 +114,14 @@ which allows any module to access it without Modulith restrictions.
 
 The domain defines **ports** (interfaces) and infrastructure provides concrete **adapters**.
 
-| Concept Category                | Domain Need (Port)                     | Infrastructure Solution (Adapter)                    | Modules               |
-|:--------------------------------|:---------------------------------------|:-----------------------------------------------------|:----------------------|
-| **AI Integration**              | Interfaces for reasoning & arbitration | LLM Implementations (e.g., Spring AI, GenAI)         | common, directors     |
-| **World Perception**            | Contracts for spatial awareness        | Concrete geometry, spatial hashing, and collision    | world                 |
-| **Simulation Lifecycle**        | Heartbeat and tick management          | Virtual threads and concurrent lock managers         | common                |
-| **Entity Management**           | Agent instantiation and lifecycle      | Database or in-memory persistence logic              | citizens              |
-| **Action Orchestration**        | Request routing and dispatch           | Strategy executors mapped to actions                 | actions               |
-| **Configuration & Prompts**     | Manifest and prompt templates          | File system watchers and static resource loaders     | common                |
+| Concept Category            | Domain Need (Port)                     | Infrastructure Solution (Adapter)                 | Modules           |
+|:----------------------------|:---------------------------------------|:--------------------------------------------------|:------------------|
+| **AI Integration**          | Interfaces for reasoning & arbitration | LLM Implementations (e.g., Spring AI, GenAI)      | common, directors |
+| **World Perception**        | Contracts for spatial awareness        | Concrete geometry, spatial hashing, and collision | world             |
+| **Simulation Lifecycle**    | Heartbeat and tick management          | Virtual threads and concurrent lock managers      | common            |
+| **Entity Management**       | Agent instantiation and lifecycle      | Database or in-memory persistence logic           | citizens          |
+| **Action Orchestration**    | Request routing and dispatch           | Strategy executors mapped to actions              | actions           |
+| **Configuration & Prompts** | Manifest and prompt templates          | File system watchers and static resource loaders  | common            |
 
 #### Adaptation Patterns in Actions
 
@@ -133,6 +133,7 @@ The `actions` module implements the adapter pattern in two ways:
 Handlers use external ports (`WorldPort`, `CitizenPort`, `EconomyPort`) to maintain separation of concerns.
 
 **Categories of Handlers:**
+
 - **Movement**: Moving to coordinates or traveling to specific zones.
 - **Consumption & Rest**: Eating, drinking, sleeping, and resting.
 - **Inventory & Equipment**: Picking up, dropping, equipping, and unequipping items.
@@ -166,7 +167,8 @@ classDiagram
     ActionDispatcher o-- ActionHandler: "Map by type"
 ```
 
-New actions are implemented as new `ActionHandler` in the `application.handlers` package without modifying `ActionDispatcher`.
+New actions are implemented as new `ActionHandler` in the `application.handlers` package without modifying
+`ActionDispatcher`.
 
 #### Automatic Handler Registration
 
@@ -199,6 +201,7 @@ Each agent has its own `AgentHeartbeat` (Virtual Thread) that:
 2. Executes `mind.pulse(tick)` — the agent's cognitive cycle
 
 **Configuration:**
+
 - `citizen.pulse-frequency`: 5 ticks (configurable in `application.yml`)
 - `world.time.time-scale`: 60.0 (1 real second = 60 simulated seconds)
 
@@ -218,15 +221,18 @@ CitizenPulse.pulse(tick):
 
 ### 4.5. Observer / Pub-Sub (Clock Coordination)
 
-The `MasterClock` acts as a temporal event publisher. `AgentHeartbeat` instances subscribe by blocking on `waitForTicks()` and react when the clock advances. This decouples time control from agent execution.
+The `MasterClock` acts as a temporal event publisher. `AgentHeartbeat` instances subscribe by blocking on
+`waitForTicks()` and react when the clock advances. This decouples time control from agent execution.
 
 **Temporal Events:**
+
 - `ConversationManager.tickUpdate()` - Advances conversation sessions
 - `TemporalElementManager` - Management of temporal elements (SpeechElement)
 
 ### 4.6. Manifest / Data-Driven Design
 
-Agents are configured externally via hybrid `.md` files (YAML frontmatter + Markdown body), allowing **hot-reload** without recompilation:
+Agents are configured externally via hybrid `.md` files (YAML frontmatter + Markdown body), allowing **hot-reload**
+without recompilation:
 
 ```yaml
 # Frontmatter → CitizenProfile (Java Record)
@@ -239,11 +245,11 @@ You are Alice, a diligent worker...
 ```
 
 **Enhanced Manifest System:**
+
 - `ManifestFileSystemResolver` - External file resolution
 - `ManifestInMemoryRepository` - In-memory repository
 - `ManifestWatcher` - Change monitoring for hot-reload
 - `ManifestParser` - Parsing of YAML frontmatter + Markdown body
-- Support for director manifests (e.g., `climate_director.md`)
 
 ---
 
@@ -252,6 +258,7 @@ You are Alice, a diligent worker...
 The `citizens` module implements a task system to manage long-duration activities:
 
 **Task Categories:**
+
 - **Navigation**: Exploring zones or traveling to specific destinations.
 - **Recovery**: Resting or sleeping to replenish energy.
 - **Productivity**: Performing work duties at employment locations.
@@ -259,12 +266,14 @@ The `citizens` module implements a task system to manage long-duration activitie
 - **Passive**: Waiting or holding current state.
 
 **Components:**
+
 - `Task` - Base task interface
 - `TaskRegistry` - Registry of active tasks by citizen
 - `CitizenTaskManager` - Task execution manager
 - `ActiveTask` - Active task state in perception
 
 **Execution Flow:**
+
 1. LLM assigns task → `CitizenPort.assignXxxTask()`
 2. `TaskRegistry` registers the task
 3. `CitizenTaskManager.executeActiveTask()` executes the task each tick
@@ -275,6 +284,7 @@ The `citizens` module implements a task system to manage long-duration activitie
 Multi-participant conversation system with session management:
 
 **Components:**
+
 - `ConversationManager` - Conversation session manager
 - `ConversationSession` - Session with participants, history, and phases
 - `ConversationPhase` - Phases: INITIATED, ACTIVE, STALE, ENDED
@@ -283,12 +293,14 @@ Multi-participant conversation system with session management:
 - `SpeechHeuristic` - Individual response heuristic
 
 **Conversation Phases:**
+
 1. **INITIATED** - Session created, awaiting response
 2. **ACTIVE** - Conversation in progress
 3. **STALE** - 30 ticks without activity
 4. **ENDED** - 60 ticks without activity, automatic cleanup
 
 **Perception Integration:**
+
 - `SpeechElement` in the world with configurable TTL
 - `PerceptionMonitor` detects social messages
 - `SocialHeuristicsEngine` decides whether to respond
@@ -298,6 +310,7 @@ Multi-participant conversation system with session management:
 The `directors` module implements complex action arbitration via AI:
 
 **Components:**
+
 - `DirectorArbitrator` - USE interaction orchestrator
 - `ArbitrationProvider` - Port for AI arbitration
 - `ObservationProvider` - Port for descriptive observation
@@ -306,6 +319,7 @@ The `directors` module implements complex action arbitration via AI:
 - `CacheKeyGenerator` - Deterministic hash key generator
 
 **Arbitration Flow:**
+
 1. User executes `USE` on object
 2. `DirectorArbitrator` collects context (tool tags, target, environment)
 3. Generates `CacheKey` based on action semantics
@@ -316,6 +330,7 @@ The `directors` module implements complex action arbitration via AI:
 8. Result is cached for future queries
 
 **Mutation Types:**
+
 - `ADD_TAG`, `REMOVE_TAG` - Tag modification
 - `DESTROY` - Destruction with matter conservation fallback
 - `TRANSFORM` - Entity transformation
@@ -324,6 +339,7 @@ The `directors` module implements complex action arbitration via AI:
 - `SET_DESCRIPTION` - Description update
 
 **Spawnable Registry:**
+
 - Canonical registry of spawnable objects in `spawnable-registry.yml`
 - Destruction fallbacks for matter conservation
 - Support for dynamic generation (Tier 2)
@@ -336,11 +352,11 @@ The `directors` module implements complex action arbitration via AI:
 
 **Purpose**: Control the flow of time in the world.
 
-| Component Role  | Responsibility                                                                              |
-|:----------------|:--------------------------------------------------------------------------------------------|
-| **Timekeeper**  | Source of truth for current tick. Synchronizes threads via `ReentrantLock` + `Condition`.   |
-| **Main Loop**   | Advances the clock at a fixed cadence (1s per tick). Detects overloads.                     |
-| **Agent Thread**| Virtual thread per agent that listens to the clock and executes the cognitive pulse.        |
+| Component Role   | Responsibility                                                                            |
+|:-----------------|:------------------------------------------------------------------------------------------|
+| **Timekeeper**   | Source of truth for current tick. Synchronizes threads via `ReentrantLock` + `Condition`. |
+| **Main Loop**    | Advances the clock at a fixed cadence (1s per tick). Detects overloads.                   |
+| **Agent Thread** | Virtual thread per agent that listens to the clock and executes the cognitive pulse.      |
 
 ```mermaid
 sequenceDiagram
@@ -362,38 +378,38 @@ sequenceDiagram
 
 **Purpose**: Provide each inhabitant with a perception-reasoning-action cycle.
 
-| Subsystem             | Layer        | Responsibility                                                                                              |
-|:----------------------|:-------------|:------------------------------------------------------------------------------------------------------------|
-| **Entity Models**     | Domain       | Pure entities with biological states, inventory, and profiles.                                              |
-| **Cognitive Engine**  | Application  | Orchestrates the cycle: perception → prompt evaluation → LLM reasoning → decision.                          |
-| **Population Logic**  | Application  | Handles spawning from manifests and connects entities to their lifecycle threads.                           |
-| **Physiology Motor**  | Application  | Updates vitality, hunger, energy, and stress over time.                                                     |
-| **Task Management**   | Application  | Manages ongoing tasks and tick-by-tick execution of long-duration activities.                               |
-| **Social Manager**    | Application  | Handles multi-participant conversation sessions and responses.                                              |
-| **Adapters**          | Infra        | Concrete persistence logic and AI connections (with per-agent memory contexts).                             |
+| Subsystem            | Layer       | Responsibility                                                                     |
+|:---------------------|:------------|:-----------------------------------------------------------------------------------|
+| **Entity Models**    | Domain      | Pure entities with biological states, inventory, and profiles.                     |
+| **Cognitive Engine** | Application | Orchestrates the cycle: perception → prompt evaluation → LLM reasoning → decision. |
+| **Population Logic** | Application | Handles spawning from manifests and connects entities to their lifecycle threads.  |
+| **Physiology Motor** | Application | Updates vitality, hunger, energy, and stress over time.                            |
+| **Task Management**  | Application | Manages ongoing tasks and tick-by-tick execution of long-duration activities.      |
+| **Social Manager**   | Application | Handles multi-participant conversation sessions and responses.                     |
+| **Adapters**         | Infra       | Concrete persistence logic and AI connections (with per-agent memory contexts).    |
 
 ### 5.3. World Perception System
 
 **Purpose**: Translate the geometric state of the world into LLM-consumable semantic information.
 
-| Subsystem                | Layer          | Responsibility                                                                                                            |
-|:-------------------------|:---------------|:--------------------------------------------------------------------------------------------------------------------------|
-| **Spatial Indexing**     | Domain Service | Grid and coordinate hashing for O(1) nearby entity search and collision detection.                                        |
-| **Environment Logic**    | Domain Service | Provides dynamic environmental conditions (weather, temperature, zone semantics) and translates server ticks to time.     |
-| **Perception Engine**    | Domain Service | Calculates visual coverage, resolves occlusions, and groups nearby entities with relative vectors and semantic tags.      |
-| **Context Aggregation**  | Application    | Filters pure spatial data with agent memory (mental map) and evaluates critical stimuli (reflexes).                       |
-| **World Initialization** | Application    | Loads initial world data (zones, static objects, resources) from configuration sources.                                   |
-| **Provider Adapter**     | Infrastructure | Composes all domain services into a concrete `WorldPerception` payload to satisfy domain ports.                           |
+| Subsystem                | Layer          | Responsibility                                                                                                        |
+|:-------------------------|:---------------|:----------------------------------------------------------------------------------------------------------------------|
+| **Spatial Indexing**     | Domain Service | Grid and coordinate hashing for O(1) nearby entity search and collision detection.                                    |
+| **Environment Logic**    | Domain Service | Provides dynamic environmental conditions (weather, temperature, zone semantics) and translates server ticks to time. |
+| **Perception Engine**    | Domain Service | Calculates visual coverage, resolves occlusions, and groups nearby entities with relative vectors and semantic tags.  |
+| **Context Aggregation**  | Application    | Filters pure spatial data with agent memory (mental map) and evaluates critical stimuli (reflexes).                   |
+| **World Initialization** | Application    | Loads initial world data (zones, static objects, resources) from configuration sources.                               |
+| **Provider Adapter**     | Infrastructure | Composes all domain services into a concrete `WorldPerception` payload to satisfy domain ports.                       |
 
 ### 5.4. Action System
 
 **Purpose**: Resolve agent intentions into world consequences.
 
-| Subsystem             | Layer              | Responsibility                                                                           |
-|:----------------------|:-------------------|:-----------------------------------------------------------------------------------------|
-| **Central Router**    | Application        | Central dispatcher that maps an incoming request type to the appropriate strategy.       |
-| **Strategies**        | Domain (contracts) | Specialized logic (Handlers) for resolving specific types of requests (e.g., Movement).  |
-| **Data Models**       | Domain (models)    | Immutable DTOs representing inputs (Intents/Requests) and outputs (Mutations/Results).   |
+| Subsystem          | Layer              | Responsibility                                                                          |
+|:-------------------|:-------------------|:----------------------------------------------------------------------------------------|
+| **Central Router** | Application        | Central dispatcher that maps an incoming request type to the appropriate strategy.      |
+| **Strategies**     | Domain (contracts) | Specialized logic (Handlers) for resolving specific types of requests (e.g., Movement). |
+| **Data Models**    | Domain (models)    | Immutable DTOs representing inputs (Intents/Requests) and outputs (Mutations/Results).  |
 
 #### Actions Module Structure
 
@@ -420,6 +436,7 @@ actions/
 #### Integration with Directors
 
 The `UseActionHandler` delegates to the `directors` module for complex interactions:
+
 - `DirectorArbitrator.resolveInteraction()` arbitrates the action via AI
 - `EffectResolver` applies the resulting state mutations
 - The result includes AI-generated descriptive narration
@@ -428,15 +445,16 @@ The `UseActionHandler` delegates to the `directors` module for complex interacti
 
 **Purpose**: Manage complex interactions via AI with wisdom cache to avoid repeated queries.
 
-| Subsystem                | Layer          | Responsibility                                                                                                            |
-|:-------------------------|:---------------|:--------------------------------------------------------------------------------------------------------------------------|
-| **Arbitration Engine**   | Application    | Orchestrates complex creative interactions (like "USE") by coordinating caching, AI querying, and effect resolution.      |
-| **Wisdom Cache**         | Application    | Prevents repeated queries by hashing interaction semantics and caching the deterministic outcomes.                        |
-| **Effect Application**   | Application    | Parses AI-generated mutations (Spawn, Destroy, Transform, Modify Stats) and applies them to the world state.              |
-| **AI Providers**         | Infra / Ports  | Contracts and Spring AI adapters for obtaining creative resolutions and descriptive narrations from LLMs.                 |
-| **Cache Repositories**   | Infra / Ports  | Repositories supporting the fast-path resolution by storing previous creative decisions.                                  |
+| Subsystem              | Layer         | Responsibility                                                                                                       |
+|:-----------------------|:--------------|:---------------------------------------------------------------------------------------------------------------------|
+| **Arbitration Engine** | Application   | Orchestrates complex creative interactions (like "USE") by coordinating caching, AI querying, and effect resolution. |
+| **Wisdom Cache**       | Application   | Prevents repeated queries by hashing interaction semantics and caching the deterministic outcomes.                   |
+| **Effect Application** | Application   | Parses AI-generated mutations (Spawn, Destroy, Transform, Modify Stats) and applies them to the world state.         |
+| **AI Providers**       | Infra / Ports | Contracts and Spring AI adapters for obtaining creative resolutions and descriptive narrations from LLMs.            |
+| **Cache Repositories** | Infra / Ports | Repositories supporting the fast-path resolution by storing previous creative decisions.                             |
 
 **Complete Arbitration Flow:**
+
 1. Citizen executes `USE` on object
 2. `UseActionHandler` delegates to `DirectorArbitrator`
 3. Collects context: tool tags, target, environment
@@ -449,6 +467,7 @@ The `UseActionHandler` delegates to the `directors` module for complex interacti
 10. Returns `ActionResult` with narration to citizen
 
 **Matter Conservation:**
+
 - Fallback system in `spawnable-registry.yml`
 - Object with `burnable` tag → spawns `ASH` when destroyed
 - Object with `breakable` tag → spawns `STONE_DEBRIS` when destroyed
@@ -457,15 +476,16 @@ The `UseActionHandler` delegates to the `directors` module for complex interacti
 
 **Purpose**: Define agents and directors via external files with hot-reload.
 
-| Subsystem                 | Layer           | Role                                                                                                               |
-|:--------------------------|:----------------|:-------------------------------------------------------------------------------------------------------------------|
-| **Manifest Orchestration**| Application     | Initialization, loading, and central monitoring of world and agent manifests.                                      |
-| **Parsing & Resolution**  | Infrastructure  | Logic to parse YAML frontmatter + Markdown bodies and resolve file paths internally/externally.                    |
-| **Live Reloading**        | Infrastructure  | File watchers that detect modifications and trigger live updates to active entities without restarting the server. |
-| **Data Repositories**     | Infrastructure  | In-memory storage of loaded manifests for fast retrieval.                                                          |
-| **Data Models**           | Domain / Config | Definitions of agent profiles, prompt templates, and system personalities.                                         |
+| Subsystem                  | Layer           | Role                                                                                                               |
+|:---------------------------|:----------------|:-------------------------------------------------------------------------------------------------------------------|
+| **Manifest Orchestration** | Application     | Initialization, loading, and central monitoring of world and agent manifests.                                      |
+| **Parsing & Resolution**   | Infrastructure  | Logic to parse YAML frontmatter + Markdown bodies and resolve file paths internally/externally.                    |
+| **Live Reloading**         | Infrastructure  | File watchers that detect modifications and trigger live updates to active entities without restarting the server. |
+| **Data Repositories**      | Infrastructure  | In-memory storage of loaded manifests for fast retrieval.                                                          |
+| **Data Models**            | Domain / Config | Definitions of agent profiles, prompt templates, and system personalities.                                         |
 
 **Available Prompts:**
+
 - `citizen-system.md` - System prompt for citizens (12KB)
 - `citizen-user.md` - User prompt template for citizens
 - `director-arbitration-system.md` - System prompt for arbitration
@@ -488,24 +508,26 @@ Controlled by `SimulationStartupOrchestrator` listening to Spring's `Application
 
 ## 6. Technology Stack
 
-| Technology               | Version  | Usage                                                                      |
-|:-------------------------|:---------|:-------------------------------------------------------------------------|
-| **Java**                 | 25       | Base language with Virtual Threads support (Project Loom) and Records     |
-| **Spring Boot**          | 4.0.3    | Core framework, dependency injection, lifecycle                 |
-| **Spring Modulith**      | 2.0.3    | Module boundary enforcement, shared kernel                    |
-| **Spring AI**            | 2.0.0-M2 | LLM integration (Google GenAI) for agent reasoning          |
-| **Springdoc OpenAPI**   | 3.0.2    | REST API documentation (Swagger UI)                                   |
-| **Jackson YAML**         | —        | YAML frontmatter parsing in manifests                                |
-| **Jackson JSON**         | —        | JSON serialization/deserialization                                       |
+| Technology               | Version  | Usage                                                                 |
+|:-------------------------|:---------|:----------------------------------------------------------------------|
+| **Java**                 | 25       | Base language with Virtual Threads support (Project Loom) and Records |
+| **Spring Boot**          | 4.0.3    | Core framework, dependency injection, lifecycle                       |
+| **Spring Modulith**      | 2.0.3    | Module boundary enforcement, shared kernel                            |
+| **Spring AI**            | 2.0.0-M2 | LLM integration (Google GenAI) for agent reasoning                    |
+| **Springdoc OpenAPI**    | 3.0.2    | REST API documentation (Swagger UI)                                   |
+| **Jackson YAML**         | —        | YAML frontmatter parsing in manifests                                 |
+| **Jackson JSON**         | —        | JSON serialization/deserialization                                    |
 | **Lombok**               | —        | Boilerplate reduction (`@Data`, `@RequiredArgsConstructor`, `@Slf4j`) |
-| **Commons Collections4** | 4.5.0    | Additional collection utilities                                  |
-| **Virtual Threads**     | (Loom)   | One virtual thread per agent; ticker in own virtual thread                |
+| **Commons Collections4** | 4.5.0    | Additional collection utilities                                       |
+| **Virtual Threads**      | (Loom)   | One virtual thread per agent; ticker in own virtual thread            |
 
 **AI Providers:**
+
 - **Google GenAI** (currently configured) - Model configurable via `GOOGLE_AI_MODEL`
 - **Ollama** (available, commented) - Model `frob/qwen3.5-instruct` or `qwen3.5`
 
 **AI Configuration:**
+
 - `temperature`: 0.4 (low temperature for more deterministic responses)
 - `top-p`: 0.9 (nucleus sampling)
 - `max-output-tokens`: 1500
@@ -517,9 +539,9 @@ Controlled by `SimulationStartupOrchestrator` listening to Spring's `Application
 
 The concurrency model is designed to scale to hundreds of agents without blocking the CPU:
 
-| Virtual Thread           | Responsibility                                        |
-|:-----------------------|:-------------------------------------------------------|
-| `master-ticker-loop`   | Main loop: advances `MasterClock` every second     |
+| Virtual Thread         | Responsibility                                             |
+|:-----------------------|:-----------------------------------------------------------|
+| `master-ticker-loop`   | Main loop: advances `MasterClock` every second             |
 | `agent-heartbeat-{id}` | One thread per agent: waits N ticks and executes `pulse()` |
 
 Synchronization is achieved via:
@@ -535,11 +557,13 @@ Synchronization is achieved via:
 > exclusively by its own `AgentHeartbeat`.
 
 **Temporal Element Management:**
+
 - `SpeechElement` has configurable TTL (`world.speech-ttl-ticks`)
 - `TemporalElementManager` manages automatic cleanup of expired elements
 - `ConversationManager` automatically cleans up inactive sessions
 
 **Concurrency Configuration:**
+
 - `citizen.pulse-frequency`: 5 (each agent pulses every 5 ticks)
 - `citizen.max-conversation-participants`: 4 (maximum per session)
 - `world.speech-ttl-ticks`: 2 (speech message lifetime)

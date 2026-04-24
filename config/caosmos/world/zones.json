@@ -7,9 +7,21 @@
       "category": "REGION",
       "parentZoneId": null,
       "isEntryRestricted": false,
-      "physicalTags": ["massive", "settlement", "diverse_terrain"],
-      "contextualTags": ["macro_zone", "city_boundary", "region"],
-      "center": { "x": 0, "y": 0, "z": 160 },
+      "physicalTags": [
+        "massive",
+        "settlement",
+        "diverse_terrain"
+      ],
+      "contextualTags": [
+        "macro_zone",
+        "city_boundary",
+        "region"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 160
+      },
       "width": 480.0,
       "length": 800.0
     },
@@ -20,9 +32,21 @@
       "category": "URBAN",
       "parentZoneId": "villa_clara_macro",
       "isEntryRestricted": false,
-      "physicalTags": ["paved", "central", "well_lit"],
-      "contextualTags": ["social_hub", "spawn_point", "public_knowledge"],
-      "center": { "x": 0, "y": 0, "z": 0 },
+      "physicalTags": [
+        "paved",
+        "central",
+        "well_lit"
+      ],
+      "contextualTags": [
+        "social_hub",
+        "spawn_point",
+        "public_knowledge"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
       "width": 80.0,
       "length": 80.0
     },
@@ -33,9 +57,19 @@
       "category": "DISTRICT",
       "parentZoneId": "villa_clara_macro",
       "isEntryRestricted": false,
-      "physicalTags": ["paved", "stone_walls"],
-      "contextualTags": ["official_district", "knowledge_hub"],
-      "center": { "x": 0, "y": 0, "z": 140 },
+      "physicalTags": [
+        "paved",
+        "stone_walls"
+      ],
+      "contextualTags": [
+        "official_district",
+        "knowledge_hub"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 140
+      },
       "width": 80.0,
       "length": 200.0
     },
@@ -46,9 +80,20 @@
       "category": "DISTRICT",
       "parentZoneId": "villa_clara_macro",
       "isEntryRestricted": false,
-      "physicalTags": ["dirt", "fertile", "wide"],
-      "contextualTags": ["resource_rich", "farming_area"],
-      "center": { "x": 0, "y": 0, "z": -140 },
+      "physicalTags": [
+        "dirt",
+        "fertile",
+        "wide"
+      ],
+      "contextualTags": [
+        "resource_rich",
+        "farming_area"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": -140
+      },
       "width": 80.0,
       "length": 200.0
     },
@@ -59,9 +104,20 @@
       "category": "DISTRICT",
       "parentZoneId": "villa_clara_macro",
       "isEntryRestricted": false,
-      "physicalTags": ["noisy", "soot_covered", "stone_floor"],
-      "contextualTags": ["commercial_area", "workshop_district"],
-      "center": { "x": 140, "y": 0, "z": 0 },
+      "physicalTags": [
+        "noisy",
+        "soot_covered",
+        "stone_floor"
+      ],
+      "contextualTags": [
+        "commercial_area",
+        "workshop_district"
+      ],
+      "center": {
+        "x": 140,
+        "y": 0,
+        "z": 0
+      },
       "width": 200.0,
       "length": 480.0
     },
@@ -72,9 +128,19 @@
       "category": "DISTRICT",
       "parentZoneId": "villa_clara_macro",
       "isEntryRestricted": false,
-      "physicalTags": ["quiet", "garden_streets"],
-      "contextualTags": ["residential_area", "high_density"],
-      "center": { "x": -140, "y": 0, "z": 0 },
+      "physicalTags": [
+        "quiet",
+        "garden_streets"
+      ],
+      "contextualTags": [
+        "residential_area",
+        "high_density"
+      ],
+      "center": {
+        "x": -140,
+        "y": 0,
+        "z": 0
+      },
       "width": 200.0,
       "length": 480.0
     },
@@ -85,9 +151,21 @@
       "category": "NATURE",
       "parentZoneId": "villa_clara_macro",
       "isEntryRestricted": false,
-      "physicalTags": ["dense_forest", "dark", "wild"],
-      "contextualTags": ["wilderness", "resource_rich", "dangerous"],
-      "center": { "x": 0, "y": 0, "z": 400 },
+      "physicalTags": [
+        "dense_forest",
+        "dark",
+        "wild"
+      ],
+      "contextualTags": [
+        "wilderness",
+        "resource_rich",
+        "dangerous"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 400
+      },
       "width": 480.0,
       "length": 320.0
     },
@@ -98,9 +176,20 @@
       "category": "LANDMARK",
       "parentZoneId": "central_plaza",
       "isEntryRestricted": true,
-      "physicalTags": ["stone", "high", "vertical"],
-      "contextualTags": ["landmark", "official"],
-      "center": { "x": 0, "y": 0, "z": 35 },
+      "physicalTags": [
+        "stone",
+        "high",
+        "vertical"
+      ],
+      "contextualTags": [
+        "landmark",
+        "official"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 35
+      },
       "width": 10.0,
       "length": 10.0
     },
@@ -111,9 +200,21 @@
       "category": "KNOWLEDGE",
       "parentZoneId": "administrative_district_north",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "quiet", "dusty"],
-      "contextualTags": ["knowledge", "library", "official"],
-      "center": { "x": 0, "y": 0, "z": 100 },
+      "physicalTags": [
+        "indoor",
+        "quiet",
+        "dusty"
+      ],
+      "contextualTags": [
+        "knowledge",
+        "library",
+        "official"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 100
+      },
       "width": 20.0,
       "length": 20.0
     },
@@ -124,9 +225,21 @@
       "category": "MEDICAL",
       "parentZoneId": "administrative_district_north",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "sterile", "clean"],
-      "contextualTags": ["medical", "service", "public"],
-      "center": { "x": 0, "y": 0, "z": 140 },
+      "physicalTags": [
+        "indoor",
+        "sterile",
+        "clean"
+      ],
+      "contextualTags": [
+        "medical",
+        "service",
+        "public"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 140
+      },
       "width": 20.0,
       "length": 20.0
     },
@@ -137,9 +250,19 @@
       "category": "SECURITY",
       "parentZoneId": "administrative_district_north",
       "isEntryRestricted": true,
-      "physicalTags": ["stone", "fortified"],
-      "contextualTags": ["security", "official"],
-      "center": { "x": 0, "y": 0, "z": 200 },
+      "physicalTags": [
+        "stone",
+        "fortified"
+      ],
+      "contextualTags": [
+        "security",
+        "official"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 200
+      },
       "width": 15.0,
       "length": 15.0
     },
@@ -150,9 +273,19 @@
       "category": "STORAGE",
       "parentZoneId": "agricultural_belt_south",
       "isEntryRestricted": true,
-      "physicalTags": ["wooden", "dry"],
-      "contextualTags": ["resource_storage", "official"],
-      "center": { "x": 0, "y": 0, "z": -100 },
+      "physicalTags": [
+        "wooden",
+        "dry"
+      ],
+      "contextualTags": [
+        "resource_storage",
+        "official"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": -100
+      },
       "width": 20.0,
       "length": 20.0
     },
@@ -163,9 +296,21 @@
       "category": "FARMING",
       "parentZoneId": "agricultural_belt_south",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "hay_smell"],
-      "contextualTags": ["shelter", "farming", "unowned", "vacant"],
-      "center": { "x": 0, "y": 0, "z": -160 },
+      "physicalTags": [
+        "indoor",
+        "hay_smell"
+      ],
+      "contextualTags": [
+        "shelter",
+        "farming",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": -160
+      },
       "width": 20.0,
       "length": 20.0
     },
@@ -176,9 +321,21 @@
       "category": "COMMERCE",
       "parentZoneId": "commercial_industrial_district_east",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "bustling"],
-      "contextualTags": ["commercial_area", "market", "unowned", "vacant"],
-      "center": { "x": 70, "y": 0, "z": 0 },
+      "physicalTags": [
+        "indoor",
+        "bustling"
+      ],
+      "contextualTags": [
+        "commercial_area",
+        "market",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
       "width": 30.0,
       "length": 50.0
     },
@@ -189,9 +346,22 @@
       "category": "WORKSHOP",
       "parentZoneId": "commercial_industrial_district_east",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "hot", "smoky"],
-      "contextualTags": ["workshop", "crafting_station", "unowned", "vacant"],
-      "center": { "x": 120, "y": 0, "z": 100 },
+      "physicalTags": [
+        "indoor",
+        "hot",
+        "smoky"
+      ],
+      "contextualTags": [
+        "workshop",
+        "crafting_station",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": 120,
+        "y": 0,
+        "z": 100
+      },
       "width": 40.0,
       "length": 40.0
     },
@@ -202,9 +372,22 @@
       "category": "COMMERCE",
       "parentZoneId": "commercial_industrial_district_east",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "organized", "sharp_edges"],
-      "contextualTags": ["commercial_area", "gear_shop", "unowned", "vacant"],
-      "center": { "x": 120, "y": 0, "z": -100 },
+      "physicalTags": [
+        "indoor",
+        "organized",
+        "sharp_edges"
+      ],
+      "contextualTags": [
+        "commercial_area",
+        "gear_shop",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": 120,
+        "y": 0,
+        "z": -100
+      },
       "width": 15.0,
       "length": 15.0
     },
@@ -215,9 +398,22 @@
       "category": "WORKSHOP",
       "parentZoneId": "commercial_industrial_district_east",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "warm", "flour_smell"],
-      "contextualTags": ["food_service", "workshop", "unowned", "vacant"],
-      "center": { "x": 170, "y": 0, "z": -100 },
+      "physicalTags": [
+        "indoor",
+        "warm",
+        "flour_smell"
+      ],
+      "contextualTags": [
+        "food_service",
+        "workshop",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": 170,
+        "y": 0,
+        "z": -100
+      },
       "width": 15.0,
       "length": 15.0
     },
@@ -228,9 +424,22 @@
       "category": "COMMERCE",
       "parentZoneId": "commercial_industrial_district_east",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "packed", "wooden_shelves"],
-      "contextualTags": ["commercial_area", "item_shop", "unowned", "vacant"],
-      "center": { "x": 120, "y": 0, "z": -140 },
+      "physicalTags": [
+        "indoor",
+        "packed",
+        "wooden_shelves"
+      ],
+      "contextualTags": [
+        "commercial_area",
+        "item_shop",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": 120,
+        "y": 0,
+        "z": -140
+      },
       "width": 15.0,
       "length": 15.0
     },
@@ -241,9 +450,22 @@
       "category": "LEISURE",
       "parentZoneId": "commercial_industrial_district_east",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "warm", "loud"],
-      "contextualTags": ["leisure", "social_hub", "unowned", "vacant"],
-      "center": { "x": 180, "y": 0, "z": 0 },
+      "physicalTags": [
+        "indoor",
+        "warm",
+        "loud"
+      ],
+      "contextualTags": [
+        "leisure",
+        "social_hub",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": 180,
+        "y": 0,
+        "z": 0
+      },
       "width": 30.0,
       "length": 25.0
     },
@@ -254,9 +476,20 @@
       "category": "SERVICE",
       "parentZoneId": "broken_jar_tavern",
       "isEntryRestricted": false,
-      "physicalTags": ["indoor", "hot", "greasy"],
-      "contextualTags": ["service", "cooking"],
-      "center": { "x": 190, "y": 0, "z": 5 },
+      "physicalTags": [
+        "indoor",
+        "hot",
+        "greasy"
+      ],
+      "contextualTags": [
+        "service",
+        "cooking"
+      ],
+      "center": {
+        "x": 190,
+        "y": 0,
+        "z": 5
+      },
       "width": 8.0,
       "length": 8.0
     },
@@ -267,9 +500,21 @@
       "category": "RESIDENTIAL",
       "parentZoneId": "residential_district_west",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "small"],
-      "contextualTags": ["shelter", "residential", "unowned", "vacant"],
-      "center": { "x": -60, "y": 0, "z": -40 },
+      "physicalTags": [
+        "indoor",
+        "small"
+      ],
+      "contextualTags": [
+        "shelter",
+        "residential",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": -60,
+        "y": 0,
+        "z": -40
+      },
       "width": 12.0,
       "length": 12.0
     },
@@ -280,9 +525,21 @@
       "category": "RESIDENTIAL",
       "parentZoneId": "residential_district_west",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "small"],
-      "contextualTags": ["shelter", "residential", "unowned", "vacant"],
-      "center": { "x": -60, "y": 0, "z": -20 },
+      "physicalTags": [
+        "indoor",
+        "small"
+      ],
+      "contextualTags": [
+        "shelter",
+        "residential",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": -60,
+        "y": 0,
+        "z": -20
+      },
       "width": 12.0,
       "length": 12.0
     },
@@ -293,9 +550,21 @@
       "category": "RESIDENTIAL",
       "parentZoneId": "residential_district_west",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "small"],
-      "contextualTags": ["shelter", "residential", "unowned", "vacant"],
-      "center": { "x": -60, "y": 0, "z": 0 },
+      "physicalTags": [
+        "indoor",
+        "small"
+      ],
+      "contextualTags": [
+        "shelter",
+        "residential",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": -60,
+        "y": 0,
+        "z": 0
+      },
       "width": 12.0,
       "length": 12.0
     },
@@ -306,9 +575,21 @@
       "category": "RESIDENTIAL",
       "parentZoneId": "residential_district_west",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "small"],
-      "contextualTags": ["shelter", "residential", "unowned", "vacant"],
-      "center": { "x": -60, "y": 0, "z": 20 },
+      "physicalTags": [
+        "indoor",
+        "small"
+      ],
+      "contextualTags": [
+        "shelter",
+        "residential",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": -60,
+        "y": 0,
+        "z": 20
+      },
       "width": 12.0,
       "length": 12.0
     },
@@ -319,9 +600,21 @@
       "category": "RESIDENTIAL",
       "parentZoneId": "residential_district_west",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "small"],
-      "contextualTags": ["shelter", "residential", "unowned", "vacant"],
-      "center": { "x": -60, "y": 0, "z": 40 },
+      "physicalTags": [
+        "indoor",
+        "small"
+      ],
+      "contextualTags": [
+        "shelter",
+        "residential",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": -60,
+        "y": 0,
+        "z": 40
+      },
       "width": 12.0,
       "length": 12.0
     },
@@ -332,9 +625,21 @@
       "category": "RESIDENTIAL",
       "parentZoneId": "residential_district_west",
       "isEntryRestricted": true,
-      "physicalTags": ["luxurious", "stone"],
-      "contextualTags": ["shelter", "high_status", "unowned", "vacant"],
-      "center": { "x": -150, "y": 0, "z": 100 },
+      "physicalTags": [
+        "luxurious",
+        "stone"
+      ],
+      "contextualTags": [
+        "shelter",
+        "high_status",
+        "unowned",
+        "vacant"
+      ],
+      "center": {
+        "x": -150,
+        "y": 0,
+        "z": 100
+      },
       "width": 40.0,
       "length": 40.0
     },
@@ -345,9 +650,21 @@
       "category": "KNOWLEDGE",
       "parentZoneId": "residential_district_west",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "quiet", "book_smell"],
-      "contextualTags": ["knowledge", "study", "vacant"],
-      "center": { "x": -150, "y": 0, "z": -100 },
+      "physicalTags": [
+        "indoor",
+        "quiet",
+        "book_smell"
+      ],
+      "contextualTags": [
+        "knowledge",
+        "study",
+        "vacant"
+      ],
+      "center": {
+        "x": -150,
+        "y": 0,
+        "z": -100
+      },
       "width": 30.0,
       "length": 30.0
     },
@@ -358,9 +675,22 @@
       "category": "MINING",
       "parentZoneId": "whispering_forest",
       "isEntryRestricted": true,
-      "physicalTags": ["indoor", "dark", "underground", "stone"],
-      "contextualTags": ["mining_zone", "resource_rich", "unowned"],
-      "center": { "x": 140, "y": 0, "z": 300 },
+      "physicalTags": [
+        "indoor",
+        "dark",
+        "underground",
+        "stone"
+      ],
+      "contextualTags": [
+        "mining_zone",
+        "resource_rich",
+        "unowned"
+      ],
+      "center": {
+        "x": 140,
+        "y": 0,
+        "z": 300
+      },
       "width": 50.0,
       "length": 60.0
     },
@@ -371,9 +701,21 @@
       "category": "SHELTER",
       "parentZoneId": "whispering_forest",
       "isEntryRestricted": true,
-      "physicalTags": ["dark", "damp", "stone"],
-      "contextualTags": ["shelter", "hidden", "unowned"],
-      "center": { "x": 100, "y": 0, "z": 450 },
+      "physicalTags": [
+        "dark",
+        "damp",
+        "stone"
+      ],
+      "contextualTags": [
+        "shelter",
+        "hidden",
+        "unowned"
+      ],
+      "center": {
+        "x": 100,
+        "y": 0,
+        "z": 450
+      },
       "width": 15.0,
       "length": 15.0
     }
