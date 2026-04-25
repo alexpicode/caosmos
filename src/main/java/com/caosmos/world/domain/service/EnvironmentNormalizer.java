@@ -2,6 +2,7 @@ package com.caosmos.world.domain.service;
 
 import com.caosmos.common.domain.model.world.Environment;
 import com.caosmos.common.domain.model.world.EnvironmentImpactTag;
+import com.caosmos.common.domain.model.world.WorldConstants;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,9 @@ public class EnvironmentNormalizer {
     }
 
     // Map light levels
-    if ("Night".equalsIgnoreCase(environment.lightLevel()) || "Dusk".equalsIgnoreCase(environment.lightLevel())) {
+    if (WorldConstants.TAG_NIGHT.equalsIgnoreCase(environment.lightLevel())
+        || "Dusk".equalsIgnoreCase(environment.lightLevel())) {
+
       tags.add(EnvironmentImpactTag.DARK_ENVIRONMENT);
     }
 
@@ -29,6 +32,7 @@ public class EnvironmentNormalizer {
         String upperTag = tag.toUpperCase();
         switch (upperTag) {
           case "RAINY":
+          case "RAIN":
             tags.add(EnvironmentImpactTag.WET_ENVIRONMENT);
             break;
           case "STORM":
@@ -45,8 +49,8 @@ public class EnvironmentNormalizer {
           case "HEATWAVE":
             tags.add(EnvironmentImpactTag.SWELTERING_ENVIRONMENT);
             break;
-          // Add more mappings as weather options expand
         }
+
       }
     }
 

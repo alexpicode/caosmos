@@ -15,6 +15,10 @@ public interface WorldElement {
 
   String getZoneId();
 
+  default String getParentZoneId() {
+    return getZoneId();
+  }
+
   String getCategory();
 
   default Set<String> getTags() {

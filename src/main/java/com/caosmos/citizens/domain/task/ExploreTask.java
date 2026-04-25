@@ -65,6 +65,20 @@ public class ExploreTask implements Task {
       return toActiveTask(citizen).withCompleted(true).withGoal("Exploration reached limit");
     }
 
+    String currentZoneId = citizen.getCurrentState().getCurrentZoneId();
+
+    // Check if zone is already 100% explored
+    if (currentZoneId != null) {
+      boolean isFullyExplored = citizen.exploration().getExplorationState(currentZoneId)
+          .map(state -> state.toStatus().fullyExplored())
+          .orElse(false);
+          
+      if (isFullyExplored) {
+        log.info("Citizen {} stopped exploration: zone {} is 100% explored.", citizen.getUuid(), currentZoneId);
+        return toActiveTask(citizen).withCompleted(true).withGoal("Zone 100% explored");
+      }
+    }
+
     // --- Physiological Costs ---
     // Slightly higher costs during active exploration
     biology.decreaseEnergy(PhysiologicalThresholds.MOVE_ENERGY_COST_RATE * 1.2 * hours);
@@ -84,7 +98,6 @@ public class ExploreTask implements Task {
     Vector3 newPos = new Vector3(newX, newY, newZ);
 
     // Validate collision
-    String currentZoneId = citizen.getCurrentState().getCurrentZoneId();
     CollisionResult collision = worldPort.validateMovement(currentPos, newPos, currentZoneId);
 
     citizen.getCurrentState().setPosition(collision.clampedPosition());

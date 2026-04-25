@@ -71,6 +71,11 @@ public class Zone implements WorldElement {
 
   @Override
   public String getZoneId() {
+    return id;
+  }
+
+  @Override
+  public String getParentZoneId() {
     return parentZoneId;
   }
 
@@ -85,6 +90,7 @@ public class Zone implements WorldElement {
         Math.round(distance * 100.0) / 100.0,
         direction,
         getTags(),
+        getZoneId(),
         null, null, null
     );
   }

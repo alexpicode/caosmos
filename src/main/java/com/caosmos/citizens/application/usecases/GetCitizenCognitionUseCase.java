@@ -1,6 +1,6 @@
 package com.caosmos.citizens.application.usecases;
 
-import com.caosmos.common.application.telemetry.CognitionEntry;
+import com.caosmos.citizens.application.dto.CitizenCognitionDto;
 import com.caosmos.common.application.telemetry.EntityTelemetryService;
 import java.util.Collection;
 import java.util.UUID;
@@ -13,7 +13,14 @@ public class GetCitizenCognitionUseCase {
 
   private final EntityTelemetryService telemetryService;
 
-  public Collection<CognitionEntry> execute(UUID uuid, Long sinceTick) {
-    return telemetryService.getCognitionDelta(uuid, sinceTick);
+  public Collection<CitizenCognitionDto> execute(UUID uuid, Long sinceTick) {
+    return telemetryService.getCognitionDelta(uuid, sinceTick).stream()
+        .map(entry -> new CitizenCognitionDto(
+            entry.entityId(),
+            entry.tick(),
+            entry.thoughtProcess(),
+            entry.actionTarget()
+        ))
+        .toList();
   }
 }

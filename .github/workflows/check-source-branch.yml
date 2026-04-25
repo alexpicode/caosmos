@@ -1,0 +1,15 @@
+name: Check PR Source
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source branch
+        if: github.base_ref == 'main' && github.head_ref != 'develop'
+        run: |
+          echo "Error: Pull Requests to 'main' are only allowed from the 'develop' branch."
+          exit 1

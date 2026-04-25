@@ -1,3 +1,6 @@
+server:
+  port: ${SERVER_PORT:8080}
+
 spring:
   application:
     name: caosmos
@@ -24,9 +27,11 @@ spring:
             max-output-tokens: 1500
 
 caosmos:
-  manifests:
-    external-path: config/caosmos/manifests
-    internal-path: #src/main/resources/manifests
+  resources:
+    citizens: "${CITIZENS_RESOURCE:file:config/caosmos/citizens}"
+    world:
+      zones: "${WORLD_ZONES_RESOURCE:file:config/caosmos/world/zones.json}"
+      objects: "${WORLD_OBJECTS_RESOURCE:file:config/caosmos/world/world-objects.json}"
   citizen:
     pulse-frequency: 5                # Frequency in simulation ticks for citizen life cycle pulses
     walking-speed: 1.4                # Standard walking speed in m/s

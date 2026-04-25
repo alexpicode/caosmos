@@ -1,107 +1,100 @@
 package com.caosmos.world.infrastructure.rest;
 
 import com.caosmos.common.domain.contracts.SimulationClock;
-import com.caosmos.world.application.dto.WorldEntitySummaryDTO;
-import com.caosmos.world.application.dto.WorldEnvironmentResponse;
+import com.caosmos.world.application.dto.ChunkInfoDto;
+import com.caosmos.world.application.dto.WorldEntitySummaryDto;
+import com.caosmos.world.application.dto.WorldEnvironmentResponseDto;
+import com.caosmos.world.application.dto.WorldObjectDetailDto;
+import com.caosmos.world.application.dto.ZoneDto;
 import com.caosmos.world.application.usecases.GetWorldChunksUseCase;
 import com.caosmos.world.application.usecases.GetWorldEntitiesUseCase;
+import com.caosmos.world.application.usecases.GetWorldEntityDetailUseCase;
 import com.caosmos.world.application.usecases.GetWorldEnvironmentUseCase;
+import com.caosmos.world.application.usecases.GetWorldZoneDetailUseCase;
 import com.caosmos.world.application.usecases.GetWorldZonesUseCase;
-import com.caosmos.world.domain.model.ChunkInfo;
-import com.caosmos.world.domain.model.Zone;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/world")
 @RequiredArgsConstructor
-public class WorldMonitorController {
+public class WorldMonitorController implements WorldMonitorApi {
 
   private final GetWorldEntitiesUseCase getWorldEntitiesUseCase;
   private final GetWorldZonesUseCase getWorldZonesUseCase;
   private final GetWorldChunksUseCase getWorldChunksUseCase;
   private final GetWorldEnvironmentUseCase getWorldEnvironmentUseCase;
+  private final GetWorldEntityDetailUseCase getWorldEntityDetailUseCase;
+  private final GetWorldZoneDetailUseCase getWorldZoneDetailUseCase;
   private final SimulationClock simulationClock;
 
-  @GetMapping("/zones")
-  @Operation(summary = "Get all world zones")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Successfully retrieved zones",
-          headers = {@Header(
-              name = "X-Sim-Tick",
-              description = "Current simulation tick",
-              schema = @Schema(type = "integer")
-          )})
-  })
-  public ResponseEntity<List<Zone>> getAllZones() {
+  @Override
+  public ResponseEntity<List<ZoneDto>> getAllZones() {
     return ResponseEntity.ok()
         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
         .body(getWorldZonesUseCase.execute());
   }
 
-  @GetMapping("/objects")
-  @Operation(summary = "Get world objects summary")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Successfully retrieved objects summary",
-          headers = {@Header(
-              name = "X-Sim-Tick",
-              description = "Current simulation tick",
-              schema = @Schema(type = "integer")
-          )})
-  })
-  public ResponseEntity<List<WorldEntitySummaryDTO>> getObjects(
-      @RequestParam(required = false) Double minX,
-      @RequestParam(required = false) Double minZ,
-      @RequestParam(required = false) Double maxX,
-      @RequestParam(required = false) Double maxZ
+  @Override
+  public ResponseEntity<ZoneDto> getZoneDetail(String id) {
+    return getWorldZoneDetailUseCase.execute(id)
+        .map(dto -> ResponseEntity.ok()
+            .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
+            .body(dto))
+        .orElse(ResponseEntity.notFound().build());
+  }
+
+  @Override
+  public ResponseEntity<List<WorldEntitySummaryDto>> getObjects(
+      Double minX,
+      Double minZ,
+      Double maxX,
+      Double maxZ,
+      String name,
+      String category,
+      String owned
   ) {
     return ResponseEntity.ok()
         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-        .body(getWorldEntitiesUseCase.executeSummary(minX, minZ, maxX, maxZ));
+        .body(getWorldEntitiesUseCase.executeSummary(minX, minZ, maxX, maxZ, name, category, owned));
   }
 
-  @GetMapping("/chunks")
-  @Operation(summary = "Get world chunks info")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Successfully retrieved chunks info",
-          headers = {@Header(
-              name = "X-Sim-Tick",
-              description = "Current simulation tick",
-              schema = @Schema(type = "integer")
-          )})
-  })
-  public ResponseEntity<List<ChunkInfo>> getChunks(
-      @RequestParam double minX,
-      @RequestParam double minZ,
-      @RequestParam double maxX,
-      @RequestParam double maxZ
+  @Override
+  public ResponseEntity<WorldObjectDetailDto> getObjectDetail(String id) {
+    return getWorldEntityDetailUseCase.execute(id)
+        .map(dto -> ResponseEntity.ok()
+            .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
+            .body(dto))
+        .orElse(ResponseEntity.notFound().build());
+  }
+
+  @Override
+  public ResponseEntity<List<ChunkInfoDto>> getChunks(
+      double minX,
+      double minZ,
+      double maxX,
+      double maxZ
   ) {
+    List<ChunkInfoDto> dtos = getWorldChunksUseCase.execute(minX, minZ, maxX, maxZ)
+        .stream()
+        .map(c -> new ChunkInfoDto(
+            c.gridX(),
+            c.gridZ(),
+            c.size(),
+            c.entityCount(),
+            c.movementCost()
+        ))
+        .collect(Collectors.toList());
+
     return ResponseEntity.ok()
         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
-        .body(getWorldChunksUseCase.execute(minX, minZ, maxX, maxZ));
+        .body(dtos);
   }
 
-  @GetMapping("/environment")
-  @Operation(summary = "Get world environment status")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Successfully retrieved environment status",
-          headers = {@Header(
-              name = "X-Sim-Tick",
-              description = "Current simulation tick",
-              schema = @Schema(type = "integer")
-          )})
-  })
-  public ResponseEntity<WorldEnvironmentResponse> getEnvironment() {
+  @Override
+  public ResponseEntity<WorldEnvironmentResponseDto> getEnvironment() {
     return ResponseEntity.ok()
         .header("X-Sim-Tick", String.valueOf(simulationClock.getCurrentTick()))
         .body(getWorldEnvironmentUseCase.execute());

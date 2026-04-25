@@ -191,6 +191,11 @@ public class PerceptionMonitor {
 
     // 2. Nearby elements (Entities and Zones)
     for (var element : perception.nearbyElements()) {
+      // Skip already-known zones — citizen should use TRAVEL_TO instead of discovering them again
+      if (EntityType.ZONE.equals(element.type()) && citizen.isZoneVisited(element.id())) {
+        continue;
+      }
+
       targetFound = checkSearchTarget(citizen.getUuid(), element.category());
       if (targetFound != null) {
         String prefix = EntityType.ZONE.equals(element.type()) ? "the " : "";

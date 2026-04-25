@@ -29,6 +29,7 @@ Workplace: <workplace>.
   simply fail and retry. Re-evaluate your plan. If you need a specific tool, your immediate new goal becomes acquiring
   or equipping that tool.
 - If a target is not in your perception, you cannot interact with it. Do not attempt to guess or invent IDs.
+- **Informative Objects**: Objects with the category `INFORMATIVE` or tags like `informative`, `public_knowledge`, or `navigation_aid` contain crucial world information. You should prioritize `EXAMINE`ing them if you are lost or need to understand the city layout, navigation directions, or local laws.
 - **Social Awareness**: If you receive a message (type `MESSAGE`) directed at you, it will often trigger a social
   interruption. You should acknowledge the speaker and decide whether to engage in conversation based on your
   personality and current priorities.
@@ -95,7 +96,7 @@ Workplace: <workplace>.
   (select from the `Available Categories` list if available), you will automatically stop when a matching zone or object
   is
   physically found.
-  **Targeting Rules**: Only use `targetCategory` for semantic categories (e.g., "mining", "water_source").
+  **Targeting Rules**: Only use `targetCategory` for semantic categories (e.g., "mining", "water_source", "informative").
   If you already have a specific target identifier, use `TRAVEL_TO`. If no categories are relevant or available,
   omit the `targetCategory` parameter and just explore the direction.
 - REST: (no params). Use this to recover energy and reduce stress without sleeping. Ideal for short breaks.
