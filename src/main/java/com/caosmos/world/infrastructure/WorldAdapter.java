@@ -54,7 +54,8 @@ public class WorldAdapter implements WorldPort {
     }
     String normalizedTag = tag.toLowerCase();
     return spatialHash.getNearbyEntities(position, maxDistance).stream()
-        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
+        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType()
+            || EntityType.ZONE == entity.getType())
         .filter(entity -> isAccessible(entity, currentZoneId))
         .anyMatch(entity -> entity.getTags().contains(normalizedTag));
   }
@@ -78,7 +79,8 @@ public class WorldAdapter implements WorldPort {
   @Override
   public boolean isNearObject(Vector3 position, String currentZoneId, String objectId, double maxDistance) {
     return spatialHash.getById(objectId)
-        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType())
+        .filter(entity -> EntityType.OBJECT == entity.getType() || EntityType.CITIZEN == entity.getType()
+            || EntityType.ZONE == entity.getType())
         .filter(entity -> isAccessible(entity, currentZoneId))
         .map(entity -> {
           if (entity instanceof WorldObject obj) {
@@ -87,7 +89,7 @@ public class WorldAdapter implements WorldPort {
             }
             return obj.distanceTo2D(position) <= maxDistance;
           }
-          // Generic distance check for non-WorldObjects (like Citizens)
+          // Generic distance check for non-WorldObjects (Zones, Citizens)
           return entity.distanceTo2D(position) <= maxDistance;
         })
         .orElse(false);
@@ -96,13 +98,22 @@ public class WorldAdapter implements WorldPort {
   private boolean isAccessible(WorldElement target, String observerZoneId) {
     String elementZoneId = target.getZoneId();
 
-    // 1. Same zone: Always accessible
-    if (Objects.equals(elementZoneId, observerZoneId)) {
+    // 1. Same zone or context: Always accessible
+    if (Objects.equals(target.getZoneId(), observerZoneId) || Objects.equals(
+        target.getParentZoneId(),
+        observerZoneId
+    )) {
       return true;
     }
 
-    // 2. Strict Interior isolation: If target is in an Interior, observer MUST be in the same zone
-    // We check this by looking up the zone type
+    // 2. Gateway Bridge: Gateways are accessible from both linked zones
+    if (target instanceof WorldObject obj && obj.getTargetZoneId() != null) {
+      if (Objects.equals(obj.getTargetZoneId(), observerZoneId)) {
+        return true;
+      }
+    }
+
+    // 3. Strict Interior isolation: If target is in an Interior, observer MUST be in the same zone
     if (elementZoneId != null) {
       Optional<Zone> zone = zoneManager.getZone(elementZoneId);
       if (zone.isPresent() && ZoneType.INTERIOR == zone.get().getZoneType()) {
@@ -110,13 +121,11 @@ public class WorldAdapter implements WorldPort {
       }
     }
 
-    // 3. Fallback for Exteriors: If target is in an Exterior, we allow access if the observer 
-    // is in the same zone or in a child Interior (e.g. reachable through a door/window)
-    // For now, let's keep it simple: if either is Interior and they don't match, block.
+    // 4. Rule: Cannot reach OUTSIDE from an interior if they don't match (unless it was a gateway handled above)
     if (observerZoneId != null) {
       Optional<Zone> observerZone = zoneManager.getZone(observerZoneId);
       if (observerZone.isPresent() && ZoneType.INTERIOR == observerZone.get().getZoneType()) {
-        // From inside an Interior, you can't reach Exterior objects
+        // From inside an Interior, you can't reach generic Exterior objects
         return false;
       }
     }
@@ -356,7 +365,7 @@ public class WorldAdapter implements WorldPort {
       return Collections.emptyList();
     }
     return spatialHash.getAllEntities().stream()
-        .filter(e -> zoneId.equals(e.getZoneId()))
+        .filter(e -> zoneId.equals(e.getParentZoneId()))
         .toList();
   }
 

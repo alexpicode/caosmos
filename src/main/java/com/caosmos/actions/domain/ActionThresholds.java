@@ -1,5 +1,8 @@
 package com.caosmos.actions.domain;
 
+import com.caosmos.common.domain.model.world.WorldConstants;
+
+
 /**
  * Centralizes all thresholds and constants related to citizen actions, such as proximity distances, energy costs, and
  * physiological recovery values.
@@ -34,14 +37,15 @@ public final class ActionThresholds {
   public static final double EAT_NUTRITION_RECOVERY = 25.0;
 
   // Workplace Tag Mapping
-  public static final String TAG_MINING = "mining";
-  public static final String TAG_COMMERCE = "commerce";
-  public static final String TAG_FORGE = "forge";
+  public static final String TAG_MINING = WorldConstants.TAG_MINING;
+  public static final String TAG_COMMERCE = WorldConstants.TAG_COMMERCE;
+  public static final String TAG_FORGE = WorldConstants.TAG_FORGE;
 
   // Item Tags
-  public static final String ITEM_TAG_TOOL = "tool";
-  public static final String ITEM_TAG_MINING = "mining";
-  public static final String ITEM_TAG_CRAFTING = "crafting";
-  public static final String ITEM_TAG_WOODCUTTING = "woodcutting";
+  public static final String ITEM_TAG_TOOL = WorldConstants.TAG_TOOL;
+  public static final String ITEM_TAG_MINING = WorldConstants.TAG_MINING;
+  public static final String ITEM_TAG_CRAFTING = WorldConstants.TAG_CRAFTING;
+  public static final String ITEM_TAG_WOODCUTTING = WorldConstants.TAG_WOODCUTTING;
+
 
 }

@@ -99,6 +99,7 @@ class PerceptionMonitorTest {
         5.0,
         "North",
         Set.of("INTERESTING"),
+        "zone-1",
         null, null, null
     );
     citizen.enterZone("zone-1", "Square");
@@ -258,6 +259,7 @@ class PerceptionMonitorTest {
         2.0,
         "Forward",
         Set.of(),
+        "zone-ws",
         null, null, null
     );
 
@@ -299,6 +301,7 @@ class PerceptionMonitorTest {
         50.0,
         "North-East",
         Collections.emptySet(),
+        "zone-1",
         null, null, null
     );
 
@@ -372,6 +375,7 @@ class PerceptionMonitorTest {
         2.0,
         "F",
         Set.of("INTERESTING"),
+        "zone-1",
         null, null, null
     );
     NearbyElement targetObject = new NearbyElement(
@@ -383,6 +387,7 @@ class PerceptionMonitorTest {
         5.0,
         "F",
         Set.of(),
+        "zone-1",
         null,
         null,
         null
@@ -423,6 +428,7 @@ class PerceptionMonitorTest {
         0.5, // Well below proximity threshold
         "F",
         Set.of(),
+        "zone-1",
         null, null, null
     );
 
@@ -453,6 +459,7 @@ class PerceptionMonitorTest {
         10.0, // Far away
         "F",
         Set.of("HOSTILE"),
+        "zone-1",
         null, null, null
     );
 
@@ -486,6 +493,7 @@ class PerceptionMonitorTest {
         0.5, // Close
         "F",
         Set.of(),
+        "zone-1",
         null, null, null
     );
 

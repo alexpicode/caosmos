@@ -36,6 +36,17 @@ public class ExplorationTracker {
   }
 
   /**
+   * Registers a zone as known (glimpsed/seen) without physical entry. Creates a 0% exploration entry only if the zone
+   * is not already tracked.
+   */
+  public void registerZoneAsKnown(ZoneMetadata metadata) {
+    exploredZones.putIfAbsent(
+        metadata.zoneId(),
+        new ZoneExplorationState(metadata)
+    );
+  }
+
+  /**
    * Updates exploration based on vision sweep. Marks cells covered by the vision radius.
    */
   public void updateExploration(

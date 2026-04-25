@@ -111,6 +111,7 @@ public class WorldObject implements WorldElement {
         Math.round(distance * 100.0) / 100.0,
         direction,
         tags,
+        getZoneId(),
         null, null, null
     );
   }

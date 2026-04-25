@@ -1,6 +1,7 @@
 package com.caosmos.world.domain.service;
 
 import com.caosmos.common.domain.model.world.Environment;
+import com.caosmos.common.domain.model.world.WorldConstants;
 import com.caosmos.common.domain.model.world.ZoneType;
 import com.caosmos.world.domain.config.WeatherStateConfig;
 import com.caosmos.world.domain.config.WorldConfigProperties;
@@ -19,7 +20,8 @@ public class EnvironmentService {
   private final WorldConfigProperties worldConfigProperties;
   private final Random random = new Random();
 
-  private String currentWeather = "CLEAR";
+  private String currentWeather = WorldConstants.TAG_CLEAR;
+
   private double nextWeatherChangeTimeSeconds = -1;
 
   public Environment getCurrentEnvironment() {
@@ -30,8 +32,8 @@ public class EnvironmentService {
     String terrainType = "Urban";
 
     List<String> tags = new ArrayList<>();
-    tags.add("city");
-    tags.add(hour >= 6 && hour <= 18 ? "day" : "night");
+    tags.add(WorldConstants.TAG_CITY);
+    tags.add(hour >= 6 && hour <= 18 ? WorldConstants.TAG_DAY : WorldConstants.TAG_NIGHT);
     tags.add(currentWeather);
 
     return new Environment(terrainType, tags, lightLevel);

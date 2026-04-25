@@ -1,0 +1,17 @@
+.git
+.gitignore
+.idea
+.vscode
+target/
+*.iml
+Dockerfile
+docker-compose.yml
+.env
+.env.example
+implementation_plan.md
+task.md
+walkthrough.md
+mvnw.cmd
+README.md
+LICENSE
+docs/

@@ -54,7 +54,7 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
     Optional<Zone> currentZone = currentZoneId != null ? zoneManager.getZone(currentZoneId) : Optional.empty();
 
     Optional<Zone> zoneOpt;
-    if (currentZone.isPresent() && currentZone.get().isEntryRestricted()) {
+    if (currentZone.isPresent() && currentZone.get().isEntryRestricted() && currentZone.get().contains(position)) {
       zoneOpt = currentZone; // Logical Wall enforced
     } else {
       zoneOpt = zoneManager.findZoneAt(position, currentZoneId);

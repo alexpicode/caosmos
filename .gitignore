@@ -5,6 +5,7 @@ target/
 
 ### Local configuration ###
 **/application-local.yml
+.env
 
 ### STS ###
 .apt_generated

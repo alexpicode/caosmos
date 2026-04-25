@@ -1,13 +1,12 @@
 package com.caosmos.common.infrastructure.manifest;
 
+import com.caosmos.common.application.config.CaosmosResourceProperties;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -17,17 +16,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ManifestFileSystemResolver {
 
-  private final Path externalManifestsPath;
-  private final Path internalManifestsPath;
-
-  public ManifestFileSystemResolver(ManifestProperties manifestProperties) {
-    this.externalManifestsPath = Paths.get(System.getProperty("user.dir"))
-                                      .resolve(manifestProperties.getExternalPath());
-    this.internalManifestsPath = Paths.get(System.getProperty("user.dir"))
-                                      .resolve(manifestProperties.getInternalPath());
-  }
+  private final CaosmosResourceProperties resourceProperties;
 
   /**
    * Finds manifest path using overlay system (external first, then internal).
@@ -36,16 +28,20 @@ public class ManifestFileSystemResolver {
    * @return Path to the manifest file, or null if not found
    */
   public Path findManifestPath(String manifestName) {
-    Path externalPath = externalManifestsPath.resolve(manifestName);
-    if (Files.exists(externalPath)) {
-      log.debug("[RESOLVER] Found manifest in external path: {}", externalPath);
-      return externalPath;
-    }
+    try {
+      if (resourceProperties.citizens() == null) {
+        return null;
+      }
 
-    Path internalPath = internalManifestsPath.resolve(manifestName);
-    if (Files.exists(internalPath)) {
-      log.debug("[RESOLVER] Found manifest in internal path: {}", internalPath);
-      return internalPath;
+      Path baseDir = resourceProperties.citizens().getFile().toPath();
+      Path manifestPath = baseDir.resolve(manifestName);
+
+      if (Files.exists(manifestPath)) {
+        log.debug("[RESOLVER] Found manifest: {}", manifestName);
+        return manifestPath.toAbsolutePath().normalize();
+      }
+    } catch (IOException e) {
+      log.error("[RESOLVER] Error resolving manifest path for: {}", manifestName, e);
     }
 
     log.debug("[RESOLVER] Manifest not found: {}", manifestName);
@@ -57,18 +53,18 @@ public class ManifestFileSystemResolver {
    * in both locations.
    */
   public Stream<Path> getAllManifestPaths() throws IOException {
-    // First collect all external manifests
-    Set<String> externalManifestNames = new HashSet<>();
-    Stream<Path> externalManifests = getManifestsFromPath(externalManifestsPath)
-        .stream()
-        .peek(path -> externalManifestNames.add(path.getFileName().toString()));
+    if (resourceProperties.citizens() == null) {
+      return Stream.empty();
+    }
 
-    // Then collect internal manifests that don't exist in external
-    Stream<Path> internalManifests = getManifestsFromPath(internalManifestsPath)
-        .stream()
-        .filter(internalPath -> !externalManifestNames.contains(internalPath.getFileName().toString()));
+    Path path = resourceProperties.citizens().getFile().toPath().toAbsolutePath().normalize();
+    if (Files.exists(path) && Files.isDirectory(path)) {
+      log.info("[RESOLVER] Loading manifests from path: {}", path);
+      return getManifestsFromPath(path).stream();
+    }
 
-    return Stream.concat(externalManifests, internalManifests);
+    log.warn("[RESOLVER] Citizens path does not exist or is not a directory: {}", path);
+    return Stream.empty();
   }
 
   private List<Path> getManifestsFromPath(Path path) throws IOException {
@@ -89,6 +85,6 @@ public class ManifestFileSystemResolver {
    * Checks if external manifests directory exists and is accessible.
    */
   public boolean hasExternalManifests() {
-    return Files.exists(externalManifestsPath) && Files.isDirectory(externalManifestsPath);
+    return resourceProperties.citizens() != null && resourceProperties.citizens().exists();
   }
 }

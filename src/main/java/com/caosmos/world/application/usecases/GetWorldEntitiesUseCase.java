@@ -1,11 +1,16 @@
 package com.caosmos.world.application.usecases;
 
+import com.caosmos.common.domain.contracts.CitizenPort;
 import com.caosmos.common.domain.model.world.EntityType;
+import com.caosmos.common.domain.model.world.WorldConstants;
 import com.caosmos.common.domain.model.world.WorldElement;
-import com.caosmos.world.application.dto.WorldEntitySummaryDTO;
+import com.caosmos.world.application.dto.WorldEntitySummaryDto;
 import com.caosmos.world.domain.service.SpatialHash;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +19,60 @@ import org.springframework.stereotype.Service;
 public class GetWorldEntitiesUseCase {
 
   private final SpatialHash spatialHash;
+  private final CitizenPort citizenPort;
 
-  public List<WorldEntitySummaryDTO> executeSummary(Double minX, Double minZ, Double maxX, Double maxZ) {
+  public List<WorldEntitySummaryDto> executeSummary(
+      Double minX,
+      Double minZ,
+      Double maxX,
+      Double maxZ,
+      String name,
+      String category,
+      String owned
+  ) {
     Collection<WorldElement> entities = getFilteredEntities(minX, minZ, maxX, maxZ);
 
     return entities.stream()
-        .map(e -> new WorldEntitySummaryDTO(
-            e.getId(),
-            e.getType(),
-            e.getName(),
-            e.getPosition().x(),
-            e.getPosition().y(),
-            e.getPosition().z()
-        ))
+        .map(e -> {
+          String ownerIdStr = e.getTags().stream()
+              .filter(t -> t.startsWith(WorldConstants.PREFIX_OWNER))
+              .findFirst()
+              .map(t -> t.substring(WorldConstants.PREFIX_OWNER.length()))
+              .orElse(null);
+
+          String ownerName = null;
+          if (ownerIdStr != null) {
+            try {
+              ownerName = citizenPort.getName(UUID.fromString(ownerIdStr));
+            } catch (IllegalArgumentException ex) {
+              ownerName = null;
+            }
+          }
+
+          Set<String> filteredTags = e.getTags().stream()
+              .filter(t -> !t.startsWith(WorldConstants.PREFIX_OWNER))
+              .collect(Collectors.toSet());
+
+          return new WorldEntitySummaryDto(
+              e.getId(),
+              e.getType(),
+              e.getName(),
+              e.getDescription(),
+              e.getCategory(),
+              ownerName,
+              filteredTags,
+              e.getPosition().x(),
+              e.getPosition().y(),
+              e.getPosition().z()
+          );
+        })
+        .filter(dto -> name == null || (dto.displayName() != null && dto.displayName()
+            .toLowerCase()
+            .contains(name.toLowerCase())))
+        .filter(dto -> category == null || (dto.category() != null && dto.category().equalsIgnoreCase(category)))
+        .filter(dto -> owned == null || (dto.owned() != null && dto.owned()
+            .toLowerCase()
+            .contains(owned.toLowerCase())))
         .toList();
   }
 
