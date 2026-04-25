@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Alexpi8/caosmos-ui">🖥️ <b>Visual Interface (Caosmos UI)</b></a> | 
+  <a href="https://github.com/alexpicode/caosmos-ui">🖥️ <b>Visual Interface (Caosmos UI)</b></a> | 
   <a href="docs/ARCHITECTURE.md">🏗️ <b>Technical Architecture</b></a>
 </p>
 
@@ -18,6 +18,7 @@
   <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-4.0.3-brightgreen?style=for-the-badge&logo=springboot" alt="Spring Boot"></a>
   <a href="https://spring.io/projects/spring-modulith"><img src="https://img.shields.io/badge/Spring%20Modulith-2.0.3-blue?style=for-the-badge" alt="Spring Modulith"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg?style=for-the-badge" alt="License"></a>
+  <a href="mailto:alexpicode@proton.me"><img src="https://img.shields.io/badge/Contact-alexpicode%40proton.me-blue?style=for-the-badge&logo=protonmail" alt="Email"></a>
 </p>
 
 ---
@@ -193,7 +194,7 @@ If you prefer to run the engine directly on your host machine:
 
 1. **Clone & Enter**:
    ```bash
-   git clone https://github.com/Alexpi8/caosmos.git
+   git clone https://github.com/alexpicode/caosmos.git
    cd caosmos
    ```
 
@@ -224,10 +225,18 @@ Override these in `application.yml` or via Environment Variables:
 
 ## 🤝 Contributing
 
-We welcome explorers and architects!
+We welcome explorers and architects! To get started, please read our [**Contributing Guide**](CONTRIBUTING.md).
 
 1. Check the [ARCHITECTURE.md](docs/ARCHITECTURE.md) for deep-dives.
 2. Open an issue or submit a PR for new `ActionHandlers` or `Directors`.
+
+---
+
+## 📬 Contact
+
+If you have any questions, suggestions, or would like to collaborate, feel free to reach out:
+
+📧 **Email**: [alexpicode@proton.me](mailto:alexpicode@proton.me)
 
 ---
 

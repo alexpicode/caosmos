@@ -1,7 +1,7 @@
 services:
   caosmos:
     # Use 'image' for remote registry or 'build' for local development
-    image: ghcr.io/alexpi8/caosmos:latest
+    image: ghcr.io/alexpicode/caosmos:latest
     # build:
     #   context: .
     #   dockerfile: Dockerfile
