@@ -1,6 +1,7 @@
 package com.caosmos.common.infrastructure.manifest;
 
 import com.caosmos.common.domain.model.manifest.AgentManifest;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class ManifestParser {
     }
 
     // Parse YAML frontmatter
-    Map<String, Object> metadata = yamlMapper.readValue(parts[yamlIndex], Map.class);
+    Map<String, Object> metadata = yamlMapper.readValue(parts[yamlIndex], new TypeReference<>() {});
 
     return new AgentManifest(
         fileName,
