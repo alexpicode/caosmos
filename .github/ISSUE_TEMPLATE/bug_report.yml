@@ -1,0 +1,88 @@
+name: Bug Report
+description: Report a bug to help us improve Caosmos.
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the issue you're experiencing...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this behavior?
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: dropdown
+    id: java-version
+    attributes:
+      label: Java Version
+      options:
+        - "25"
+        - "26 (EA)"
+        - "Other"
+    validations:
+      required: true
+  - type: input
+    id: ai-model
+    attributes:
+      label: AI Model
+      description: The exact model name used in your configuration (e.g., gemini-3.1-flash-lite-preview, gpt-5, claude-4-5-sonnet, gemma:2b, etc.)
+      placeholder: e.g. gemini-3.1-flash-lite-preview
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: e.g. Windows 11, Ubuntu 24.04, macOS Sonoma
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment Method
+      options:
+        - "Docker Compose"
+        - "Manual (Maven)"
+        - "IDE (IntelliJ/Eclipse)"
+        - "VS Code"
+        - "Other VSC-based IDE (Cursor, Windsurf, etc.)"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Please provide any relevant logs or error messages.
+      render: shell
+  - type: checkboxes
+    id: checkboxes
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched for existing issues.
+          required: true
+        - label: I have provided a clear description and steps to reproduce.
+          required: true

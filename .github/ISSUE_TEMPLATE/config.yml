@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/alexpicode/caosmos/discussions
+    about: Please use discussions for questions or general feedback.
+  - name: 📧 Email Contact
+    url: mailto:alexpicode@proton.me
+    about: For private inquiries or security concerns.
