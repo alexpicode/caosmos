@@ -10,7 +10,8 @@
 
 <p align="center">
   <a href="https://github.com/alexpicode/caosmos-ui">🖥️ <b>Visual Interface (Caosmos UI)</b></a> | 
-  <a href="docs/ARCHITECTURE.md">🏗️ <b>Technical Architecture</b></a>
+  <a href="docs/ARCHITECTURE.md">🏗️ <b>Technical Architecture</b></a> |
+  <a href="ROADMAP.md">🗺️ <b>Project Roadmap</b></a>
 </p>
 
 <p align="center">
