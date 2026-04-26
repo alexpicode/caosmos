@@ -123,18 +123,6 @@ public class SpatialWorldPerceptionProvider implements WorldPerceptionProvider {
   }
 
   public void removeWorldObject(String objectId) {
-    WorldElement toRemove = null;
-    Set<WorldElement> allObjects = spatialHash.getNearbyEntities(new Vector3(0, 0, 0), Double.MAX_VALUE);
-
-    for (WorldElement obj : allObjects) {
-      if (obj.getId().equals(objectId)) {
-        toRemove = obj;
-        break;
-      }
-    }
-
-    if (toRemove != null) {
-      spatialHash.remove(toRemove.getId());
-    }
+    spatialHash.remove(objectId);
   }
 }
