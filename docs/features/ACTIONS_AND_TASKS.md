@@ -5,6 +5,10 @@
 In Caosmos, the behavior engine is based on a hierarchy where the **Action** is the catalyst for all change. A citizen
 does not simply "be" in a task; they enter it through a validated action.
 
+This "Will Cycle" leverages the non-deterministic nature of AI models (controlled by their *temperature*). We interpret 
+the unpredictability of these models as **Free Will**: the capacity of a citizen to react differently to the same 
+stimuli, creating an organic and living simulation.
+
 ---
 
 ## 1. Actions (The Catalyst)

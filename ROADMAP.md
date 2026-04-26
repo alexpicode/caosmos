@@ -159,7 +159,7 @@ These items focus on correctness, reliability, and removing known rough edges be
 ### 🌍 Smarter World Navigation
 - [ ] **Smoother Exploration**: Make agents better at transitioning from familiar places into unknown territories.
 - [ ] **Territory Awareness**: Give agents an understanding of regions, so they know when they are operating within a specific city or forest.
-- [x] **Visualizing Exploration**: Allow external tools (like the UI) to see exactly what parts of the world an agent has mapped out.
+- [x] **Visualizing Exploration**: Allow external tools (like the [Caosmos UI](https://github.com/alexpicode/caosmos-ui)) to see exactly what parts of the world an agent has mapped out.
 
 ### 🔄 State Integrity & Hot-Reloading
 - [x] **Seamless Updates**: Allow tweaking an agent's personality on the fly without interrupting what they are currently doing (keeping their inventory, current tasks, and conversations intact). *(Needs improvement)*

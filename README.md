@@ -37,6 +37,9 @@ Caosmos rejects the "static stage" approach of traditional RPGs. In this world:
   hundreds of autonomous agents pursuing their own goals and interacting with a reactive world.
 - **🏗️ Semantic Foundation**: We prioritize meaning over raw data. Everything in the world—from a "rusty sword" to a "
   crowded tavern"—is defined semantically, allowing AI agents to reason about their environment with human-like logic.
+- **🌱 Free Will via Non-Determinism**: We embrace the probabilistic nature of LLMs. In Caosmos, "hallucinations" or 
+  unexpected decisions are not bugs; they are the citizen's free will, ensuring that no two entities ever behave exactly
+  the same way in identical circumstances.
 
 ---
 
