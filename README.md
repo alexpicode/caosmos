@@ -190,6 +190,26 @@ Changes made to files in `./config` on your host machine are immediately reflect
 
 ---
 
+## 🧑‍🤝‍🧑 Customizing the Population
+
+You can easily populate the world with your own AI agents or scale the simulation to hundreds of citizens.
+
+### 📝 Creating a Citizen
+To add a new citizen, simply create a new `.md` file in `config/caosmos/citizens/`. The engine uses a hybrid manifest format:
+- **YAML Frontmatter**: Defines technical stats (strength, skills), identity, and base location.
+- **Markdown Body**: Defines the "Soul" of the agent. Use this space to describe their personality, hobbies, and specific behavioral guidelines.
+
+> [!TIP]
+> You can copy an existing manifest like `alice_worker.md` as a template for your new characters.
+
+### 📈 Scaling the Simulation
+The population size is determined by the number of active manifests in the `citizens` directory.
+- **To add citizens**: Create more files.
+- **To remove citizens**: Delete files or move them to the `config/caosmos/disabled/` directory.
+- **Hot-Reload**: The simulation detects new files and updates existing ones in real-time. No restart required.
+
+---
+
 ## 🛠️ Local Development (Manual)
 
 If you prefer to run the engine directly on your host machine:
