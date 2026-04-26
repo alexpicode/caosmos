@@ -93,7 +93,7 @@ public class SpatialHash implements WorldRegistry {
         position.x() - radius, position.z() - radius,
         position.x() + radius, position.z() + radius,
         (key, cell) -> {
-          if (cell != null) {
+          if (cell != null && !cell.isEmpty()) {
             for (WorldElement obj : cell) {
               if (obj.contains(position) || obj.distanceTo2D(position) <= radius) {
                 result.add(obj);
@@ -110,7 +110,7 @@ public class SpatialHash implements WorldRegistry {
     Set<WorldElement> result = new HashSet<>();
     forEachCellInRange(
         minX, minZ, maxX, maxZ, (key, cell) -> {
-          if (cell != null) {
+          if (cell != null && !cell.isEmpty()) {
             for (WorldElement obj : cell) {
               Vector3 pos = obj.getPosition();
               if (obj.contains(pos) || (pos.x() >= minX && pos.x() <= maxX && pos.z() >= minZ && pos.z() <= maxZ)) {
@@ -127,10 +127,11 @@ public class SpatialHash implements WorldRegistry {
     List<ChunkInfo> chunks = new ArrayList<>();
     forEachCellInRange(
         minX, minZ, maxX, maxZ, (key, cell) -> {
-          int xi = getXi(key);
-          int zi = getZi(key);
-          int entityCount = cell != null ? cell.size() : 0;
-          chunks.add(new ChunkInfo(xi, zi, CELL_SIZE, entityCount, 1.0));
+          if (cell != null && !cell.isEmpty()) {
+            int xi = getXi(key);
+            int zi = getZi(key);
+            chunks.add(new ChunkInfo(xi, zi, CELL_SIZE, cell.size(), 1.0));
+          }
         }
     );
     return chunks;
@@ -219,11 +220,35 @@ public class SpatialHash implements WorldRegistry {
     long maxXi = (long) Math.floor(maxX / CELL_SIZE);
     long maxZi = (long) Math.floor(maxZ / CELL_SIZE);
 
-    for (long xi = minXi; xi <= maxXi; xi++) {
-      for (long zi = minZi; zi <= maxZi; zi++) {
-        long key = toKey(xi, zi);
-        Set<WorldElement> cell = grid.get(key);
-        action.accept(key, cell);
+    long diffX = maxXi - minXi + 1;
+    long diffZ = maxZi - minZi + 1;
+
+    // Use heuristic to decide between iterating over coordinates or iterating over the sparse grid.
+    // If area is huge or overflows, iterate over grid.
+    boolean iterateGrid = diffX <= 0 || diffZ <= 0 || diffX > Integer.MAX_VALUE || diffZ > Integer.MAX_VALUE;
+    if (!iterateGrid) {
+      long area = diffX * diffZ;
+      if (area > Math.max(1000, grid.size() * 2L)) {
+        iterateGrid = true;
+      }
+    }
+
+    if (iterateGrid) {
+      for (Map.Entry<Long, Set<WorldElement>> entry : grid.entrySet()) {
+        long key = entry.getKey();
+        int xi = getXi(key);
+        int zi = getZi(key);
+        if (xi >= minXi && xi <= maxXi && zi >= minZi && zi <= maxZi) {
+          action.accept(key, entry.getValue());
+        }
+      }
+    } else {
+      for (long xi = minXi; xi <= maxXi; xi++) {
+        for (long zi = minZi; zi <= maxZi; zi++) {
+          long key = toKey(xi, zi);
+          Set<WorldElement> cell = grid.get(key);
+          action.accept(key, cell);
+        }
       }
     }
   }
