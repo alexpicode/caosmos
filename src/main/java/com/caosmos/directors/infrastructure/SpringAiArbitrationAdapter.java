@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -24,12 +25,12 @@ public class SpringAiArbitrationAdapter implements ArbitrationProvider {
   private final String systemPrompt;
 
   public SpringAiArbitrationAdapter(
-      ChatClient.Builder chatClientBuilder,
+      @Qualifier("directorChatClient") ChatClient directorChatClient,
       ObjectMapper objectMapper,
       @Value("classpath:/prompts/director-arbitration-system.md") Resource systemPromptResource
   ) throws IOException {
 
-    this.chatClient = chatClientBuilder.build();
+    this.chatClient = directorChatClient;
     this.objectMapper = objectMapper;
     this.systemPrompt = new String(systemPromptResource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
   }

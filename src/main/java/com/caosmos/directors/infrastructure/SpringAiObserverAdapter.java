@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -22,11 +23,11 @@ public class SpringAiObserverAdapter implements ObservationProvider {
   private final String systemPrompt;
 
   public SpringAiObserverAdapter(
-      ChatClient.Builder chatClientBuilder,
+      @Qualifier("directorChatClient") ChatClient directorChatClient,
       ObjectMapper objectMapper,
       @Value("classpath:/prompts/director-observer-system.md") Resource systemPromptResource
   ) throws IOException {
-    this.chatClient = chatClientBuilder.build();
+    this.chatClient = directorChatClient;
     this.objectMapper = objectMapper;
     this.systemPrompt = new String(systemPromptResource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
   }

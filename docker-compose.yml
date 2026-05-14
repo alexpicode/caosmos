@@ -1,4 +1,24 @@
 services:
+  # --- NEW: Uncomment and update Ollama ---
+  ollama:
+    image: ollama/ollama:latest
+    container_name: caosmos-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    networks:
+      - caosmos-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
   caosmos:
     # Use 'image' for remote registry or 'build' for local development
     image: ghcr.io/alexpicode/caosmos:latest
@@ -14,10 +34,29 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SERVER_PORT=${CONTAINER_PORT:-8080}
+      # --- Existing ---
       - GOOGLE_AI_API_KEY=${GOOGLE_AI_API_KEY}
       - GOOGLE_AI_MODEL=${GOOGLE_AI_MODEL}
+      # --- NEW: Ollama ---
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen3.5:9b}
+      # --- NEW: OpenAI ---
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      # --- NEW: Multi-Model Universe ---
+      - CAOSMOS_THINKING_PROVIDER=${CAOSMOS_THINKING_PROVIDER:-gemini}
+      - CAOSMOS_THINKING_API_KEY=${CAOSMOS_THINKING_API_KEY:-}
+      - CAOSMOS_THINKING_BASE_URL=${CAOSMOS_THINKING_BASE_URL:-}
+      - CAOSMOS_THINKING_MODEL=${CAOSMOS_THINKING_MODEL:-}
+      - CAOSMOS_DIRECTOR_PROVIDER=${CAOSMOS_DIRECTOR_PROVIDER:-gemini}
+      - CAOSMOS_DIRECTOR_API_KEY=${CAOSMOS_DIRECTOR_API_KEY:-}
+      - CAOSMOS_DIRECTOR_BASE_URL=${CAOSMOS_DIRECTOR_BASE_URL:-}
+      - CAOSMOS_DIRECTOR_MODEL=${CAOSMOS_DIRECTOR_MODEL:-}
     volumes:
       - ./config:/app/config
+    depends_on:
+      # --- NEW: Add ollama dependency ---
+      - ollama
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:${CONTAINER_PORT:-8080}/actuator/health" ]
       interval: 30s
@@ -26,19 +65,10 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-#  ollama:
-#    image: ollama/ollama:latest
-#    container_name: ollama
-#    ports:
-#      - "11434:11434"
-#    volumes:
-#      - ollama_data:/root/.ollama
-#    restart: unless-stopped
-
 volumes:
   ollama_data:
     driver: local
 
 networks:
-  default:
-    name: caosmos-network
+  caosmos-network:
+    driver: bridge

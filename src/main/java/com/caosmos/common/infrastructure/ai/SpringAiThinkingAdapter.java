@@ -6,10 +6,9 @@ import com.caosmos.common.domain.contracts.ThinkingProvider;
 import com.caosmos.common.domain.model.agents.AgentAction;
 import java.util.UUID;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,16 +18,11 @@ public class SpringAiThinkingAdapter implements ThinkingProvider {
   private final BeanOutputConverter<AgentAction> outputConverter = new BeanOutputConverter<>(AgentAction.class);
   private final EntityTelemetryService telemetryService;
 
-  public SpringAiThinkingAdapter(ChatClient.Builder chatClientBuilder, EntityTelemetryService telemetryService) {
+  public SpringAiThinkingAdapter(
+      @Qualifier("thinkingChatClient") ChatClient thinkingChatClient,
+      EntityTelemetryService telemetryService) {
+    this.sharedChatClient = thinkingChatClient;
     this.telemetryService = telemetryService;
-    ChatMemory chatMemory = MessageWindowChatMemory.builder()
-        .maxMessages(10)
-        .build();
-
-    this.sharedChatClient = chatClientBuilder
-//        .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build(), SimpleLoggerAdvisor.builder().build())
-        .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
-        .build();
   }
 
   @Override

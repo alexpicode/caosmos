@@ -7,25 +7,50 @@ spring:
   config:
     import: optional:classpath:spawnable-registry.yml
   ai:
-#    ollama:
-#      base-url: http://localhost:11434
-#      chat:
-#        model: qwen3.5:9b
-#        options:
-#          temperature: 0.4
-#          num-ctx: 2048
+    # Ollama config (local)
+    ollama:
+      base-url: "${OLLAMA_BASE_URL:http://localhost:11434}"
+      chat:
+        options:
+          model: "${OLLAMA_MODEL:qwen3.5:9b}"
+          temperature: 0.4
+          num-ctx: 2048
+
+    # OpenAI config (cloud)
+    openai:
+      api-key: "${OPENAI_API_KEY:}"
+      chat:
+        options:
+          model: "${OPENAI_MODEL:gpt-4o-mini}"
+          temperature: 0.4
+
+    # Gemini config (default)
     google:
       genai:
         api-key: "${GOOGLE_AI_API_KEY}"
         chat:
           options:
-            model: "${GOOGLE_AI_MODEL}"
+            model: "${GOOGLE_AI_MODEL:gemini-3.1-flash-lite-preview}"
             response-mime-type: "application/json"
             temperature: 0.4
             top-p: 0.9
             max-output-tokens: 1500
 
+# --- Channel-level config (Multi-Model Universe) ---
 caosmos:
+  ai:
+    thinking:
+      provider: "${CAOSMOS_THINKING_PROVIDER:gemini}"
+      api-key: "${CAOSMOS_THINKING_API_KEY:}"
+      base-url: "${CAOSMOS_THINKING_BASE_URL:}"
+      model: "${CAOSMOS_THINKING_MODEL:}"
+      temperature: 0.4
+    director:
+      provider: "${CAOSMOS_DIRECTOR_PROVIDER:gemini}"
+      api-key: "${CAOSMOS_DIRECTOR_API_KEY:}"
+      base-url: "${CAOSMOS_DIRECTOR_BASE_URL:}"
+      model: "${CAOSMOS_DIRECTOR_MODEL:}"
+      temperature: 0.2
   resources:
     citizens: "${CITIZENS_RESOURCE:file:config/caosmos/citizens}"
     world:
